@@ -1,5 +1,6 @@
 package com.example.apa_project;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class StudentDB {
     private String constr = "null";
@@ -41,9 +42,79 @@ public class StudentDB {
         }
     }
 
-    public void insertStudent(){
+    public void insertStudent(Student s){
+        Connection con = null;
 
+        try {
+            con = DriverManager.getConnection(constr);
+            String insertstudent = "INSERT INTO students (name, email, password, major, " +
+                    "date_of_birth, cv_file_name, cv_document) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement pstmt = con.prepareStatement(insertstudent);
+
+            pstmt.setString(1, s.getName());
+            pstmt.setString(2, s.getEmail());
+            pstmt.setString(3, s.getPassword());
+            pstmt.setString(4, s.getMajor());
+            pstmt.setDate(5, new java.sql.Date(s.getDateOfBirth().getTime()));
+            pstmt.setString(6, s.getCvFileName());
+            pstmt.setBytes(7, s.getCvDocument());
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
     }
+
+    public ArrayList<Student> viewStudents(){
+        Connection con = null;
+        ArrayList<Student> students = new ArrayList<>();
+        try{
+            con = DriverManager.getConnection(constr);
+
+            String selectStudents = "SELECT * FROM students";
+
+            Statement stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(selectStudents);
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                String major = rs.getString("major");
+                Date dateOfBirth = rs.getDate("date_of_birth");
+
+                Student s = new Student(id, name, email, password, major, dateOfBirth);
+                students.add(s);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            if (con != null){
+                try{
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return students;
+    }
+
+
+
 
 
 

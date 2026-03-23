@@ -12,8 +12,6 @@ public class Student {
     private String cvFileName;
     private byte[] cvDocument;
 
-
-
     public Student(int id, String name, String email, String password, String major, Date dateOfBirth) {
         this.id = id;
         this.name = name;
@@ -22,6 +20,10 @@ public class Student {
         this.major = major;
         this.dateOfBirth = dateOfBirth;
     }
+
+
+
+
 
     public int getId() {
         return id;
