@@ -42,7 +42,7 @@ public class StudentDB {
         }
     }
 
-    public void insertStudent(Student s){
+    public int insertStudent(Student s){
         Connection con = null;
 
         try {
@@ -50,7 +50,7 @@ public class StudentDB {
             String insertstudent = "INSERT INTO students (name, email, password, major, " +
                     "date_of_birth, cv_file_name, cv_document) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            PreparedStatement pstmt = con.prepareStatement(insertstudent);
+            PreparedStatement pstmt = con.prepareStatement(insertstudent, Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, s.getName());
             pstmt.setString(2, s.getEmail());
@@ -61,6 +61,16 @@ public class StudentDB {
             pstmt.setBytes(7, s.getCvDocument());
 
             pstmt.executeUpdate();
+
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+                    s.setId(generatedId);
+                    return generatedId;
+                }
+            }
+
+            throw new RuntimeException("Insert succeeded but no generated id was returned");
 
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
