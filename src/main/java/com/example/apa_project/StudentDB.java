@@ -113,11 +113,27 @@ public class StudentDB {
         return students;
     }
 
+    public void addOrUpdateStudentCv(int studentId, String cvFileName, byte[] cvDocument) {
+        if (cvDocument == null || cvDocument.length == 0) {
+            throw new IllegalArgumentException("CV document cannot be empty");
+        }
 
+        String updateCv = "UPDATE students SET cv_file_name = ?, cv_document = ? WHERE id = ?";
 
+        try (Connection con = DriverManager.getConnection(constr);
+             PreparedStatement pstmt = con.prepareStatement(updateCv)) {
 
+            pstmt.setString(1, cvFileName);
+            pstmt.setBytes(2, cvDocument);
+            pstmt.setInt(3, studentId);
 
-
-
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new IllegalArgumentException("No student found with ID: " + studentId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
