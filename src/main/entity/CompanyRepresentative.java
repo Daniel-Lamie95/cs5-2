@@ -6,7 +6,7 @@ public class CompanyRepresentative extends User{
 	//
 	private String positionTitle;
 	
-	
+	//
 	public CompanyRepresentative() {
 		
 	}
