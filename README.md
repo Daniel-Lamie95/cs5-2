@@ -1,15 +1,15 @@
 # APA_Project
 
-A Java web application project built with Jakarta EE, Jersey (JAX-RS), and JPA.
+A Spring Boot web application using Thymeleaf templates.
 
 ## Technologies Used
 
 - Java 21
-- Jakarta Servlet API 6.0
-- Jersey 3.1.6 (JAX-RS implementation)
-- Eclipse Persistence (JPA)
+- Spring Boot 3.5.0
+- Spring MVC
+- Thymeleaf
 - Maven
-- JUnit 5.10.2
+- JUnit 5 (via Spring Boot starter test)
 
 ## Project Structure
 
@@ -17,16 +17,15 @@ A Java web application project built with Jakarta EE, Jersey (JAX-RS), and JPA.
 APA_Project/
 ├── src/
 │   ├── main/
-│   │   ├── java/
-│   │   │   └── com/example/apa_project/
-│   │   ├── resources/
-│   │   │   └── META-INF/
-│   │   │       └── persistence.xml
-│   │   └── webapp/
-│   │       ├── index.jsp
-│   │       └── WEB-INF/
-│   │           └── web.xml
+│   │   ├── java/com/example/apa_project/
+│   │   │   ├── ApaProjectApplication.java
+│   │   │   └── HomeController.java
+│   │   └── resources/
+│   │       └── templates/
+│   │           └── index.html
 │   └── test/
+│       └── java/com/example/apa_project/
+│           └── ApaProjectApplicationTests.java
 ├── pom.xml
 └── README.md
 ```
@@ -35,28 +34,24 @@ APA_Project/
 
 ### Prerequisites
 
-- Java Development Kit (JDK) 21 or higher
-- Maven 3.x
-- A Jakarta EE compatible application server (e.g., Apache Tomcat 10+, GlassFish, WildFly)
+- Java Development Kit (JDK) 21+
 
-### Building the Project
+### Build
 
-```bash
-mvnw clean package
+```powershell
+.\mvnw.cmd clean package
 ```
 
-Or on Windows:
-```cmd
-mvnw.cmd clean package
+### Run
+
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
 
-### Running the Application
+Open `http://localhost:8080/` in your browser.
 
-1. Build the project using Maven
-2. Deploy the generated WAR file from `target/` directory to your application server
-3. Access the application at `http://localhost:8080/APA_Project/`
+## Notes
 
-## License
-
-This project is created for educational purposes.
+- Legacy files under `src/main/webapp/` are not used by Thymeleaf.
+- This project now runs with the embedded Spring Boot server (no external app server required).
 
