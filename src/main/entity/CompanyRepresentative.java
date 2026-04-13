@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class CompanyRepresentative extends User{
-	//
+	
 	private String positionTitle;
 	
 	//
