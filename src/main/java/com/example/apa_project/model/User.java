@@ -1,4 +1,4 @@
-package com.example.apa_project;
+package com.example.apa_project.model;
 
 public class User {
     private int id;

@@ -1,4 +1,6 @@
-package com.example.apa_project;
+package com.example.apa_project.model;
+
+import com.example.apa_project.model.User;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.example.apa_project;
+package com.example.apa_project.model;
 import java.sql.*;
 import java.util.ArrayList;
 
