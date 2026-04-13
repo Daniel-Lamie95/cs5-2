@@ -2,59 +2,16 @@ package com.example.apa_project;
 
 import java.util.Date;
 
-public class Student {
-    private int id;
-    private String name;
-    private String email;
-    private String password;
+public class Student extends User {
     private String major;
     private Date dateOfBirth;
     private String cvFileName;
     private byte[] cvDocument;
 
     public Student(int id, String name, String email, String password, String major, Date dateOfBirth) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
+        super(id, name, email, password);
         this.major = major;
         this.dateOfBirth = dateOfBirth;
-    }
-
-
-
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getMajor() {
@@ -95,12 +52,17 @@ public class Student {
         this.cvDocument = cvDocument;
     }
 
+    //public Internship browseinternships(Internship internship){}
+    //public void applytointernship(Internship internship){}
+    //public void trackapplication(Internship insternship){}
+
+
     @Override
     public String toString() {
         return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", email='" + getEmail() + '\'' +
                 ", major='" + major + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 '}';
