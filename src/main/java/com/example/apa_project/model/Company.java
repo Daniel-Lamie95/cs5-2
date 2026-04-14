@@ -2,8 +2,10 @@ package com.example.apa_project.model;
 import jakarta.persistence.*;
 import java.util.List;
 
-public class Company extends User {
+
 @Entity
+public class Company extends User {
+
 private String feild;
 private String location;
 private String description;
