@@ -3,10 +3,11 @@ package com.example.cs5_2.repository;
 
 import com.example.cs5_2.model.Student;
 
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class StudentDB {
+public class StudentDB implements Serializable {
     private String constr = "null";
 
     public StudentDB(){
@@ -30,6 +31,7 @@ public class StudentDB {
                 "email VARCHAR(255) NOT NULL UNIQUE," +
                 "password VARCHAR(255) NOT NULL," +
                 "major VARCHAR(255) NOT NULL," +
+                "university VARCHAR(255) NOT NULL," +
                 "date_of_birth DATE NOT NULL," +
                 "cv_file_name VARCHAR(255)," +
                 "cv_document BLOB" +
@@ -104,9 +106,10 @@ public class StudentDB {
                 String email = rs.getString("email");
                 String password = rs.getString("password");
                 String major = rs.getString("major");
+                String uni = rs.getString("university");
                 Date dateOfBirth = rs.getDate("date_of_birth");
 
-                Student s = new Student(id, name, email, password, major, dateOfBirth);
+                Student s = new Student(id, name, email, password, major,uni, dateOfBirth);
                 students.add(s);
 
             }
@@ -145,6 +148,39 @@ public class StudentDB {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Student getStudentByEmail(String email){
+        Student student = null;
+        Connection con = null;
+        try{
+            con =DriverManager.getConnection(constr);
+            String selectStudents = "SELECT * FROM students WHERE email = ?";
+            PreparedStatement pstmt = con.prepareStatement(selectStudents);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String password = rs.getString("password");
+                String major = rs.getString("major");
+                String uni = rs.getString("university");
+                Date dateOfBirth = rs.getDate("date_of_birth");
+
+                student = new Student(id,name,email,password,major,uni,dateOfBirth);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            if (con != null){
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return student;
     }
 
 }

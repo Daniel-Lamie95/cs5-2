@@ -1,10 +1,11 @@
 package com.example.cs5_2.model;
 
-
+import java.io.Serializable;
 import java.util.Date;
 
-public class Student extends User {
+public class Student extends User implements Serializable {
     private String major;
+    private String university;
     private Date dateOfBirth;
     private String cvFileName;
     private byte[] cvDocument;
@@ -12,8 +13,9 @@ public class Student extends User {
     public Student() {
     }
 
-    public Student(int id, String name, String email, String password, String major, Date dateOfBirth) {
+    public Student(int id, String name, String email, String password, String major,String university, Date dateOfBirth) {
         super(id, name, email, password);
+        this.university = university;
         this.major = major;
         this.dateOfBirth = dateOfBirth;
     }
