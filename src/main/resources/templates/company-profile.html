@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Profile</title>
+</head>
+<body>
+
+    <h1>Company Profile</h1>
+
+    <p th:text="${message}"></p>
+
+    <h3>Basic Information</h3>
+
+    <p><strong>Name:</strong> <span th:text="${company.name}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${company.email}"></span></p>
+    <p><strong>Field:</strong> <span th:text="${company.field}"></span></p>
+    <p><strong>Location:</strong> <span th:text="${company.location}"></span></p>
+    <p><strong>Description:</strong> <span th:text="${company.description}"></span></p>
+
+    <br>
+
+    <h3>Update Profile</h3>
+
+    <form th:action="@{/companies/update}" th:object="${company}" method="post">
+        
+        <!-- Hidden field to send old email -->
+        <input type="hidden" name="email" th:value="${company.email}">
+
+        <div>
+            <label>Name:</label>
+            <input type="text" th:field="*{name}">
+        </div>
+
+        <div>
+            <label>Email:</label>
+            <input type="email" th:field="*{email}">
+        </div>
+
+        <div>
+            <label>Password:</label>
+            <input type="password" th:field="*{password}">
+        </div>
+
+        <div>
+            <label>Field:</label>
+            <input type="text" th:field="*{field}">
+        </div>
+
+        <div>
+            <label>Location:</label>
+            <input type="text" th:field="*{location}">
+        </div>
+
+        <div>
+            <label>Description:</label>
+            <textarea th:field="*{description}"></textarea>
+        </div>
+
+        <button type="submit">Update</button>
+    </form>
+
+    <br>
+
+    <h3>Delete Account</h3>
+
+    <form th:action="@{/companies/delete}" method="post">
+        <input type="hidden" name="email" th:value="${company.email}">
+        <button type="submit">Delete</button>
+    </form>
+
+    <br>
+
+    <a th:href="@{/companies}">View All Companies</a>
+
+</body>
+</html>

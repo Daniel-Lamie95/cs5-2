@@ -6,30 +6,34 @@ import java.util.List;
 @Entity
 public class Company extends User {
 
-private String feild;
+private String field;
 private String location;
 private String description;
 
 @OneToMany(mappedBy = "company")
 private List<Internship> internships;
 
-	  
-public Company(int id ,String name, String email, String password,String companyName, String feild,
+  
+public Company() {
+	
+}
+
+public Company(int id ,String name, String email, String password,String companyName, String field,
 	                   String location, String description) {
 	
 	        super(id,name, email, password);
-	        this.feild = feild;
+	        this.field = field;
 	        this.location = location;
 	        this.description = description;
 	    }
 
-public String getFeild() {
-	return feild;
+public String getField() {
+	return field;
 }
 
 
-public void setFeild(String feild) {
-	this.feild = feild;
+public void setField(String field) {
+	this.field = field;
 }
 
 public String getLocation() {
