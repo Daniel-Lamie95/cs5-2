@@ -29,7 +29,6 @@ public class StudentService {
         return student;
     }
 
-
     public List<Student> getAllStudents(){
         try {
             StudentDB studentDB = new StudentDB();
@@ -52,15 +51,32 @@ public class StudentService {
     }
 
     public Student updateStudent(String email, Student updated) {
-        return null;
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (updated == null) {
+            throw new IllegalArgumentException("Updated student cannot be null");
+        }
+        try {
+            StudentDB studentDB = new StudentDB();
+            return studentDB.updateStudent(email, updated);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void deleteStudent(String email) {
+        StudentDB studentDB = new StudentDB();
+        studentDB.deleteStudent(email);
 
     }
 
-    public void uploadCv(int studentId, String fileName, byte[] cvBytes) {
-
+    public void uploadCv(int studentemail, String fileName, byte[] cvBytes) {
+        StudentDB studentDB = new StudentDB();
+        studentDB.uploadcv(studentemail, fileName, cvBytes);
     }
 
+    //public Internship browseinternships(Internship internship){}
+    //public void applytointernship(Internship internship){}
+    //public void trackapplication(Internship insternship){}
 }

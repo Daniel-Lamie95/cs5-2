@@ -28,6 +28,14 @@ public class Student extends User implements Serializable {
         this.major = major;
     }
 
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
     public Date getDateOfBirth() {
         return dateOfBirth;
     }

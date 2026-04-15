@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class StudentDB implements Serializable {
     private String constr = "null";
 
-    public StudentDB(){
+    public StudentDB() {
         loadDriver();
         createStudentsTable();
     }
@@ -45,7 +45,7 @@ public class StudentDB implements Serializable {
         }
     }
 
-    public int insertStudent(Student s){
+    public int insertStudent(Student s) {
         Connection con = null;
 
         try {
@@ -88,10 +88,10 @@ public class StudentDB implements Serializable {
         }
     }
 
-    public ArrayList<Student> viewStudents(){
+    public ArrayList<Student> viewStudents() {
         Connection con = null;
         ArrayList<Student> students = new ArrayList<>();
-        try{
+        try {
             con = DriverManager.getConnection(constr);
 
             String selectStudents = "SELECT * FROM students";
@@ -109,15 +109,15 @@ public class StudentDB implements Serializable {
                 String uni = rs.getString("university");
                 Date dateOfBirth = rs.getDate("date_of_birth");
 
-                Student s = new Student(id, name, email, password, major,uni, dateOfBirth);
+                Student s = new Student(id, name, email, password, major, uni, dateOfBirth);
                 students.add(s);
 
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }finally {
-            if (con != null){
-                try{
+        } finally {
+            if (con != null) {
+                try {
                     con.close();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -150,11 +150,11 @@ public class StudentDB implements Serializable {
         }
     }
 
-    public Student getStudentByEmail(String email){
+    public Student getStudentByEmail(String email) {
         Student student = null;
         Connection con = null;
-        try{
-            con =DriverManager.getConnection(constr);
+        try {
+            con = DriverManager.getConnection(constr);
             String selectStudents = "SELECT * FROM students WHERE email = ?";
             PreparedStatement pstmt = con.prepareStatement(selectStudents);
             pstmt.setString(1, email);
@@ -167,12 +167,12 @@ public class StudentDB implements Serializable {
                 String uni = rs.getString("university");
                 Date dateOfBirth = rs.getDate("date_of_birth");
 
-                student = new Student(id,name,email,password,major,uni,dateOfBirth);
+                student = new Student(id, name, email, password, major, uni, dateOfBirth);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }finally {
-            if (con != null){
+        } finally {
+            if (con != null) {
                 try {
                     con.close();
                 } catch (SQLException e) {
@@ -183,4 +183,87 @@ public class StudentDB implements Serializable {
         return student;
     }
 
+    public Student updateStudent(String email, Student updated) {
+        Connection con = null;
+        Student student = null;
+        try {
+            con = DriverManager.getConnection(constr);
+            student = getStudentByEmail(email);
+            student.setId(updated.getId());
+            student.setName(updated.getName());
+            student.setEmail(updated.getEmail());
+            student.setPassword(updated.getPassword());
+            student.setMajor(updated.getMajor());
+            student.setUniversity(updated.getUniversity());
+            student.setDateOfBirth(updated.getDateOfBirth());
+
+            String update = "UPDATE students SET name = ?, email = ?, password = ?, major = ?, university = ?, date_of_birth = ? WHERE email = ?";
+            PreparedStatement pstmt = con.prepareStatement(update);
+            pstmt.setString(1, updated.getName());
+            pstmt.setString(2, updated.getEmail());
+            pstmt.setString(3, updated.getPassword());
+            pstmt.setString(4, updated.getMajor());
+            pstmt.setString(5, updated.getUniversity());
+            pstmt.setDate(6, new java.sql.Date(updated.getDateOfBirth().getTime()));
+            pstmt.setString(7, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return student;
+    }
+
+
+    public void deleteStudent(String email) {
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(constr);
+            String update = "DELETE FROM students WHERE email = ?";
+            PreparedStatement pstmt = con.prepareStatement(update);
+            pstmt.setString(1, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+    }
+
+    public void uploadcv(int studentemail, String fileName, byte[] cvBytes) {
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(constr);
+            String updateCv = "UPDATE students SET cv_file_name = ?, cv_document = ? WHERE id = ?";
+            PreparedStatement pstmt = con.prepareStatement(updateCv);
+            pstmt.setString(1, fileName);
+            pstmt.setBytes(2, cvBytes);
+            pstmt.setInt(3, studentemail);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 }
