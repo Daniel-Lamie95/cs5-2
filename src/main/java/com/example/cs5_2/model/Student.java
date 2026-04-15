@@ -1,6 +1,5 @@
-package com.example.apa_project.model;
+package com.example.cs5_2.model;
 
-import com.example.apa_project.model.User;
 
 import java.util.Date;
 
@@ -9,6 +8,9 @@ public class Student extends User {
     private Date dateOfBirth;
     private String cvFileName;
     private byte[] cvDocument;
+
+    public Student() {
+    }
 
     public Student(int id, String name, String email, String password, String major, Date dateOfBirth) {
         super(id, name, email, password);
