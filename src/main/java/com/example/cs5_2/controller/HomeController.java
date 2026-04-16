@@ -11,4 +11,6 @@ public class HomeController {
         // This looks for "index.html" in the templates folder
         return "index";
     }
+
+
 }

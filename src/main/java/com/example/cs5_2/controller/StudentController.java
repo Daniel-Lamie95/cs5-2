@@ -1,7 +1,7 @@
 package com.example.cs5_2.controller;
 import org.springframework.ui.Model;
 import com.example.cs5_2.model.Student;
-import org.springframework.*;
+
 import com.example.cs5_2.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -13,6 +13,11 @@ public class StudentController {
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
+    }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
     }
 
     @PostMapping("/register")
@@ -40,16 +45,16 @@ public class StudentController {
 
             if (student == null) {
                 model.addAttribute("error", "Invalid Login!");
-                return "index"; // Redirect back to login with error
+                return "login";
             }
 
             // Store student in session
             session.setAttribute("user", student);
-            return "redirect:/dashboard"; // Redirect to dashboard/main page
+            return "dashboard"; // Redirect to dashboard/main page
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            return "index";
+            return "login";
         }
     }
 
@@ -72,11 +77,4 @@ public class StudentController {
             return "profile";
         }
     }
-
-
-
-
-
-
-
 }

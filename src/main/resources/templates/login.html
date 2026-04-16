@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        .message { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+<h1>Login</h1>
+<p><a href="/register">Back to Student Register Form</a></p>
+
+<p class="message" th:if="${message}" th:text="${message}"></p>
+<p class="error" th:if="${error}" th:text="${error}"></p>
+
+<form method="post" action="/login">
+    <label>Email
+        <input type="email" name="email" required>
+    </label>
+    <br>
+    <label>Password
+        <input type="password" name="password" required>
+    </label>
+    <br>
+    <button type="submit">Login</button>
+</form>
+</body>
+</html>

@@ -50,18 +50,19 @@ public class StudentDB implements Serializable {
 
         try {
             con = DriverManager.getConnection(constr);
-            String insertstudent = "INSERT INTO students (name, email, password, major, " +
-                    "date_of_birth, cv_file_name, cv_document) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String insertstudent = "INSERT INTO students (name, email, password, university, major, " +
+                    "date_of_birth, cv_file_name, cv_document) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement pstmt = con.prepareStatement(insertstudent, Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, s.getName());
             pstmt.setString(2, s.getEmail());
             pstmt.setString(3, s.getPassword());
-            pstmt.setString(4, s.getMajor());
-            pstmt.setDate(5, new java.sql.Date(s.getDateOfBirth().getTime()));
-            pstmt.setString(6, s.getCvFileName());
-            pstmt.setBytes(7, s.getCvDocument());
+            pstmt.setString(4, s.getUniversity());
+            pstmt.setString(5, s.getMajor());
+            pstmt.setDate(6, new java.sql.Date(s.getDateOfBirth().getTime()));
+            pstmt.setString(7, s.getCvFileName());
+            pstmt.setBytes(8, s.getCvDocument());
 
             pstmt.executeUpdate();
 

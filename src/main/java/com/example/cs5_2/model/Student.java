@@ -1,11 +1,14 @@
 package com.example.cs5_2.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
 public class Student extends User implements Serializable {
     private String major;
     private String university;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     private String cvFileName;
     private byte[] cvDocument;
