@@ -76,6 +76,34 @@ public class StudentService {
         studentDB.uploadcv(studentemail, fileName, cvBytes);
     }
 
+    public Student loginStudent(String email, String password) {
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        try {
+            StudentDB studentDB = new StudentDB();
+            Student student = studentDB.getStudentByEmail(email);
+
+            if (student == null) {
+                return null; // Invalid email
+            }
+
+            // Verify password matches
+            if (!student.getPassword().equals(password)) {
+                return null; // Invalid password
+            }
+
+            return student; // Successful login
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     //public Internship browseinternships(Internship internship){}
     //public void applytointernship(Internship internship){}
     //public void trackapplication(Internship insternship){}
