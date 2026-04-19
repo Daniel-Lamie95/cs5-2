@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="./css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
     <nav class="navbar navbar-theme" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-             <img src="./images/main_logo.jpeg" alt="Logo" width="50" height="44" class="d-inline-block align-text-top">
+             <img src="./images/main_logo.jpeg" th:src="@{/images/main_logo.jpeg}" alt="Logo" width="50" height="44" class="d-inline-block align-text-top">
                 <span class="brand-text">Launchpad</span>
             </a>
             <div class="navbar-links ms-auto">
-                <a href="./student-home.html" class="nav-link-custom">Home</a>
-                <a href="./student_profile.html" class="nav-link-custom">Profile</a>
+                <a href="/student-home" th:href="@{/student-home}" class="nav-link-custom">Home</a>
+                <a href="/student_profile" th:href="@{/student_profile}" class="nav-link-custom">Profile</a>
             </div>
         </div>
 
@@ -36,11 +36,12 @@
                     <div class="profile-card h-100 text-center">
                         <img
                             src="./images/Screenshot%202026-03-23%20192924.png"
+                            th:src="@{/images/Screenshot 2026-03-23 192924.png}"
                             alt="Student profile photo"
                             class="student-photo mb-3"
                         >
-                        <h2 class="student-name">Lloyd Garmadon</h2>
-                        <p class="student-role mb-0">SpinJitsu Master</p>
+                        <h2 class="student-name" th:text="${student != null ? student.name : 'Student Name'}">Student Name</h2>
+                        <p class="student-role mb-0" th:text="${student != null ? student.major : 'Major'}">Major</p>
                     </div>
                 </div>
 
@@ -51,20 +52,24 @@
                             <table class="table align-middle profile-table mb-0">
                                 <tbody>
                                     <tr>
-                                        <th scope="row">First Name</th>
-                                        <td>Lloyd</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Last Name</th>
-                                        <td>Garmadon</td>
+                                        <th scope="row">Name</th>
+                                        <td th:text="${student != null ? student.name : 'N/A'}">N/A</td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Email</th>
-                                        <td><a href="mailto:lloyd.garmadon@student.aast.edu">Lloyd.garmadon@student.aast.edu</a></td>
+                                        <td>
+                                            <a href="#"
+                                               th:href="${student != null ? 'mailto:' + student.email : '#'}"
+                                               th:text="${student != null ? student.email : 'N/A'}">N/A</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">University</th>
+                                        <td th:text="${student != null ? student.university : 'N/A'}">N/A</td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Date of Birth</th>
-                                        <td>14 March 2004</td>
+                                        <td th:text="${student != null && student.dateOfBirth != null ? #dates.format(student.dateOfBirth, 'dd MMMM yyyy') : 'N/A'}">N/A</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -102,6 +107,6 @@
         </div>
     </main>
 
-    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

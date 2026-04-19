@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class StudentController {
-    private StudentService studentService;
+    private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
@@ -17,7 +17,12 @@ public class StudentController {
 
     @GetMapping("/register")
     public String registerPage() {
-        return "register";
+        return "student_register";
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
     }
 
     @PostMapping("/register")
@@ -28,10 +33,10 @@ public class StudentController {
             return "login"; // Redirect to login page
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "register"; // Stay on register page
+            return "student_register"; // Stay on register page
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed: " + e.getMessage());
-            return "register";
+            return "student_register";
         }
     }
 
@@ -50,7 +55,7 @@ public class StudentController {
 
             // Store student in session
             session.setAttribute("user", student);
-            return "dashboard"; // Redirect to dashboard/main page
+            return "redirect:/student-home";
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -58,10 +63,29 @@ public class StudentController {
         }
     }
 
+    @GetMapping("/student-home")
+    public String studentHome(HttpSession session) {
+        if (!(session.getAttribute("user") instanceof Student)) {
+            return "redirect:/login";
+        }
+        return "student-home";
+    }
+
+    @GetMapping("/student_profile")
+    public String studentProfile(HttpSession session, Model model) {
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("student", student);
+        return "student_profile";
+    }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/";
+        return "redirect:/login";
     }
 
     @PostMapping("/update")
@@ -71,10 +95,10 @@ public class StudentController {
         try {
             Student student = studentService.updateStudent(email, updated);
             model.addAttribute("message", "Profile updated successfully!");
-            return "redirect:/profile";
+            return "redirect:/student_profile";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            return "profile";
+            return "student_profile";
         }
     }
 }

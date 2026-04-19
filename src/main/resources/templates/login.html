@@ -1,5 +1,5 @@
 <!DOCTYPE >
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +13,10 @@
         <h1>Login</h1>
         <p>Please enter your information</p>
 
-       
+
         <form action="login" method="post">
 
-            
+
             <label for="name">Name:</label><br/>
             <input type="text" id="name" name="name" required><br/>
 
@@ -26,7 +26,7 @@
             <label for="password">Password:</label><br/>
             <input type="password" id="password" name="password" required><br/>
 
-           
+
             <p>Select Role:</p>
 
             <input type="radio" id="student" name="role" value="student" required>
