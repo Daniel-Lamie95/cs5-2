@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Beginner CV Tool</title></head>
+<body>
+    <h1>Simple CV Builder</h1>
+    <form th:action="@{/download}" th:object="${userCV}" method="post">
+        <div>
+            <label>Name:</label> <input type="text" th:field="*{name}">
+            <label>Title/Headline:</label> <input type="text" th:field="*{jobTitle}" placeholder="e.g. Student / Aspiring Designer">
+        </div>
+        <div>
+            <label>Email:</label> <input type="email" th:field="*{email}">
+            <label>Location:</label> <input type="text" th:field="*{location}">
+        </div>
+
+        <hr>
+        <h3>Experience</h3>
+        <p><i>(Include internships, clubs, volunteering, or projects)</i></p>
+        <div th:each="exp, stat : *{experiences}">
+            <label>Title:</label> <input type="text" th:field="*{experiences[__${stat.index}__].title}">
+            <label>Org/Place:</label> <input type="text" th:field="*{experiences[__${stat.index}__].organization}"><br>
+            <textarea th:field="*{experiences[__${stat.index}__].description}" placeholder="Describe what you did..." rows="2" cols="60"></textarea>
+            <br><br>
+        </div>
+
+        <hr>
+        <h3>Education & Skills</h3>
+        <label>Education:</label><br>
+        <textarea th:field="*{education}" placeholder="Degree, School, Graduation Date"></textarea><br>
+        <label>Skills:</label><br>
+        <textarea th:field="*{skills}" placeholder="Java, Photoshop, Teamwork..."></textarea><br>
+        <label>Certifications:</label><br>
+        <textarea th:field="*{certifications}"></textarea>
+
+        <br><br>
+        <button type="submit">Download My CV</button>
+    </form>
+</body>
+</html>
