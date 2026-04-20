@@ -13,6 +13,9 @@ public class StudentDB implements Serializable {
     public StudentDB() {
         loadDriver();
         createStudentsTable();
+        ensurePhoneNumColumn();
+        ensureLocationColumn();
+        ensureProfilePhotoColumns();
     }
 
     private void loadDriver() {
@@ -32,9 +35,13 @@ public class StudentDB implements Serializable {
                 "password VARCHAR(255) NOT NULL," +
                 "major VARCHAR(255) NOT NULL," +
                 "university VARCHAR(255) NOT NULL," +
+                "phone_num VARCHAR(30)," +
+                "location VARCHAR(255)," +
                 "date_of_birth DATE NOT NULL," +
                 "cv_file_name VARCHAR(255)," +
-                "cv_document BLOB" +
+                "cv_document BLOB," +
+                "profile_photo_content_type VARCHAR(100)," +
+                "profile_photo BLOB" +
                 ")";
 
         try (Connection con = DriverManager.getConnection(constr);
@@ -45,13 +52,66 @@ public class StudentDB implements Serializable {
         }
     }
 
+    private void ensureLocationColumn() {
+        try (Connection con = DriverManager.getConnection(constr)) {
+            if (!hasColumn(con, "students", "location")) {
+                try (Statement stmt = con.createStatement()) {
+                    stmt.executeUpdate("ALTER TABLE students ADD COLUMN location VARCHAR(255)");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void ensurePhoneNumColumn() {
+        try (Connection con = DriverManager.getConnection(constr)) {
+            if (!hasColumn(con, "students", "phone_num")) {
+                try (Statement stmt = con.createStatement()) {
+                    stmt.executeUpdate("ALTER TABLE students ADD COLUMN phone_num VARCHAR(30)");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void ensureProfilePhotoColumns() {
+        try (Connection con = DriverManager.getConnection(constr)) {
+            if (!hasColumn(con, "students", "profile_photo_content_type")) {
+                try (Statement stmt = con.createStatement()) {
+                    stmt.executeUpdate("ALTER TABLE students ADD COLUMN profile_photo_content_type VARCHAR(100)");
+                }
+            }
+            if (!hasColumn(con, "students", "profile_photo")) {
+                try (Statement stmt = con.createStatement()) {
+                    stmt.executeUpdate("ALTER TABLE students ADD COLUMN profile_photo BLOB");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean hasColumn(Connection con, String tableName, String columnName) throws SQLException {
+        DatabaseMetaData metaData = con.getMetaData();
+        try (ResultSet rs = metaData.getColumns(null, null, tableName, columnName)) {
+            if (rs.next()) {
+                return true;
+            }
+        }
+        try (ResultSet rs = metaData.getColumns(null, null, tableName.toUpperCase(), columnName.toUpperCase())) {
+            return rs.next();
+        }
+    }
+
     public int insertStudent(Student s) {
         Connection con = null;
 
         try {
             con = DriverManager.getConnection(constr);
             String insertstudent = "INSERT INTO students (name, email, password, university, major, " +
-                    "date_of_birth, cv_file_name, cv_document) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "phone_num, location, date_of_birth, cv_file_name, cv_document, profile_photo_content_type, profile_photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement pstmt = con.prepareStatement(insertstudent, Statement.RETURN_GENERATED_KEYS);
 
@@ -60,9 +120,13 @@ public class StudentDB implements Serializable {
             pstmt.setString(3, s.getPassword());
             pstmt.setString(4, s.getUniversity());
             pstmt.setString(5, s.getMajor());
-            pstmt.setDate(6, new java.sql.Date(s.getDateOfBirth().getTime()));
-            pstmt.setString(7, s.getCvFileName());
-            pstmt.setBytes(8, s.getCvDocument());
+            pstmt.setString(6, s.getPhoneNum());
+            pstmt.setString(7, s.getLocation());
+            pstmt.setDate(8, new java.sql.Date(s.getDateOfBirth().getTime()));
+            pstmt.setString(9, s.getCvFileName());
+            pstmt.setBytes(10, s.getCvDocument());
+            pstmt.setString(11, s.getProfilePhotoContentType());
+            pstmt.setBytes(12, s.getProfilePhoto());
 
             pstmt.executeUpdate();
 
@@ -108,9 +172,15 @@ public class StudentDB implements Serializable {
                 String password = rs.getString("password");
                 String major = rs.getString("major");
                 String uni = rs.getString("university");
+                String phoneNum = rs.getString("phone_num");
+                String location = rs.getString("location");
                 Date dateOfBirth = rs.getDate("date_of_birth");
 
                 Student s = new Student(id, name, email, password, major, uni, dateOfBirth);
+                s.setPhoneNum(phoneNum);
+                s.setLocation(location);
+                s.setProfilePhotoContentType(rs.getString("profile_photo_content_type"));
+                s.setProfilePhoto(rs.getBytes("profile_photo"));
                 students.add(s);
 
             }
@@ -166,9 +236,15 @@ public class StudentDB implements Serializable {
                 String password = rs.getString("password");
                 String major = rs.getString("major");
                 String uni = rs.getString("university");
+                String phoneNum = rs.getString("phone_num");
+                String location = rs.getString("location");
                 Date dateOfBirth = rs.getDate("date_of_birth");
 
                 student = new Student(id, name, email, password, major, uni, dateOfBirth);
+                student.setPhoneNum(phoneNum);
+                student.setLocation(location);
+                student.setProfilePhotoContentType(rs.getString("profile_photo_content_type"));
+                student.setProfilePhoto(rs.getBytes("profile_photo"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -196,17 +272,25 @@ public class StudentDB implements Serializable {
             student.setPassword(updated.getPassword());
             student.setMajor(updated.getMajor());
             student.setUniversity(updated.getUniversity());
+            student.setPhoneNum(updated.getPhoneNum());
+            student.setLocation(updated.getLocation());
             student.setDateOfBirth(updated.getDateOfBirth());
+            student.setProfilePhotoContentType(updated.getProfilePhotoContentType());
+            student.setProfilePhoto(updated.getProfilePhoto());
 
-            String update = "UPDATE students SET name = ?, email = ?, password = ?, major = ?, university = ?, date_of_birth = ? WHERE email = ?";
+            String update = "UPDATE students SET name = ?, email = ?, password = ?, major = ?, university = ?, phone_num = ?, location = ?, date_of_birth = ?, profile_photo_content_type = ?, profile_photo = ? WHERE email = ?";
             PreparedStatement pstmt = con.prepareStatement(update);
             pstmt.setString(1, updated.getName());
             pstmt.setString(2, updated.getEmail());
             pstmt.setString(3, updated.getPassword());
             pstmt.setString(4, updated.getMajor());
             pstmt.setString(5, updated.getUniversity());
-            pstmt.setDate(6, new java.sql.Date(updated.getDateOfBirth().getTime()));
-            pstmt.setString(7, email);
+            pstmt.setString(6, updated.getPhoneNum());
+            pstmt.setString(7, updated.getLocation());
+            pstmt.setDate(8, new java.sql.Date(updated.getDateOfBirth().getTime()));
+            pstmt.setString(9, updated.getProfilePhotoContentType());
+            pstmt.setBytes(10, updated.getProfilePhoto());
+            pstmt.setString(11, email);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -255,6 +339,79 @@ public class StudentDB implements Serializable {
             pstmt.setBytes(2, cvBytes);
             pstmt.setInt(3, studentemail);
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(constr);
+            String updatePhoto = "UPDATE students SET profile_photo_content_type = ?, profile_photo = ? WHERE id = ?";
+            PreparedStatement pstmt = con.prepareStatement(updatePhoto);
+            pstmt.setString(1, contentType);
+            pstmt.setBytes(2, photoBytes);
+            pstmt.setInt(3, studentId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public byte[] getProfilePhoto(int studentId) {
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(constr);
+            String query = "SELECT profile_photo FROM students WHERE id = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, studentId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBytes("profile_photo");
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public String getProfilePhotoContentType(int studentId) {
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(constr);
+            String query = "SELECT profile_photo_content_type FROM students WHERE id = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, studentId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("profile_photo_content_type");
+            }
+            return null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

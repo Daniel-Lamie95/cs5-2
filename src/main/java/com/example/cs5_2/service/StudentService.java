@@ -76,6 +76,24 @@ public class StudentService {
         studentDB.uploadcv(studentemail, fileName, cvBytes);
     }
 
+    public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
+        if (photoBytes == null || photoBytes.length == 0) {
+            throw new IllegalArgumentException("Profile photo cannot be empty");
+        }
+        StudentDB studentDB = new StudentDB();
+        studentDB.uploadProfilePhoto(studentId, contentType, photoBytes);
+    }
+
+    public byte[] getProfilePhoto(int studentId) {
+        StudentDB studentDB = new StudentDB();
+        return studentDB.getProfilePhoto(studentId);
+    }
+
+    public String getProfilePhotoContentType(int studentId) {
+        StudentDB studentDB = new StudentDB();
+        return studentDB.getProfilePhotoContentType(studentId);
+    }
+
     public Student loginStudent(String email, String password) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");

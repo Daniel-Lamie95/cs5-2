@@ -8,10 +8,14 @@ import java.util.Date;
 public class Student extends User implements Serializable {
     private String major;
     private String university;
+    private String phoneNum;
+    private String location;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     private String cvFileName;
     private byte[] cvDocument;
+    private String profilePhotoContentType;
+    private byte[] profilePhoto;
 
     public Student() {
     }
@@ -37,6 +41,22 @@ public class Student extends User implements Serializable {
 
     public void setUniversity(String university) {
         this.university = university;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Date getDateOfBirth() {
@@ -69,6 +89,27 @@ public class Student extends User implements Serializable {
         this.cvDocument = cvDocument;
     }
 
+    public String getProfilePhotoContentType() {
+        return profilePhotoContentType;
+    }
+
+    public void setProfilePhotoContentType(String profilePhotoContentType) {
+        this.profilePhotoContentType = profilePhotoContentType;
+    }
+
+    public byte[] getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(byte[] profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhotoContentType, byte[] profilePhoto) {
+        this.profilePhotoContentType = profilePhotoContentType;
+        this.profilePhoto = profilePhoto;
+    }
+
     //public Internship browseinternships(Internship internship){}
     //public void applytointernship(Internship internship){}
     //public void trackapplication(Internship insternship){}
@@ -80,6 +121,8 @@ public class Student extends User implements Serializable {
                 "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", email='" + getEmail() + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", location='" + location + '\'' +
                 ", major='" + major + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 '}';

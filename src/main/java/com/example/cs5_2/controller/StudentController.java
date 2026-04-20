@@ -4,8 +4,14 @@ import com.example.cs5_2.model.Student;
 
 import com.example.cs5_2.service.StudentService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 @Controller
 public class StudentController {
@@ -17,7 +23,7 @@ public class StudentController {
 
     @GetMapping("/register")
     public String registerPage() {
-        return "student_register";
+        return "student-register";
     }
 
     @GetMapping("/login")
@@ -33,10 +39,10 @@ public class StudentController {
             return "login"; // Redirect to login page
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "student_register"; // Stay on register page
+            return "student-register"; // Stay on register page
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed: " + e.getMessage());
-            return "student_register";
+            return "student-register";
         }
     }
 
@@ -71,7 +77,7 @@ public class StudentController {
         return "student-home";
     }
 
-    @GetMapping("/student_profile")
+    @GetMapping("/student-profile")
     public String studentProfile(HttpSession session, Model model) {
         Object user = session.getAttribute("user");
         if (!(user instanceof Student student)) {
@@ -79,7 +85,56 @@ public class StudentController {
         }
 
         model.addAttribute("student", student);
-        return "student_profile";
+        return "student-profile";
+    }
+
+    @PostMapping("/profile-photo")
+    public String uploadProfilePhoto(@RequestParam("photo") MultipartFile photo,
+                                     HttpSession session,
+                                     RedirectAttributes redirectAttributes) {
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
+
+        if (photo.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Please select an image.");
+            return "redirect:/student-profile";
+        }
+
+        try {
+            studentService.uploadProfilePhoto(student.getId(), photo.getContentType(), photo.getBytes());
+            student.setProfilePhotoContentType(photo.getContentType());
+            session.setAttribute("user", student);
+            redirectAttributes.addFlashAttribute("message", "Profile photo updated.");
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("error", "Could not read uploaded file.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/student-profile";
+    }
+
+    @GetMapping("/student/{id}/photo")
+    @ResponseBody
+    public ResponseEntity<byte[]> getStudentProfilePhoto(@PathVariable int id) {
+        byte[] photo = studentService.getProfilePhoto(id);
+        if (photo == null || photo.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String contentType = studentService.getProfilePhotoContentType(id);
+        MediaType mediaType;
+        try {
+            mediaType = (contentType == null || contentType.isBlank())
+                    ? MediaType.IMAGE_JPEG
+                    : MediaType.parseMediaType(contentType);
+        } catch (Exception e) {
+            mediaType = MediaType.IMAGE_JPEG;
+        }
+
+        return ResponseEntity.ok().contentType(mediaType).body(photo);
     }
 
     @GetMapping("/logout")
@@ -95,10 +150,10 @@ public class StudentController {
         try {
             Student student = studentService.updateStudent(email, updated);
             model.addAttribute("message", "Profile updated successfully!");
-            return "redirect:/student_profile";
+            return "redirect:/student-profile";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            return "student_profile";
+            return "student-profile";
         }
     }
 }
