@@ -88,6 +88,19 @@ public class StudentController {
         return "student-profile";
     }
 
+    @GetMapping("/student-dashboard")
+    public String studentDashboard(HttpSession session, Model model) {
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("student", student);
+        return "student-dashboard";
+    }
+
+
+
     @PostMapping("/profile-photo")
     public String uploadProfilePhoto(@RequestParam("photo") MultipartFile photo,
                                      HttpSession session,

@@ -29,7 +29,11 @@
 
             <div class="company-profile-left">
                 <div class="company-profile-image">
-                    <img src="./images/Screenshot 2026-03-23 192924.png" alt="Student profile">
+                    <img
+                            src="./images/Screenshot%202026-03-23%20192924.png"
+                            th:src="@{/student/{id}/photo(id=${student.id})}"
+                            alt="Student profile photo"
+                    >
                 </div>
                 <h2>Daniel Adel</h2>
             </div>
