@@ -71,10 +71,6 @@ public class StudentService {
 
     }
 
-    public void uploadCv(int studentemail, String fileName, byte[] cvBytes) {
-        StudentDB studentDB = new StudentDB();
-        studentDB.uploadcv(studentemail, fileName, cvBytes);
-    }
 
     public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
         if (photoBytes == null || photoBytes.length == 0) {

@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuildCV {
+    private int id;
+    private int studentId;
     private String name;
     private String jobTitle;
     private String email;
@@ -48,4 +50,8 @@ public class BuildCV {
     public void setCertifications(String certifications) { this.certifications = certifications; }
     public List<ExperienceEntry> getExperiences() { return experiences; }
     public void setExperiences(List<ExperienceEntry> experiences) { this.experiences = experiences; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public int getStudentId() { return studentId; }
+    public void setStudentId(int studentId) { this.studentId = studentId; }
 }

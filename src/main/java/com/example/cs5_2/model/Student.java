@@ -12,10 +12,10 @@ public class Student extends User implements Serializable {
     private String location;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
-    private String cvFileName;
-    private byte[] cvDocument;
     private String profilePhotoContentType;
     private byte[] profilePhoto;
+    private BuildCV buildCV;
+
 
     public Student() {
     }
@@ -67,27 +67,6 @@ public class Student extends User implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getCvFileName() {
-        return cvFileName;
-    }
-
-    public void setCvFileName(String cvFileName) {
-        this.cvFileName = cvFileName;
-    }
-
-    public byte[] getCvDocument() {
-        return cvDocument;
-    }
-
-    public void setCvDocument(byte[] cvDocument) {
-        this.cvDocument = cvDocument;
-    }
-
-    // Convenience method to set both CV fields in one call.
-    public void setCv(String cvFileName, byte[] cvDocument) {
-        this.cvFileName = cvFileName;
-        this.cvDocument = cvDocument;
-    }
 
     public String getProfilePhotoContentType() {
         return profilePhotoContentType;
@@ -108,6 +87,14 @@ public class Student extends User implements Serializable {
     public void setProfilePhoto(String profilePhotoContentType, byte[] profilePhoto) {
         this.profilePhotoContentType = profilePhotoContentType;
         this.profilePhoto = profilePhoto;
+    }
+
+    public BuildCV getBuildCV() {
+        return buildCV;
+    }
+
+    public void setBuildCV(BuildCV buildCV) {
+        this.buildCV = buildCV;
     }
 
     //public Internship browseinternships(Internship internship){}

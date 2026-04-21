@@ -38,8 +38,6 @@ public class StudentDB implements Serializable {
                 "phone_num VARCHAR(30)," +
                 "location VARCHAR(255)," +
                 "date_of_birth DATE NOT NULL," +
-                "cv_file_name VARCHAR(255)," +
-                "cv_document BLOB," +
                 "profile_photo_content_type VARCHAR(100)," +
                 "profile_photo BLOB" +
                 ")";
@@ -111,7 +109,7 @@ public class StudentDB implements Serializable {
         try {
             con = DriverManager.getConnection(constr);
             String insertstudent = "INSERT INTO students (name, email, password, university, major, " +
-                    "phone_num, location, date_of_birth, cv_file_name, cv_document, profile_photo_content_type, profile_photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "phone_num, location, date_of_birth, profile_photo_content_type, profile_photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement pstmt = con.prepareStatement(insertstudent, Statement.RETURN_GENERATED_KEYS);
 
@@ -123,10 +121,8 @@ public class StudentDB implements Serializable {
             pstmt.setString(6, s.getPhoneNum());
             pstmt.setString(7, s.getLocation());
             pstmt.setDate(8, new java.sql.Date(s.getDateOfBirth().getTime()));
-            pstmt.setString(9, s.getCvFileName());
-            pstmt.setBytes(10, s.getCvDocument());
-            pstmt.setString(11, s.getProfilePhotoContentType());
-            pstmt.setBytes(12, s.getProfilePhoto());
+            pstmt.setString(9, s.getProfilePhotoContentType());
+            pstmt.setBytes(10, s.getProfilePhoto());
 
             pstmt.executeUpdate();
 
@@ -196,29 +192,6 @@ public class StudentDB implements Serializable {
             }
         }
         return students;
-    }
-
-    public void addOrUpdateStudentCv(int studentId, String cvFileName, byte[] cvDocument) {
-        if (cvDocument == null || cvDocument.length == 0) {
-            throw new IllegalArgumentException("CV document cannot be empty");
-        }
-
-        String updateCv = "UPDATE students SET cv_file_name = ?, cv_document = ? WHERE id = ?";
-
-        try (Connection con = DriverManager.getConnection(constr);
-             PreparedStatement pstmt = con.prepareStatement(updateCv)) {
-
-            pstmt.setString(1, cvFileName);
-            pstmt.setBytes(2, cvDocument);
-            pstmt.setInt(3, studentId);
-
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows == 0) {
-                throw new IllegalArgumentException("No student found with ID: " + studentId);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Student getStudentByEmail(String email) {
@@ -327,29 +300,6 @@ public class StudentDB implements Serializable {
             }
         }
 
-    }
-
-    public void uploadcv(int studentemail, String fileName, byte[] cvBytes) {
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(constr);
-            String updateCv = "UPDATE students SET cv_file_name = ?, cv_document = ? WHERE id = ?";
-            PreparedStatement pstmt = con.prepareStatement(updateCv);
-            pstmt.setString(1, fileName);
-            pstmt.setBytes(2, cvBytes);
-            pstmt.setInt(3, studentemail);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
     public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
