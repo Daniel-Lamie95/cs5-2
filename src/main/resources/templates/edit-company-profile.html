@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Company Profile</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
 </head>
 <body class="company-profile-page">
 
@@ -12,10 +12,10 @@
         <div class="company-profile-logo">🚀 Launchpad</div>
 
         <ul class="company-profile-links">
-            <li><a href="homepage.html">Home</a></li>
-            <li><a href="company-dashboard.html">Dashboard</a></li>
-            <li><a href="company-profile.html">Profile</a></li>
-            <li><a href="login.html">Logout</a></li>
+            <li><a href="/" th:href="@{/}">Home</a></li>
+            <li><a href="/company-dashboard.html" th:href="@{/company-dashboard.html}">Dashboard</a></li>
+            <li><a href="/company-profile.html" th:href="@{/company-profile.html}">Profile</a></li>
+            <li><a href="/logout" th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
@@ -30,7 +30,7 @@
 
             <div class="company-profile-left">
                 <div class="company-profile-image">
-                    <img src="images/main_logo.jpeg" alt="Company Logo">
+                    <img src="/images/main_logo.jpeg" th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
                 </div>
                 <h2>Tech Company</h2>
                 <span>Software Development</span>
@@ -39,7 +39,7 @@
             <div class="company-profile-right">
                 <h2>Edit Information</h2>
 
-                <form>
+                <form th:action="@{/companies/update}" method="post">
                     <div class="profile-row">
                         <label class="profile-label" for="companyName">Company Name</label>
                         <input type="text" id="companyName" name="companyName" value="Tech Company">
@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="company-profile-buttons">
-                        <a href="company-profile.html" class="profile-btn">Cancel</a>
+                        <a href="/company-profile.html" th:href="@{/company-profile.html}" class="profile-btn">Cancel</a>
                         <button type="submit" class="profile-btn">Save Changes</button>
                     </div>
                 </form>

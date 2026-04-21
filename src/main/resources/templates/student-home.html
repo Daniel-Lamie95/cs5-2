@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
 </head>
 <body>
     <nav class="navbar navbar-theme" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-             <img src="./images/main_logo.jpeg" alt="Logo" width="50" height="44" class="d-inline-block align-text-top">
+            <a class="navbar-brand" href="/" th:href="@{/}">
+             <img src="/images/main_logo.jpeg" th:src="@{/images/main_logo.jpeg}" alt="Logo" width="50" height="44" class="d-inline-block align-text-top">
                 <span class="brand-text">Launchpad</span>
             </a>
             <div class="navbar-links ms-auto">
-                <a href="./student_home.html" class="nav-link-custom">Home</a>
-                <a href="./student_profile.html" class="nav-link-custom">Profile</a>
+                <a href="/student-home" th:href="@{/student-home}" class="nav-link-custom">Home</a>
+                <a href="/student-profile" th:href="@{/student-profile}" class="nav-link-custom">Profile</a>
             </div>
         </div>
     </nav>
@@ -25,10 +25,10 @@
         <div id="carouselExample" class="carousel slide">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="./images/ad1.png" class="d-block w-100" alt="...">
+                    <img src="/images/ad1.png" th:src="@{/images/ad1.png}" class="d-block w-100" alt="...">
                 </div>
                 <div class="carousel-item">
-                    <img src="./images/ad2.png" class="d-block w-100" alt="...">
+                    <img src="/images/ad2.png" th:src="@{/images/ad2.png}" class="d-block w-100" alt="...">
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -80,7 +80,7 @@
         </div>
     </main>
 
-    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script>
         document.querySelectorAll('.apply-btn').forEach(function (button) {
             button.addEventListener('click', function () {

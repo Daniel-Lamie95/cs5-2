@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Launchpad - Sign Up</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
 </head>
 <body class="auth-page">
 
@@ -12,9 +12,9 @@
         <div class="logo">🚀 Launchpad</div>
 
         <ul class="nav-links">
-            <li><a href="homepage.html">Home</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="/" th:href="@{/}">Home</a></li>
+            <li><a href="/about.html" th:href="@{/about.html}">About Us</a></li>
+            <li><a href="/contact.html" th:href="@{/contact.html}">Contact</a></li>
         </ul>
     </nav>
 
@@ -24,13 +24,13 @@
             <p>
                  Launch your journey toward internship growth and real opportunities. Discover hands-on experiences, connect with real companies, and turn your potential into powerful results. 
             </p>
-            <a href="login.html" class="main-btn">Already Have an Account?</a>
+            <a href="/login" th:href="@{/login}" class="main-btn">Already Have an Account?</a>
         </div>
 
         <div class="form-box">
             <h2>Sign Up</h2>
 
-            <form action="signup" method="post">
+            <form action="/signup" th:action="@{/signup}" method="post">
                 <input type="text" name="name" placeholder="Enter Name" required>
                 <input type="email" name="email" placeholder="Enter Email" required>
                 <input type="password" name="password" placeholder="Enter Password" required>
@@ -61,7 +61,7 @@
 
             <p class="switch-text">
                 Already have an account?
-                <a href="login.html">Login</a>
+                <a href="/login" th:href="@{/login}">Login</a>
             </p>
         </div>
     </section>

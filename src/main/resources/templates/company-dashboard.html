@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Dashboard - Launchpad</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
 </head>
 <body class="company-dashboard-page">
 
@@ -12,9 +12,9 @@
         <div class="company-dashboard-logo">🚀 Launchpad</div>
 
         <ul class="company-dashboard-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="company-profile.html">Profile</a></li>
-            <li><a href="login.html">Logout</a></li>
+            <li><a href="/" th:href="@{/}">Home</a></li>
+            <li><a href="/company-profile.html" th:href="@{/company-profile.html}">Profile</a></li>
+            <li><a href="/logout" th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
@@ -30,7 +30,7 @@
         <section class="company-dashboard-top">
             <div class="company-dashboard-profile-card">
                 <div class="company-dashboard-avatar">
-                    <img src="images/main_logo.jpeg" alt="Company Logo">
+                    <img src="/images/main_logo.jpeg" th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
                 </div>
                 <h3>Tech Company</h3>
                 <span>Software Development</span>
@@ -91,17 +91,17 @@
             <div class="company-dashboard-actions-grid">
                 
 
-                <a href="post-internship.html" class="dashboard-action-card">
+                <a href="/post-internship.html" th:href="@{/post-internship.html}" class="dashboard-action-card">
                     <h3>Post Internship</h3>
                     <p>Add a new internship opportunity</p>
                 </a>
 
-                <a href="manage-internships.html" class="dashboard-action-card">
+                <a href="/manage-internships.html" th:href="@{/manage-internships.html}" class="dashboard-action-card">
                     <h3>Manage Internships</h3>
                     <p>View and edit posted internships</p>
                 </a>
 
-                <a href="view-applicants.html" class="dashboard-action-card">
+                <a href="/view-applicants.html" th:href="@{/view-applicants.html}" class="dashboard-action-card">
                     <h3>View Applicants</h3>
                     <p>Check students applications</p>
                 </a>

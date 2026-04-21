@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>profile</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
 </head>
 <body class="company-profile-page">
 
@@ -12,9 +12,9 @@
         <div class="company-profile-logo">🚀 Launchpad</div>
 
         <ul class="company-profile-links">
-            <li><a href="student-home.html">Home</a></li>
-            <li><a href="student-dashboard.html">Dashboard</a></li>
-            <li><a href="login.html">Logout</a></li>
+            <li><a href="/student-home" th:href="@{/student-home}">Home</a></li>
+            <li><a href="/student-dashboard" th:href="@{/student-dashboard}">Dashboard</a></li>
+            <li><a href="/logout" th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
@@ -67,8 +67,8 @@
                 </div>
 
                 <div class="company-profile-buttons">
-                    <a href="edit-student-profile.html" class="profile-btn">Edit Profile</a>
-                    <a href="student-dashboard.html" class="profile-btn">Back to Dashboard</a>
+                    <a href="/edit-student-profile.html" th:href="@{/edit-student-profile.html}" class="profile-btn">Edit Profile</a>
+                    <a href="/student-dashboard" th:href="@{/student-dashboard}" class="profile-btn">Back to Dashboard</a>
                 </div>
             </div>
 
