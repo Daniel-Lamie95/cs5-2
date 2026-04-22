@@ -2,6 +2,7 @@ package com.example.cs5_2.controller;
 
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
+import com.example.cs5_2.model.User;
 import com.example.cs5_2.service.CompanyService;
 import com.example.cs5_2.service.InternshipService;
 import jakarta.servlet.http.HttpSession;
@@ -24,11 +25,9 @@ public class CompanyController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String name,@RequestParam String email,@RequestParam String password,
-                        HttpSession session,
-                        Model model) {
+    public String login(@ModelAttribute User u , HttpSession session, Model model) {
         try {
-            Company company = companyService.loginCompany(name, email, password);
+            Company company = companyService.loginCompany(u.getName(), u.getEmail(), u.getPassword());
             session.setAttribute("loggedCompany", company);
 
             if ("company".equalsIgnoreCase(company.getRole())) {
@@ -38,6 +37,7 @@ public class CompanyController {
             return "redirect:/login";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("user",u);
             return "company-login";
         }
     }
@@ -50,9 +50,7 @@ public class CompanyController {
     }
 
     @PostMapping("/signup")
-    public String signup(@ModelAttribute Company company,
-                         HttpSession session,
-                         Model model) {
+    public String signup(@ModelAttribute Company company, HttpSession session, Model model) {
         try {
             companyService.registerCompany(company);
 
