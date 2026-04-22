@@ -1,27 +1,71 @@
 package com.example.cs5_2.service;
 
 import com.example.cs5_2.model.Company;
-import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CompanyService {
 
     private final List<Company> companies = new ArrayList<>();
 
-    public Company addCompany(Company company) {
-        validateCompany(company);
-        checkDuplicateEmail(company.getEmail());
+    public String registerCompany(Company company) {
+        if (company == null) {
+            throw new IllegalArgumentException("Company data is required");
+        }
+
+        if (company.getName() == null || company.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
+        if (company.getEmail() == null || company.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+
+        if (company.getPassword() == null || company.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        if (findByEmail(company.getEmail()) != null) {
+            throw new IllegalArgumentException("Account already exists");
+        }
+
+        company.setRole("company");
         companies.add(company);
-        return company;
+
+        return "Company account created successfully";
     }
 
-    public List<Company> getAllCompanies() {
-        return companies;
+    public Company loginCompany(String name, String email, String password) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        for (Company company : companies) {
+            if (company.getName().equalsIgnoreCase(name)
+                    && company.getEmail().equalsIgnoreCase(email)
+                    && company.getPassword().equals(password)) {
+                return company;
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid login data");
     }
 
-    public Company getCompanyByEmail(String email) {
+    public Company findByEmail(String email) {
+        if (email == null) {
+            return null;
+        }
+
         for (Company company : companies) {
             if (company.getEmail().equalsIgnoreCase(email)) {
                 return company;
@@ -30,75 +74,99 @@ public class CompanyService {
         return null;
     }
 
-    public Company updateCompany(String email, Company updatedCompany) {
-        validateCompany(updatedCompany);
+    public String completeCompanyProfile(String email, Company profileData) {
+        Company company = findByEmail(email);
 
-        Company existingCompany = getCompanyByEmail(email);
-        if (existingCompany == null) {
-            throw new IllegalArgumentException("Company not found.");
+        if (company == null) {
+            throw new IllegalArgumentException("Company not found");
         }
 
-        existingCompany.setName(updatedCompany.getName());
-        existingCompany.setEmail(updatedCompany.getEmail());
-        existingCompany.setPassword(updatedCompany.getPassword());
-        existingCompany.setField(updatedCompany.getField());
-        existingCompany.setLocation(updatedCompany.getLocation());
-        existingCompany.setDescription(updatedCompany.getDescription());
+      //  validateProfileFields(profileData);
 
-        return existingCompany;
+        company.setIndustry(profileData.getIndustry());
+        company.setLocation(profileData.getLocation());
+        company.setWebsite(profileData.getWebsite());
+        company.setDescription(profileData.getDescription());
+
+        return "Company profile completed successfully";
     }
 
-    public void deleteCompany(String email) {
-        Company company = getCompanyByEmail(email);
+    public String editCompanyProfile(String email, Company updatedData) {
+        Company company = findByEmail(email);
+
         if (company == null) {
-            throw new IllegalArgumentException("Company not found.");
+            throw new IllegalArgumentException("Company not found");
         }
-        companies.remove(company);
+
+        if (updatedData.getName() == null || updatedData.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
+        //validateProfileFields(updatedData);
+
+        company.setName(updatedData.getName());
+        company.setIndustry(updatedData.getIndustry());
+        company.setLocation(updatedData.getLocation());
+        company.setWebsite(updatedData.getWebsite());
+        company.setDescription(updatedData.getDescription());
+
+        return "Company profile updated successfully";
     }
 
-    private void validateCompany(Company company) {
+    public List<Company> getAllCompanies() {
+        return companies;
+    }
+
+    /*private void validateProfileFields(Company company) {
         if (company == null) {
-            throw new IllegalArgumentException("Company data cannot be null.");
+            throw new IllegalArgumentException("Profile data is required");
         }
 
-        if (company.getName() == null || company.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Name is required.");
-        }
-
-        if (company.getEmail() == null || company.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required.");
-        }
-
-        if (!company.getEmail().contains("@")) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-
-        if (company.getPassword() == null || company.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password is required.");
-        }
-
-        if (company.getPassword().length() < 6) {
-            throw new IllegalArgumentException("Password must be at least 6 characters.");
-        }
-
-        if (company.getField() == null || company.getField().trim().isEmpty()) {
-            throw new IllegalArgumentException("Field is required.");
+        if (company.getIndustry() == null || company.getIndustry().trim().isEmpty()) {
+            throw new IllegalArgumentException("Industry is required");
         }
 
         if (company.getLocation() == null || company.getLocation().trim().isEmpty()) {
-            throw new IllegalArgumentException("Location is required.");
+            throw new IllegalArgumentException("Location is required");
+        }
+
+        if (company.getWebsite() == null || company.getWebsite().trim().isEmpty()) {
+            throw new IllegalArgumentException("Website is required");
         }
 
         if (company.getDescription() == null || company.getDescription().trim().isEmpty()) {
-            throw new IllegalArgumentException("Description is required.");
+            throw new IllegalArgumentException("Description is required");
         }
-    }
+    
+    
+   // private void validateRepresentative(Company rep) {
+        if (rep == null) {
+            throw new IllegalArgumentException("Representative object cannot be null");
+        }
 
-    private void checkDuplicateEmail(String email) {
-        for (Company company : companies) {
-            if (company.getEmail().equalsIgnoreCase(email)) {
-                throw new IllegalArgumentException("Email already exists.");
-            }
+        if (rep.getName() == null || rep.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
         }
-    }
+
+        if (rep.getEmail() == null || rep.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+
+        if (!rep.getEmail().contains("@")) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+
+        if (rep.getPassword() == null || rep.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        if (rep.getPassword().length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters");
+        }
+
+        if (rep.getPositionTitle() == null || rep.getPositionTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Position title is required");
+        }
+    }*/
+
 }
