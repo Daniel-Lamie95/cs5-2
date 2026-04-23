@@ -30,7 +30,8 @@ public class CompanyController {
             Company company = companyService.loginCompany(u.getName(), u.getEmail(), u.getPassword());
             session.setAttribute("loggedCompany", company);
 
-            if ("company".equalsIgnoreCase(company.getRole())) {
+            // User no longer has a role field; if login succeeded we redirect to dashboard
+            if (company != null) {
                 return "redirect:/company/dashboard";
             }
 
@@ -57,7 +58,8 @@ public class CompanyController {
             Company registeredCompany = companyService.findByEmail(company.getEmail());
             session.setAttribute("loggedCompany", registeredCompany);
 
-            if ("company".equalsIgnoreCase(registeredCompany.getRole())) {
+            // No role checks: if registration created an account, continue to complete-profile
+            if (registeredCompany != null) {
                 return "redirect:/company/complete-profile";
             }
 

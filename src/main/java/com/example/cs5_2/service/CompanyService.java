@@ -31,8 +31,6 @@ public class CompanyService {
             throw new IllegalArgumentException("Account already exists");
         }
 
-        company.setRole("company");
-        companies.add(company);
 
         return "Company account created successfully";
     }
