@@ -7,11 +7,12 @@
 
 <h2>📄 Create Application</h2>
 
-<form action="/application" method="post">
+<form  th:action="@{/application}" method="post">
+
 
     <label>ID:</label><br>
     <input type="number" name="applicationId" required><br><br>
-
+    
     <label>Student Name:</label><br>
     <input type="text" name="studentName" required><br><br>
 
@@ -43,13 +44,14 @@
         <td th:text="${app.internship.title}"></td>
 
         <td>
-            <form action="/applications/update" method="post">
+            <form  th:action="@{/application/update}" method="post">
                 <input type="hidden" name="id" th:value="${app.applicationId}">
 
                 <select name="status">
-                    <option>Pending</option>
-                    <option>Accepted</option>
-                    <option>Rejected</option>
+                    <option value="Pending" th:selected="${app.status == 'Pending'}">Pending</option>
+                    <option value="Accepted" th:selected="${app.status == 'Accepted'}">Accepted</option>
+                    <option value="Rejected" th:selected="${app.status == 'Rejected'}">Rejected</option>
+               
                 </select>
 
                 <button type="submit">Update</button>
