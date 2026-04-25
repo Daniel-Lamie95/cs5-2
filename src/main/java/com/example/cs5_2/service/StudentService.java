@@ -1,6 +1,5 @@
 package com.example.cs5_2.service;
 
-import com.example.cs5_2.model.BuildCV;
 import com.example.cs5_2.model.Student;
 import com.example.cs5_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -93,6 +92,33 @@ public class StudentService {
             throw new IllegalArgumentException("Invalid password");
         }
         return student;
+    }
+
+    public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
+        if (photoBytes == null || photoBytes.length == 0) {
+            throw new IllegalArgumentException("Profile photo cannot be empty");
+        }
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("Uploaded file must be an image");
+        }
+
+        Student student = studentRepo.findById((long) studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
+
+        student.setProfilePhoto(contentType, photoBytes);
+        studentRepo.save(student);
+    }
+
+    public byte[] getProfilePhoto(int studentId) {
+        Student student = studentRepo.findById((long) studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
+        return student.getProfilePhoto();
+    }
+
+    public String getProfilePhotoContentType(int studentId) {
+        Student student = studentRepo.findById((long) studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
+        return student.getProfilePhotoContentType();
     }
 
 }
