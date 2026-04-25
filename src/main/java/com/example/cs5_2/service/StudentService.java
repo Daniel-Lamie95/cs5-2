@@ -78,27 +78,6 @@ public class StudentService {
 
     }
 
-
-    public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
-        if (contentType == null || contentType.isEmpty()) {
-            throw new IllegalArgumentException("Content type is required");
-        }
-        if (photoBytes == null || photoBytes.length == 0) {
-            throw new IllegalArgumentException("Photo bytes cannot be null or empty");
-        }
-
-    }
-
-    public byte[] getProfilePhoto(int studentId) {
-        StudentDB studentDB = new StudentDB();
-        return studentDB.getProfilePhoto(studentId);
-    }
-
-    public String getProfilePhotoContentType(int studentId) {
-        StudentDB studentDB = new StudentDB();
-        return studentDB.getProfilePhotoContentType(studentId);
-    }
-
     public Student loginStudent(String email, String password) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
@@ -106,28 +85,14 @@ public class StudentService {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Password is required");
         }
-        try {
-            StudentDB studentDB = new StudentDB();
-            Student student = studentDB.getStudentByEmail(email);
-
-            if (student == null) {
-                return null; // Invalid email
-            }
-
-            // Verify password matches
-            if (!student.getPassword().equals(password)) {
-                return null; // Invalid password
-            }
-
-            return student; // Successful login
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        Student student = studentRepo.findByEmail(email);
+        if (student == null) {
+            throw new IllegalArgumentException("Student with email " + email + " not found");
         }
+        if (!student.getPassword().equals(password)) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+        return student;
     }
 
-
-
-    //public Internship browseinternships(Internship internship){}
-    //public void applytointernship(Internship internship){}
-    //public void trackapplication(Internship insternship){}
 }
