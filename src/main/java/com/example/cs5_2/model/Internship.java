@@ -1,9 +1,17 @@
 package com.example.cs5_2.model;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class Internship implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String title;
     private String companyName;
@@ -24,6 +32,9 @@ public class Internship implements Serializable {
         this.duration = duration;
         this.requirements = requirements;
     }
+
+    @ManyToMany(mappedBy = "appliedInternships")
+    private List<Student> students = new ArrayList<>();
     public String getTitle() {
         return title;
     }

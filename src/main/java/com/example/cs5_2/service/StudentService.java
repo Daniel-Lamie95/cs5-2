@@ -1,13 +1,20 @@
 package com.example.cs5_2.service;
 
+import com.example.cs5_2.model.BuildCV;
 import com.example.cs5_2.model.Student;
-import com.example.cs5_2.repository.StudentDB;
+import com.example.cs5_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class StudentService {
+    private final StudentRepository studentRepo;
+
+    public StudentService(StudentRepository studentRepo) {
+        this.studentRepo = studentRepo;
+    }
+    //private final BuildCVRepository buildCVRepo;
 
     public Student registerStudent(Student student){
         if (student == null){
@@ -19,35 +26,19 @@ public class StudentService {
         } else if (student.getPassword().length() < 8) {
             throw new IllegalArgumentException("Password length must be at least 8 characters");
         }else{
-            try{
-                StudentDB studentDB = new StudentDB();
-                studentDB.insertStudent(student);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+                studentRepo.save(student);
         return student;
+        }
     }
 
-    public List<Student> getAllStudents(){
-        try {
-            StudentDB studentDB = new StudentDB();
-            return studentDB.viewStudents();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public List<Student> getAllStudents() {
+            return studentRepo.findAll();
     }
 
     public Student getStudentByEmail(String email) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
-        }
-        try {
-            StudentDB studentDB = new StudentDB();
-            return studentDB.getStudentByEmail(email);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        }else return studentRepo.findByEmail(email);
     }
 
     public Student updateStudent(String email, Student updated) {
@@ -57,27 +48,45 @@ public class StudentService {
         if (updated == null) {
             throw new IllegalArgumentException("Updated student cannot be null");
         }
-        try {
-            StudentDB studentDB = new StudentDB();
-            return studentDB.updateStudent(email, updated);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+        Student existingStudent = studentRepo.findByEmail(email);
+        if (existingStudent == null) {
+            throw new IllegalArgumentException("Student with email " + email + " not found");
         }
+        // Update allowed fields
+        existingStudent.setName(updated.getName());
+        existingStudent.setPassword(updated.getPassword());
+        existingStudent.setMajor(updated.getMajor());
+        existingStudent.setUniversity(updated.getUniversity());
+        existingStudent.setPhoneNum(updated.getPhoneNum());
+        existingStudent.setLocation(updated.getLocation());
+        existingStudent.setDateOfBirth(updated.getDateOfBirth());
+        existingStudent.setBuildCV(updated.getBuildCV());
+
+        return studentRepo.save(existingStudent);
     }
 
     public void deleteStudent(String email) {
-        StudentDB studentDB = new StudentDB();
-        studentDB.deleteStudent(email);
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        Student existingStudent = studentRepo.findByEmail(email);
+        if (existingStudent == null) {
+            throw new IllegalArgumentException("Student with email " + email + " not found");
+        }
+        studentRepo.delete(existingStudent);
 
     }
 
 
     public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
-        if (photoBytes == null || photoBytes.length == 0) {
-            throw new IllegalArgumentException("Profile photo cannot be empty");
+        if (contentType == null || contentType.isEmpty()) {
+            throw new IllegalArgumentException("Content type is required");
         }
-        StudentDB studentDB = new StudentDB();
-        studentDB.uploadProfilePhoto(studentId, contentType, photoBytes);
+        if (photoBytes == null || photoBytes.length == 0) {
+            throw new IllegalArgumentException("Photo bytes cannot be null or empty");
+        }
+
     }
 
     public byte[] getProfilePhoto(int studentId) {
