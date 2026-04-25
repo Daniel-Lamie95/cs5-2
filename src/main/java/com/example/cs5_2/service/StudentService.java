@@ -94,7 +94,7 @@ public class StudentService {
         return student;
     }
 
-    public void uploadProfilePhoto(int studentId, String contentType, byte[] photoBytes) {
+    public void uploadProfilePhoto(Long studentId, String contentType, byte[] photoBytes) {
         if (photoBytes == null || photoBytes.length == 0) {
             throw new IllegalArgumentException("Profile photo cannot be empty");
         }
@@ -102,21 +102,21 @@ public class StudentService {
             throw new IllegalArgumentException("Uploaded file must be an image");
         }
 
-        Student student = studentRepo.findById((long) studentId)
+        Student student = studentRepo.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
 
         student.setProfilePhoto(contentType, photoBytes);
         studentRepo.save(student);
     }
 
-    public byte[] getProfilePhoto(int studentId) {
-        Student student = studentRepo.findById((long) studentId)
+    public byte[] getProfilePhoto(Long studentId) {
+        Student student = studentRepo.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
         return student.getProfilePhoto();
     }
 
-    public String getProfilePhotoContentType(int studentId) {
-        Student student = studentRepo.findById((long) studentId)
+    public String getProfilePhotoContentType(Long studentId) {
+        Student student = studentRepo.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
         return student.getProfilePhotoContentType();
     }

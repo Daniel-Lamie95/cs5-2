@@ -34,14 +34,23 @@ public class Student extends User implements Serializable {
     )
     private List<Internship> appliedInternships = new ArrayList<>();
 
+
     public Student() {
     }
 
-    public Student(int id, String name, String email, String password, String major,String university, Date dateOfBirth) {
-        super(id, name, email, password);
+    public Student(String name, String email, String password, String major, String university, Date dateOfBirth) {
+        super(name, email, password);
         this.university = university;
         this.major = major;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getMajor() {

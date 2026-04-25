@@ -131,7 +131,7 @@ public class StudentController {
 
     @GetMapping("/student/{id}/photo")
     @ResponseBody
-    public ResponseEntity<byte[]> getStudentProfilePhoto(@PathVariable int id) {
+    public ResponseEntity<byte[]> getStudentProfilePhoto(@PathVariable Long id) {
         byte[] photo = studentService.getProfilePhoto(id);
         if (photo == null || photo.length == 0) {
             return ResponseEntity.notFound().build();

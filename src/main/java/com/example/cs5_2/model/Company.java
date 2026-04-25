@@ -17,9 +17,9 @@ public class Company extends User {
         
     }
 
-    public Company(int id, String name, String email, String password,
+    public Company(String name, String email, String password,
                    String industry, String location, String website, String description) {
-        super(id, name, email, password);
+        super(name, email, password);
         this.industry = industry;
         this.location = location;
         this.website = website;
