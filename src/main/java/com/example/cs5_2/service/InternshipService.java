@@ -61,7 +61,27 @@ public class InternshipService {
             throw new IllegalArgumentException("Internship not found");
         }
 
-        // Note: Title and company name are not updated to prevent breaking references in applications and queries
+        // Important Note to read: The Title and company name are not updated to prevent breaking references in applications and queries
+
+        if (updated.getStartDate() != null) {
+            existing.setStartDate(updated.getStartDate());
+        }
+
+        if (updated.getEndDate() != null) {
+            existing.setEndDate(updated.getEndDate());
+        }
+
+        if (updated.getDuration() > 0) {
+            existing.setDuration(updated.getDuration());
+        }
+
+        if (updated.getRequirements() != null && !updated.getRequirements().isEmpty()) {
+            existing.setRequirements(updated.getRequirements());
+        }
+
+        if (updated.getMaxApplicants() > 0) {
+            existing.setMaxApplicants(updated.getMaxApplicants());
+        }
 
         return "Internship updated successfully!";
     }
