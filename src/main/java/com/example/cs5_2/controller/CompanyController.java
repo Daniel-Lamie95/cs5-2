@@ -183,8 +183,10 @@ public class CompanyController {
             return "redirect:/company/login";
         }
 
+        internship.setCompanyName(loggedCompany.getName());
+
         try {
-            internshipService.addInternship(internship, loggedCompany);
+            internshipService.addInternship(internship);
             return "redirect:/company/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -194,7 +196,7 @@ public class CompanyController {
 
    
     @GetMapping("/edit-internship/{id}")
-    public String showEditInternshipPage(@PathVariable int id,
+    public String showEditInternshipPage(@PathVariable Long id,
                                          HttpSession session,
                                          Model model) {
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
@@ -209,17 +211,16 @@ public class CompanyController {
             return "redirect:/company/dashboard";
         }
 
-        if (internship.getCompany() == null ||
-            !internship.getCompany().getEmail().equalsIgnoreCase(loggedCompany.getEmail())) {
+        if (!internship.getCompanyName().equalsIgnoreCase(loggedCompany.getName())) {
             return "redirect:/company/dashboard";
         }
 
         model.addAttribute("internship", internship);
-        return "edit-internship";
+        return "edit-Internship-profile";
     }
 
     @PostMapping("/edit-internship/{id}")
-    public String editInternship(@PathVariable int id,
+    public String editInternship(@PathVariable Long id,
                                  @ModelAttribute Internship internship,
                                  HttpSession session,
                                  Model model) {
@@ -230,17 +231,18 @@ public class CompanyController {
         }
 
         try {
-            internshipService.updateInternship(id, internship, loggedCompany);
+            internshipService.updateInternship(id, internship);
             return "redirect:/company/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            return "edit-internship";
+            model.addAttribute("internship", internship);
+            return "edit-Internship-profile";
         }
     }
 
     
     @PostMapping("/delete-internship/{id}")
-    public String deleteInternship(@PathVariable int id,
+    public String deleteInternship(@PathVariable Long id,
                                    HttpSession session,
                                    Model model) {
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
@@ -250,13 +252,17 @@ public class CompanyController {
         }
 
         try {
-            internshipService.deleteInternship(id, loggedCompany);
+            Internship i = internshipService.findById(id);
+            if (i == null || !i.getCompanyName().equalsIgnoreCase(loggedCompany.getName())) {
+                throw new Exception("Not authorized");
+            }
+            internshipService.deleteInternship(id);
             return "redirect:/company/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("company", loggedCompany);
             model.addAttribute("internships",
-                    internshipService.getInternshipsByCompany(loggedCompany));
+                    internshipService.getInternshipsByCompany(loggedCompany.getName()));
             return "company-dashboard";
         }
     }

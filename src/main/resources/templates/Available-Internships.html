@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Dashboard - Launchpad</title>
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
+</head>
+<body class="company-dashboard-page">
+
+<nav class="company-dashboard-navbar">
+    <div class="company-dashboard-logo">🚀 Launchpad</div>
+
+    <ul class="company-dashboard-links">
+        <li><a th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/student/profile}">Profile</a></li>
+        <li><a th:href="@{/login}">Logout</a></li>
+    </ul>
+</nav>
+
+<main class="company-dashboard-container">
+
+    <section class="company-dashboard-hero">
+        <div>
+            <h1>Latest Internships & Summer Training</h1>
+            <p>Internships help you gain practical skills, grow your professional network, and stand out to future employers. </p>
+        </div>
+
+
+        </div>
+    </section>
+
+    <section class="company-dashboard-stats">
+        <div class="dashboard-stat-card">
+            <h3 th:text="${#lists.size(internships)}">12</h3>
+            <p>Posted Internships</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <h3 th:text="${internships != null ? internships.stream().mapToInt(i -> i.applicantsCount).sum() : 0}">48</h3>
+            <p>Applicants</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <h3 th:text="${activeInternships}">6</h3>
+            <p>Active Internships</p>
+        </div>
+
+    </section>
+
+
+    <section class="search-section">
+        <div class="search-box">
+            <form th:action="@{/internships/search}" method="get">
+                <input type="text" name="query" placeholder="Search internships...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </section>
+
+
+
+    <section class="company-dashboard-internships">
+        <h2>Recent Internships</h2>
+
+        <div class="company-dashboard-internships-grid" th:if="${internships != null and !internships.isEmpty()}">
+
+            <a th:each="internship : ${internships}" th:href="@{/internship-details(id=${internship.id})}" class="dashboard-internship-card">
+                <h3 th:text="${internship.title}">Frontend Internship</h3>
+                <p th:text="${internship.requirements}">Web Development</p>
+                <span th:text="${#temporals.format(internship.startDate, 'MMMM yyyy')} + ' - ' + ${#temporals.format(internship.endDate, 'MMMM yyyy')}">June 2026 - August 2026</span>
+            </a>
+
+        </div>
+        <p th:if="${internships == null or internships.isEmpty()}">No internships available.</p>
+    </section>
+</main>
+
+</body>
+</html>

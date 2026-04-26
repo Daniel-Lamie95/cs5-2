@@ -6,6 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Controller
 @RequestMapping("/internships")
 public class InternshipController {
@@ -38,22 +41,15 @@ public class InternshipController {
     }
     @GetMapping
     public String viewInternships(Model model) {
-        model.addAttribute("internships", service.getAllInternships());
-        return "internship-list";
+        List<Internship> internships = service.getAllInternships();
+        model.addAttribute("internships", internships);
+        model.addAttribute("totalInternships", internships.size());
+        model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
+        model.addAttribute("activeInternships", internships.stream().filter(i -> i.getEndDate().isAfter(LocalDate.now())).count());
+        return "Available-Internships.html";
     }
 
-    @GetMapping("/delete")
-    public String delete(@RequestParam Long id, Model model) {
-        try {
-            String result = service.deleteInternship(id);
-            model.addAttribute("message", result);
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("message", e.getMessage());
-        }
 
-        model.addAttribute("internships", service.getAllInternships());
-        return "internship-list";
-    }
 
 
     @GetMapping("/edit")
@@ -86,7 +82,11 @@ public class InternshipController {
 
     @GetMapping("/search")
     public String searchInternships(@RequestParam String query, Model model) {
-        model.addAttribute("internships", service.searchInternshipsByTitle(query));
-        return "internship-list";
+        List<Internship> internships = service.searchInternshipsByTitle(query);
+        model.addAttribute("internships", internships);
+        model.addAttribute("totalInternships", internships.size());
+        model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
+        model.addAttribute("activeInternships", internships.stream().filter(i -> i.getEndDate().isAfter(LocalDate.now())).count());
+        return "Available-Internships.html";
     }
 }
