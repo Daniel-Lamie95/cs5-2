@@ -157,16 +157,25 @@ public class StudentController {
     }
 
     @PostMapping("/update")
-    public String updateStudent(@RequestParam String email,
-                                @ModelAttribute Student updated,
-                                Model model) {
-        try {
-            Student student = studentService.updateStudent(email, updated);
-            model.addAttribute("message", "Profile updated successfully!");
-            return "redirect:/student-profile";
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "student-profile";
+    public String updateStudent(@ModelAttribute Student updated,
+            HttpSession session,
+            Model model) {
+
+try {
+Student student = (Student) session.getAttribute("user");
+
+if (student == null) {
+return "redirect:/login";
+}
+
+studentService.updateStudent(student.getEmail(), updated);
+session.setAttribute("user", updated);
+
+return "redirect:/student-profile";
+
+} catch (Exception e) {
+model.addAttribute("error", e.getMessage());
+return "student-profile";
         }
     }
 }
