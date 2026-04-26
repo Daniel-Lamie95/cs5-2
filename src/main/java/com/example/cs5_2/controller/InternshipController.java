@@ -43,9 +43,9 @@ public class InternshipController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam String title, Model model) {
+    public String delete(@RequestParam Long id, Model model) {
         try {
-            String result = service.deleteInternship(title);
+            String result = service.deleteInternship(id);
             model.addAttribute("message", result);
         } catch (IllegalArgumentException e) {
             model.addAttribute("message", e.getMessage());
@@ -57,8 +57,8 @@ public class InternshipController {
 
 
     @GetMapping("/edit")
-    public String showEditForm(@RequestParam String title, Model model) {
-        Internship internship = service.findByTitle(title);
+    public String showEditForm(@RequestParam Long id, Model model) {
+        Internship internship = service.findById(id);
 
         if (internship == null) {
             model.addAttribute("message", "Internship not found");
@@ -71,11 +71,11 @@ public class InternshipController {
 
 
     @PostMapping("/update")
-    public String updateInternship(@RequestParam String title,
+    public String updateInternship(@RequestParam Long id,
                                    @ModelAttribute Internship internship,
                                    Model model) {
         try {
-            String result = service.updateInternship(title, internship);
+            String result = service.updateInternship(id, internship);
             model.addAttribute("message", result);
             return "result";
         } catch (IllegalArgumentException e) {
@@ -83,6 +83,10 @@ public class InternshipController {
             return "internship-form";
         }
     }
+
+    @GetMapping("/search")
+    public String searchInternships(@RequestParam String query, Model model) {
+        model.addAttribute("internships", service.searchInternshipsByTitle(query));
+        return "internship-list";
+    }
 }
-
-

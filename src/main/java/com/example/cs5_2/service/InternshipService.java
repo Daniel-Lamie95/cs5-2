@@ -34,18 +34,17 @@ public class InternshipService {
         return internships;
     }
 
-
-    public Internship findByTitle(String title) {
+    public Internship findById(Long id) {
         for (Internship i : internships) {
-            if (i.getTitle() != null && i.getTitle().equalsIgnoreCase(title)) {
+            if (i.getId() != null && i.getId().equals(id)) {
                 return i;
             }
         }
         return null;
     }
 
-    public String deleteInternship(String title) {
-        Internship i = findByTitle(title);
+    public String deleteInternship(Long id) {
+        Internship i = findById(id);
 
         if (i == null) {
             throw new IllegalArgumentException("Internship not found");
@@ -55,27 +54,21 @@ public class InternshipService {
         return "Internship deleted successfully!";
     }
 
-    public String updateInternship(String title, Internship updated) {
-        Internship existing = findByTitle(title);
+    public String updateInternship(Long id, Internship updated) {
+        Internship existing = findById(id);
 
         if (existing == null) {
             throw new IllegalArgumentException("Internship not found");
         }
 
-        if (updated.getTitle() != null && !updated.getTitle().isEmpty()) {
-            existing.setTitle(updated.getTitle());
-        }
-
-        if (updated.getCompanyName() != null && !updated.getCompanyName().isEmpty()) {
-            existing.setCompanyName(updated.getCompanyName());
-        }
+        // Note: Title and company name are not updated to prevent breaking references in applications and queries
 
         return "Internship updated successfully!";
     }
 
-    public String applyToInternship(String title) {
+    public String applyToInternship(Long id) {
 
-        Internship internship = findByTitle(title);
+        Internship internship = findById(id);
 
         if (internship == null) {
             throw new IllegalArgumentException("Internship not found");
@@ -102,5 +95,17 @@ public class InternshipService {
         return result;
     }
 
-}
+    public List<Internship> searchInternshipsByTitle(String title) {
+        List<Internship> result = new ArrayList<>();
 
+        for (Internship i : internships) {
+            if (i.getTitle() != null && 
+                i.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                result.add(i);
+            }
+        }
+
+        return result;
+    }
+
+}

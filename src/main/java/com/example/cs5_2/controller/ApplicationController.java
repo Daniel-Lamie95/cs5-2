@@ -25,10 +25,16 @@ public class ApplicationController {
     @PostMapping("/application")
     public String addApplication(@RequestParam int applicationId,
                                  @RequestParam String studentName,
-                                 @RequestParam String internshipTitle) {
-
-        applicationService.addApplication(applicationId, studentName, internshipTitle);
-        return "redirect:/application";
+                                 @RequestParam Long internshipId,
+                                 Model model) {
+        try {
+            applicationService.addApplication(applicationId, studentName, internshipId);
+            return "redirect:/application";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("application", applicationService.getAllApplications());
+            return "application";
+        }
     }
 
     // Update status

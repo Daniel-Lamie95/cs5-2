@@ -13,26 +13,35 @@ import java.util.List;
 public class ApplicationService {
 
     private final List<Application> application = new ArrayList<>();
+    private final InternshipService internshipService;
+
+    public ApplicationService(InternshipService internshipService) {
+        this.internshipService = internshipService;
+    }
 
     // Create application
-    public void addApplication(int id, String studentName, String internshipTitle) {
+    public void addApplication(int id, String studentName, Long internshipId) {
+        try {
+            internshipService.applyToInternship(internshipId);
 
-        Application app = new Application();
+            Application app = new Application();
 
-        app.setApplicationId(id);
-        app.setApplicationDate(LocalDateTime.now());
-        app.setStatus("Pending");
+            app.setApplicationId(id);
+            app.setApplicationDate(LocalDateTime.now());
+            app.setStatus("Pending");
 
-        Student student = new Student();
-        student.setName(studentName);
+            Student student = new Student();
+            student.setName(studentName);
 
-        Internship internship = new Internship();
-        internship.setTitle(internshipTitle);
+            Internship internship = internshipService.findById(internshipId);
 
-        app.setStudent(student);
-        app.setInternship(internship);
+            app.setStudent(student);
+            app.setInternship(internship);
 
-        application.add(app);
+            application.add(app);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Cannot apply to internship: " + e.getMessage());
+        }
     }
 
     // Get all
