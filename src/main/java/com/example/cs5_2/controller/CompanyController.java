@@ -107,6 +107,7 @@ public class CompanyController {
     
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {
+
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
 
         if (loggedCompany == null) {
@@ -114,10 +115,14 @@ public class CompanyController {
         }
 
         model.addAttribute("company", loggedCompany);
-       // model.addAttribute("internships", internshipService.getInternshipsByCompany(loggedCompany));
+
+        model.addAttribute("internships",
+                internshipService.getInternshipsByCompany(loggedCompany.getName())
+        );
 
         return "company-dashboard";
     }
+    
 
     
     @GetMapping("/edit-profile")
@@ -155,7 +160,7 @@ public class CompanyController {
         }
     }
 
-    /*
+    
     @GetMapping("/add-internship")
     public String showAddInternshipPage(HttpSession session, Model model) {
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
@@ -254,7 +259,7 @@ public class CompanyController {
                     internshipService.getInternshipsByCompany(loggedCompany));
             return "company-dashboard";
         }
-    }*/
+    }
 
     
     @GetMapping("/logout")
