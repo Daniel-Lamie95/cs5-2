@@ -1,63 +1,170 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Beginner CV Tool</title></head>
+<head>
+    <title>Beginner CV Tool</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        h1 { color: #2c3e50; text-align: center; }
+        .form-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        input[type="text"], input[type="email"], textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .edu-slot { background: #f9f9f9; padding: 15px; border-left: 4px solid #3498db; margin-bottom: 10px; }
+        .edu-row { display: flex; gap: 10px; margin-top: 5px; align-items: center; }
+        .school-input { flex: 3; }
+        .year-select { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; }
+        .exp-item { background: #fff; padding: 15px; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 10px; }
+        .btn-add { background-color: #27ae60; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .btn-submit { background-color: #2c3e50; color: white; padding: 15px 30px; border: none; border-radius: 4px; cursor: pointer; display: block; width: 100%; font-size: 18px; margin-top: 20px; }
+        hr { border: 0; height: 1px; background: #eee; margin: 20px 0; }
+    </style>
+</head>
 <body>
+
     <h1>Simple CV Builder</h1>
+
     <form th:action="@{/download}" th:object="${userCV}" method="post">
-        <div>
-            <label>Name:</label>
-             <input type="text" th:field="*{name}" required>
-            <label>Title/Headline:</label>
-             <input type="text" th:field="*{jobTitle}" placeholder="e.g. Student / Aspiring Designer">
-        </div>
-        <div>
-            <label>Email:</label>
-             <input type="email" th:field="*{email}" required>
-            <label>Location:</label>
-             <input type="text" th:field="*{location}">
-        </div>
-
-        <hr>
-        <h3>Experience</h3>
-        <p><i>(Include internships, clubs, volunteering, or projects)</i></p>
-        <div  th:each="exp, stat : *{experiences}">
         
-        <label>Title:</label>
-        <input type="text"
-               th:field="*{experiences[__${stat.index}__].title}">
-
-        <label>Org/Place:</label>
-        <input type="text"
-               th:field="*{experiences[__${stat.index}__].organization}">
-
-        <br>
-
-        <textarea
-                th:field="*{experiences[__${stat.index}__].description}"
-                placeholder="Describe what you did..."
-                rows="2" cols="60">
-        </textarea>
-
-        <br><br>
+        <div class="form-section">
+            <h2>Personal Information</h2>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label>Full Name:</label>
+                    <input type="text" th:field="*{name}" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>Title/Headline:</label>
+                    <input type="text" th:field="*{jobTitle}" placeholder="e.g. Student / Aspiring Designer">
+                </div>
+            </div>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label>Email:</label>
+                    <input type="email" th:field="*{email}" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>Location:</label>
+                    <input type="text" th:field="*{location}" placeholder="City, Country">
+                </div>
+            </div>
         </div>
 
-        <hr>
-        <h3>Education & Skills</h3>
-        <label>Education:</label><br>
-        <textarea th:field="*{education}"
-              placeholder="Degree, School, Graduation Date"></textarea><br>
+        <div class="form-section">
+            <h3>Experience</h3>
+            <div id="exp-container">
+                <div th:each="exp, stat : *{experiences}" class="exp-item">
+                    <label>Job Title / Role:</label>
+                    <input type="text" th:field="*{experiences[__${stat.index}__].title}">
 
-    <label>Skills:</label><br>
-    <textarea th:field="*{skills}"
-              placeholder="Java, Photoshop, Teamwork..."></textarea><br>
+                    <label>Organization / Company:</label>
+                    <input type="text" th:field="*{experiences[__${stat.index}__].organization}">
 
-    <label>Certifications:</label><br>
-    <textarea th:field="*{certifications}"></textarea>
+                    <label>Description:</label>
+                    <textarea th:field="*{experiences[__${stat.index}__].description}" rows="3"></textarea>
+                </div>
+            </div>
+            <button type="button" class="btn-add" onclick="addExperience()">+ Add More Experience</button>
+        </div>
 
-    <br><br>
+        <div class="form-section">
+            <h3>Education History</h3>
+            <p><i>Fill in the details for each level (Leave others blank).</i></p>
 
-    <button type="submit">Download My CV</button>
+            <div class="edu-slot">
+                <input type="hidden" th:field="*{educationList[0].degree}">
+                <strong>High School</strong>
+                <div class="edu-row">
+                    <input type="text" th:field="*{educationList[0].detail}" class="school-input" placeholder="School Name">
+                    <select name="eduYears" class="year-select year-dropdown">
+                        <option value="">Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="edu-slot">
+                <input type="hidden" th:field="*{educationList[1].degree}">
+                <strong>Bachelor's Degree</strong>
+                <div class="edu-row">
+                    <input type="text" th:field="*{educationList[1].detail}" class="school-input" placeholder="University & Major">
+                    <select name="eduYears" class="year-select year-dropdown">
+                        <option value="">Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="edu-slot">
+                <input type="hidden" th:field="*{educationList[2].degree}">
+                <strong>Master's Degree</strong>
+                <div class="edu-row">
+                    <input type="text" th:field="*{educationList[2].detail}" class="school-input" placeholder="University & Specialization">
+                    <select name="eduYears" class="year-select year-dropdown">
+                        <option value="">Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="edu-slot">
+                <input type="hidden" th:field="*{educationList[3].degree}">
+                <strong>Doctorate (PhD)</strong>
+                <div class="edu-row">
+                    <input type="text" th:field="*{educationList[3].detail}" class="school-input" placeholder="University & Research Area">
+                    <select name="eduYears" class="year-select year-dropdown">
+                        <option value="">Year</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Additional Details</h3>
+            <label>Skills:</label>
+            <textarea th:field="*{skills}" placeholder="Java, Photoshop, Teamwork..." rows="3"></textarea>
+
+            <label>Certifications:</label>
+            <textarea th:field="*{certifications}" placeholder="Any certifications..." rows="2"></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Save & Download My CV</button>
         
     </form>
+
+    <script th:inline="javascript">
+        // 1. Fill the Year Dropdowns automatically
+        document.addEventListener("DOMContentLoaded", function() {
+            const dropdowns = document.querySelectorAll('.year-dropdown');
+            const currentYear = new Date().getFullYear() + 5; // Start at 2031
+            const endYear = 1980;
+
+            dropdowns.forEach(select => {
+                for (let i = currentYear; i >= endYear; i--) {
+                    let opt = document.createElement('option');
+                    opt.value = i;
+                    opt.innerHTML = i;
+                    select.appendChild(opt);
+                }
+            });
+        });
+
+        // 2. Handle Dynamic Experience Fields
+   
+    let expIndex = /*[[${userCV.experiences.size()}]]*/ 0; 
+
+    function addExperience() {
+        const container = document.getElementById('exp-container');
+        const div = document.createElement('div');
+        div.className = 'exp-item';
+        div.innerHTML = `
+            <label>Job Title / Role:</label>
+            <input type="text" name="experiences[${expIndex}].title">
+            <label>Organization / Company:</label>
+            <input type="text" name="experiences[${expIndex}].organization">
+            <label>Description:</label>
+            <textarea name="experiences[${expIndex}].description" rows="3"></textarea>
+        `;
+        container.appendChild(div);
+        expIndex++;
+    }
+/*]]>*/
+        
+    </script>
 </body>
 </html>
