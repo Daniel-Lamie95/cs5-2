@@ -1,10 +1,9 @@
 package com.example.cs5_2.controller;
 
 import com.example.cs5_2.model.Company;
-import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.model.User;
 import com.example.cs5_2.service.CompanyService;
-import com.example.cs5_2.service.InternshipService;
+//import com.example.cs5_2.service.InternshipService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,7 @@ public class CompanyController {
 
  
     private CompanyService companyService;
-    private InternshipService internshipService;
+   // private InternshipService internshipService;
 
 
     @GetMapping("/login")
@@ -53,17 +52,16 @@ public class CompanyController {
     public String signup(@ModelAttribute Company company, HttpSession session, Model model) {
         try {
             companyService.registerCompany(company);
+            session.setAttribute("loggedCompany", company);
 
-            Company registeredCompany = companyService.findByEmail(company.getEmail());
-            session.setAttribute("loggedCompany", registeredCompany);
-
-            if ("company".equalsIgnoreCase(registeredCompany.getRole())) {
+            if ("company".equalsIgnoreCase(company.getRole())) {
                 return "redirect:/company/complete-profile";
             }
 
             return "redirect:/company/login";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("company", company);
             return "company-signup";
         }
     }
@@ -77,7 +75,7 @@ public class CompanyController {
             return "redirect:/company/login";
         }
 
-        model.addAttribute("company", new Company());
+        model.addAttribute("company", loggedCompany);
         return "company-complete-profile";
     }
 
@@ -91,11 +89,9 @@ public class CompanyController {
 
         try {
             companyService.completeCompanyProfile(loggedCompany.getEmail(), company);
-
-            Company updatedCompany = companyService.findByEmail(loggedCompany.getEmail());
-            session.setAttribute("loggedCompany", updatedCompany);
-
+            session.setAttribute("loggedCompany", company);
             return "redirect:/company/dashboard";
+            
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "company-complete-profile";
@@ -131,9 +127,7 @@ public class CompanyController {
     }
 
     @PostMapping("/edit-profile")
-    public String editProfile(@ModelAttribute Company company,
-                              HttpSession session,
-                              Model model) {
+    public String editProfile(@ModelAttribute Company company,HttpSession session,Model model) {
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
 
         if (loggedCompany == null) {
@@ -142,9 +136,7 @@ public class CompanyController {
 
         try {
             companyService.editCompanyProfile(loggedCompany.getEmail(), company);
-
-            Company updatedCompany = companyService.findByEmail(loggedCompany.getEmail());
-            session.setAttribute("loggedCompany", updatedCompany);
+            session.setAttribute("loggedCompany", company);
 
             return "redirect:/company/dashboard";
         } catch (Exception e) {
