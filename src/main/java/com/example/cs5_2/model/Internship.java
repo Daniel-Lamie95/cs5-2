@@ -33,13 +33,12 @@ public class Internship implements Serializable {
         this.requirements = requirements;
     }
 
-
-
     @ManyToMany(mappedBy = "appliedInternships")
     private List<Student> students = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name= "companyID")
     private Company company;
+
     public String getTitle() {
         return title;
     }
@@ -118,6 +117,14 @@ public class Internship implements Serializable {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     @Override

@@ -20,11 +20,9 @@ public class Company extends User {
     @OneToMany(mappedBy = "company")
     private List<Internship> internships= new ArrayList<>();
 
-   
     public Company() {
     }
 
-   
     public Company(String name, String email, String password, String field, String location, String website, String description) {
 
         super(name, email, password);
@@ -39,6 +37,10 @@ public class Company extends User {
     public Long getId() {
 		return id;
 	}
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
 
 	

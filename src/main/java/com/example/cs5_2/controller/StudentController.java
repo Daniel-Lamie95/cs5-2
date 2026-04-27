@@ -1,7 +1,9 @@
 package com.example.cs5_2.controller;
 import org.springframework.ui.Model;
+import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Student;
 
+import com.example.cs5_2.service.CompanyService;
 import com.example.cs5_2.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
@@ -16,9 +18,11 @@ import java.io.IOException;
 @Controller
 public class StudentController {
     private final StudentService studentService;
+    private final CompanyService companyService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, CompanyService companyService) {
         this.studentService = studentService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/register")
@@ -49,22 +53,25 @@ public class StudentController {
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
+                        @RequestParam(defaultValue = "student") String userType,
                         HttpSession session,
                         Model model) {
         try {
-            Student student = studentService.loginStudent(email, password);
-
-            if (student == null) {
-                model.addAttribute("error", "Invalid Login!");
-                return "login";
+            if ("company".equalsIgnoreCase(userType)) {
+                Company company = companyService.login(email, password);
+                session.removeAttribute("user");
+                session.setAttribute("company", company);
+                return "redirect:/company/dashboard";
             }
 
-            // Store student in session
+            Student student = studentService.loginStudent(email, password);
+            session.removeAttribute("company");
             session.setAttribute("user", student);
-            return "redirect:/student-home";
+            return "redirect:/student-dashboard";
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("selectedUserType", userType);
             return "login";
         }
     }

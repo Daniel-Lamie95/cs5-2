@@ -30,7 +30,27 @@
         <div class="form-box">
             <h2>Login</h2>
 
+            <div th:if="${message}" style="color: green; margin-bottom: 12px; text-align: center;">
+                <strong th:text="${message}"></strong>
+            </div>
+
+            <div th:if="${error}" style="color: red; margin-bottom: 12px; text-align: center;">
+                <strong th:text="${error}"></strong>
+            </div>
+
             <form action="/login" th:action="@{/login}" method="post">
+                <div style="display:flex; gap:16px; margin-bottom:12px;">
+                    <label>
+                        <input type="radio" name="userType" value="student"
+                               th:checked="${selectedUserType == null || selectedUserType == 'student'}" checked>
+                        Student
+                    </label>
+                    <label>
+                        <input type="radio" name="userType" value="company"
+                               th:checked="${selectedUserType == 'company'}">
+                        Company
+                    </label>
+                </div>
                 <input type="text" name="email" placeholder="Enter Email" required>
                 <input type="password" name="password" placeholder="Enter Password" required>
 
@@ -39,7 +59,9 @@
 
             <p class="switch-text">
                 Don’t have an account?
-                <a href="/register" th:href="@{/register}">Sign Up</a>
+                <br><br>
+                <a href="/register" th:href="@{/register}" class="main-btn" style="display:inline-block; margin-right:8px;">Register as Student</a>
+                <a href="/company/register" th:href="@{/company/register}" class="main-btn" style="display:inline-block;">Register as Company</a>
             </p>
         </div>
     </section>
