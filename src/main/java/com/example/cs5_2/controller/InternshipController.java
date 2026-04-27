@@ -39,15 +39,17 @@ public class InternshipController {
             return "internship-form";
         }
     }
-    @GetMapping
-    public String viewInternships(Model model) {
-        List<Internship> internships = service.getAllInternships();
-        model.addAttribute("internships", internships);
-        model.addAttribute("totalInternships", internships.size());
-        model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
-        model.addAttribute("activeInternships", internships.stream().filter(i -> i.getEndDate().isAfter(LocalDate.now())).count());
-        return "Available-Internships.html";
-    }
+     @GetMapping
+     public String viewInternships(Model model) {
+         List<Internship> internships = service.getAllInternships();
+         model.addAttribute("internships", internships);
+         model.addAttribute("totalInternships", internships.size());
+         model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
+         model.addAttribute("activeInternships", internships.stream()
+                 .filter(i -> i.getEndDate() != null && i.getEndDate().isAfter(LocalDate.now()))
+                 .count());
+         return "Available-Internships.html";
+     }
 
 
 
@@ -80,14 +82,16 @@ public class InternshipController {
         }
     }
 
-    @GetMapping("/search")
-    public String searchInternships(@RequestParam String query, Model model) {
-        List<Internship> internships = service.searchInternshipsByTitle(query);
-        model.addAttribute("internships", internships);
-        model.addAttribute("totalInternships", internships.size());
-        model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
-        model.addAttribute("activeInternships", internships.stream().filter(i -> i.getEndDate().isAfter(LocalDate.now())).count());
-        return "Available-Internships.html";
-    }
+     @GetMapping("/search")
+     public String searchInternships(@RequestParam String query, Model model) {
+         List<Internship> internships = service.searchInternshipsByTitle(query);
+         model.addAttribute("internships", internships);
+         model.addAttribute("totalInternships", internships.size());
+         model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
+         model.addAttribute("activeInternships", internships.stream()
+                 .filter(i -> i.getEndDate() != null && i.getEndDate().isAfter(LocalDate.now()))
+                 .count());
+         return "Available-Internships.html";
+     }
 }
 
