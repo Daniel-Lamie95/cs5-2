@@ -34,18 +34,17 @@ public class InternshipService {
         return internships;
     }
 
-
-    public Internship findByTitle(String title) {
+    public Internship findById(Long id) {
         for (Internship i : internships) {
-            if (i.getTitle() != null && i.getTitle().equalsIgnoreCase(title)) {
+            if (i.getId() != null && i.getId().equals(id)) {
                 return i;
             }
         }
         return null;
     }
 
-    public String deleteInternship(String title) {
-        Internship i = findByTitle(title);
+    public String deleteInternship(Long id) {
+        Internship i = findById(id);
 
         if (i == null) {
             throw new IllegalArgumentException("Internship not found");
@@ -55,27 +54,41 @@ public class InternshipService {
         return "Internship deleted successfully!";
     }
 
-    public String updateInternship(String title, Internship updated) {
-        Internship existing = findByTitle(title);
+    public String updateInternship(Long id, Internship updated) {
+        Internship existing = findById(id);
 
         if (existing == null) {
             throw new IllegalArgumentException("Internship not found");
         }
 
-        if (updated.getTitle() != null && !updated.getTitle().isEmpty()) {
-            existing.setTitle(updated.getTitle());
+        // Important Note to read: The Title and company name are not updated to prevent breaking references in applications and queries
+
+        if (updated.getStartDate() != null) {
+            existing.setStartDate(updated.getStartDate());
         }
 
-        if (updated.getCompanyName() != null && !updated.getCompanyName().isEmpty()) {
-            existing.setCompanyName(updated.getCompanyName());
+        if (updated.getEndDate() != null) {
+            existing.setEndDate(updated.getEndDate());
+        }
+
+        if (updated.getDuration() > 0) {
+            existing.setDuration(updated.getDuration());
+        }
+
+        if (updated.getRequirements() != null && !updated.getRequirements().isEmpty()) {
+            existing.setRequirements(updated.getRequirements());
+        }
+
+        if (updated.getMaxApplicants() > 0) {
+            existing.setMaxApplicants(updated.getMaxApplicants());
         }
 
         return "Internship updated successfully!";
     }
 
-    public String applyToInternship(String title) {
+    public String applyToInternship(Long id) {
 
-        Internship internship = findByTitle(title);
+        Internship internship = findById(id);
 
         if (internship == null) {
             throw new IllegalArgumentException("Internship not found");
@@ -88,6 +101,31 @@ public class InternshipService {
         internship.setApplicantsCount(internship.getApplicantsCount() + 1);
         return "Application successful!";
     }
+    public List<Internship> getInternshipsByCompany(String companyName) {
+
+        List<Internship> result = new ArrayList<>();
+
+        for (Internship i : internships) {
+            if (i.getCompanyName() != null &&
+                i.getCompanyName().equalsIgnoreCase(companyName)) {
+                result.add(i);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Internship> searchInternshipsByTitle(String title) {
+        List<Internship> result = new ArrayList<>();
+
+        for (Internship i : internships) {
+            if (i.getTitle() != null && 
+                i.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                result.add(i);
+            }
+        }
+
+        return result;
+    }
 
 }
-

@@ -12,9 +12,9 @@
         <div class="logo">🚀 Launchpad</div>
 
         <ul class="nav-links">
-            <li><a href="/student-home" th:href="@{/student-home}">Home</a></li>
-            <li><a href="/about.html" th:href="@{/about.html}">About Us</a></li>
-            <li><a href="/contact.html" th:href="@{/contact.html}">Contact</a></li>
+            <li><a th:href="@{/student-home}">Home</a></li>
+            <li><a th:href="@{/about.html}">About Us</a></li>
+            <li><a th:href="@{/contact.html}">Contact</a></li>
         </ul>
     </nav>
 
@@ -29,23 +29,40 @@
         <div class="form-box company-form-box">
             <h2>Edit Student Profile</h2>
 
-            <form action="/update" th:action="@{/update}" method="post" enctype="multipart/form-data">
-                <input type="text" name="name" placeholder="Name" value="Student Name" required>
-                <input type="text" name="email" placeholder="Email" value="Student@example.com" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <input type="text" name="university" placeholder="University" value="AAST" required>
-                <input type="text" name="major" placeholder="Major" value="Computer Science" required>
-                <label class="file-label">Date of Birth</label>
-                <input type="date" name="date-of-birth">
-                <br><br>
-                <label class="file-label">Upload CV</label>
-                <input type="file" name="cv">
-                <label class="file-label">Upload profile image</label>
-                <input type="file" name="logo" accept="image/*">
-                <button type="submit" class="form-btn">Save Changes</button>
-                <br>
-                <br>
-                <button type="button" class="form-btn" onclick="window.location.href='/student-profile'" th:onclick="|window.location.href='@{/student-profile}'|">Cancel</button>
+            <form th:action="@{/update}" th:object="${student}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{email}">
+
+            <input type="text" th:field="*{name}" placeholder="Name" required>
+
+            <input type="email" th:field="*{email}" placeholder="Email" required>
+
+            <input type="password" th:field="*{password}" placeholder="Password">
+
+            <input type="text" th:field="*{university}" placeholder="University" required>
+
+            <input type="text" th:field="*{major}" placeholder="Major" required>
+
+            <label>Date of Birth</label>
+            <input type="date" th:field="*{dateOfBirth}">
+
+            <br><br>
+
+            <label>Upload CV</label>
+            <input type="file" name="cv">
+
+            <label>Upload profile image</label>
+            <input type="file" name="logo">
+
+            <button type="submit" class="form-btn">Save Changes</button>
+
+            <br><br>
+
+            <button type="button"
+                    class="form-btn"
+                    th:onclick="|window.location.href='@{/student-profile}'|">
+                Cancel
+            </button>
+                
             </form>
         </div>
     </section>

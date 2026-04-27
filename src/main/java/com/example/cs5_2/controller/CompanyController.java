@@ -29,7 +29,8 @@ public class CompanyController {
             Company company = companyService.loginCompany(u.getName(), u.getEmail(), u.getPassword());
             session.setAttribute("loggedCompany", company);
 
-            if ("company".equalsIgnoreCase(company.getRole())) {
+            // User no longer has a role field; if login succeeded we redirect to dashboard
+            if (company != null) {
                 return "redirect:/company/dashboard";
             }
 
@@ -54,7 +55,15 @@ public class CompanyController {
             companyService.registerCompany(company);
             session.setAttribute("loggedCompany", company);
 
+<<<<<<< HEAD
             if ("company".equalsIgnoreCase(company.getRole())) {
+=======
+            Company registeredCompany = companyService.findByEmail(company.getEmail());
+            session.setAttribute("loggedCompany", registeredCompany);
+
+            // No role checks: if registration created an account, continue to complete-profile
+            if (registeredCompany != null) {
+>>>>>>> branch 'master' of https://github.com/Daniel-Lamie95/cs5-2.git
                 return "redirect:/company/complete-profile";
             }
 
@@ -101,6 +110,7 @@ public class CompanyController {
     
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {
+
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
 
         if (loggedCompany == null) {
@@ -108,10 +118,14 @@ public class CompanyController {
         }
 
         model.addAttribute("company", loggedCompany);
-       // model.addAttribute("internships", internshipService.getInternshipsByCompany(loggedCompany));
+
+        model.addAttribute("internships",
+                internshipService.getInternshipsByCompany(loggedCompany.getName())
+        );
 
         return "company-dashboard";
     }
+    
 
     
     @GetMapping("/edit-profile")
@@ -145,7 +159,7 @@ public class CompanyController {
         }
     }
 
-    /*
+    
     @GetMapping("/add-internship")
     public String showAddInternshipPage(HttpSession session, Model model) {
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
@@ -168,8 +182,10 @@ public class CompanyController {
             return "redirect:/company/login";
         }
 
+        internship.setCompanyName(loggedCompany.getName());
+
         try {
-            internshipService.addInternship(internship, loggedCompany);
+            internshipService.addInternship(internship);
             return "redirect:/company/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -179,7 +195,7 @@ public class CompanyController {
 
    
     @GetMapping("/edit-internship/{id}")
-    public String showEditInternshipPage(@PathVariable int id,
+    public String showEditInternshipPage(@PathVariable Long id,
                                          HttpSession session,
                                          Model model) {
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
@@ -194,17 +210,16 @@ public class CompanyController {
             return "redirect:/company/dashboard";
         }
 
-        if (internship.getCompany() == null ||
-            !internship.getCompany().getEmail().equalsIgnoreCase(loggedCompany.getEmail())) {
+        if (!internship.getCompanyName().equalsIgnoreCase(loggedCompany.getName())) {
             return "redirect:/company/dashboard";
         }
 
         model.addAttribute("internship", internship);
-        return "edit-internship";
+        return "edit-Internship-profile";
     }
 
     @PostMapping("/edit-internship/{id}")
-    public String editInternship(@PathVariable int id,
+    public String editInternship(@PathVariable Long id,
                                  @ModelAttribute Internship internship,
                                  HttpSession session,
                                  Model model) {
@@ -215,17 +230,18 @@ public class CompanyController {
         }
 
         try {
-            internshipService.updateInternship(id, internship, loggedCompany);
+            internshipService.updateInternship(id, internship);
             return "redirect:/company/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            return "edit-internship";
+            model.addAttribute("internship", internship);
+            return "edit-Internship-profile";
         }
     }
 
     
     @PostMapping("/delete-internship/{id}")
-    public String deleteInternship(@PathVariable int id,
+    public String deleteInternship(@PathVariable Long id,
                                    HttpSession session,
                                    Model model) {
         Company loggedCompany = (Company) session.getAttribute("loggedCompany");
@@ -235,16 +251,20 @@ public class CompanyController {
         }
 
         try {
-            internshipService.deleteInternship(id, loggedCompany);
+            Internship i = internshipService.findById(id);
+            if (i == null || !i.getCompanyName().equalsIgnoreCase(loggedCompany.getName())) {
+                throw new Exception("Not authorized");
+            }
+            internshipService.deleteInternship(id);
             return "redirect:/company/dashboard";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("company", loggedCompany);
             model.addAttribute("internships",
-                    internshipService.getInternshipsByCompany(loggedCompany));
+                    internshipService.getInternshipsByCompany(loggedCompany.getName()));
             return "company-dashboard";
         }
-    }*/
+    }
 
     
     @GetMapping("/logout")

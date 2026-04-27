@@ -6,6 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Controller
 @RequestMapping("/internships")
 public class InternshipController {
@@ -38,27 +41,20 @@ public class InternshipController {
     }
     @GetMapping
     public String viewInternships(Model model) {
-        model.addAttribute("internships", service.getAllInternships());
-        return "internship-list";
+        List<Internship> internships = service.getAllInternships();
+        model.addAttribute("internships", internships);
+        model.addAttribute("totalInternships", internships.size());
+        model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
+        model.addAttribute("activeInternships", internships.stream().filter(i -> i.getEndDate().isAfter(LocalDate.now())).count());
+        return "Available-Internships.html";
     }
 
-    @GetMapping("/delete")
-    public String delete(@RequestParam String title, Model model) {
-        try {
-            String result = service.deleteInternship(title);
-            model.addAttribute("message", result);
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("message", e.getMessage());
-        }
 
-        model.addAttribute("internships", service.getAllInternships());
-        return "internship-list";
-    }
 
 
     @GetMapping("/edit")
-    public String showEditForm(@RequestParam String title, Model model) {
-        Internship internship = service.findByTitle(title);
+    public String showEditForm(@RequestParam Long id, Model model) {
+        Internship internship = service.findById(id);
 
         if (internship == null) {
             model.addAttribute("message", "Internship not found");
@@ -71,11 +67,11 @@ public class InternshipController {
 
 
     @PostMapping("/update")
-    public String updateInternship(@RequestParam String title,
+    public String updateInternship(@RequestParam Long id,
                                    @ModelAttribute Internship internship,
                                    Model model) {
         try {
-            String result = service.updateInternship(title, internship);
+            String result = service.updateInternship(id, internship);
             model.addAttribute("message", result);
             return "result";
         } catch (IllegalArgumentException e) {
@@ -83,6 +79,14 @@ public class InternshipController {
             return "internship-form";
         }
     }
+
+    @GetMapping("/search")
+    public String searchInternships(@RequestParam String query, Model model) {
+        List<Internship> internships = service.searchInternshipsByTitle(query);
+        model.addAttribute("internships", internships);
+        model.addAttribute("totalInternships", internships.size());
+        model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
+        model.addAttribute("activeInternships", internships.stream().filter(i -> i.getEndDate().isAfter(LocalDate.now())).count());
+        return "Available-Internships.html";
+    }
 }
-
-

@@ -1,37 +1,44 @@
 package com.example.cs5_2.model;
 
+import com.example.cs5_2.model.Internship;
+import jakarta.persistence.*;
 import java.util.ArrayList;
-//import jakarta.persistence.*;
 import java.util.List;
 
-
+@Entity
 public class Company extends User {
 
-    private String industry;
+    private String field;
     private String location;
     private String website;
-    private String description;
-    private List <Internship> internships = new ArrayList<>();
 
+    @Column(length = 1000)
+    private String description;
+
+    @OneToMany(mappedBy = "company")
+    private List<Internship> internships= new ArrayList<>();
+
+   
     public Company() {
-        
     }
 
-    public Company(int id, String name, String email, String password, String role,
-                   String industry, String location, String website, String description) {
-        super(id, name, email, password, role);
-        this.industry = industry;
+   
+    public Company(String name, String email, String password, String field, String location, String website, String description) {
+
+        super(name, email, password);
+        this.field = field;
         this.location = location;
         this.website = website;
         this.description = description;
     }
 
-    public String getIndustry() {
-        return industry;
+
+    public String getField() {
+        return field;
     }
 
-    public void setIndustry(String industry) {
-        this.industry = industry;
+    public void setField(String field) {
+        this.field = field;
     }
 
     public String getLocation() {
@@ -58,13 +65,11 @@ public class Company extends User {
         this.description = description;
     }
 
-	public List<Internship> getInternships() {
-		return internships;
-	}
+    public List<Internship> getInternships() {
+        return internships;
+    }
 
-	public void setInternships(List<Internship> internships) {
-		this.internships = internships;
-	}
-    
-    
+    public void setInternships(List<Internship> internships) {
+        this.internships = internships;
+    }
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Applications</title>
+</head>
+<body>
+
+<h2>📄 Create Application</h2>
+
+<form  th:action="@{/application}" method="post">
+
+
+    <label>ID:</label><br>
+    <input type="number" name="applicationId" required><br><br>
+    
+    <label>Student Name:</label><br>
+    <input type="text" name="studentName" required><br><br>
+
+    <label>Internship Title:</label><br>
+    <input type="text" name="internshipTitle" required><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+<hr>
+
+<h2>📋 Applications List</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Student</th>
+        <th>Internship</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="app : ${applications}">
+        <td th:text="${app.applicationId}"></td>
+        <td th:text="${app.applicationDate}"></td>
+        <td th:text="${app.status}"></td>
+        <td th:text="${app.student.name}"></td>
+        <td th:text="${app.internship.title}"></td>
+
+        <td>
+            <form  th:action="@{/application/update}" method="post">
+                <input type="hidden" name="id" th:value="${app.applicationId}">
+
+                <select name="status">
+                    <option value="Pending" th:selected="${app.status == 'Pending'}">Pending</option>
+                    <option value="Accepted" th:selected="${app.status == 'Accepted'}">Accepted</option>
+                    <option value="Rejected" th:selected="${app.status == 'Rejected'}">Rejected</option>
+               
+                </select>
+
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>
