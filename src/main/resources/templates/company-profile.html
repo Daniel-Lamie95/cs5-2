@@ -12,9 +12,9 @@
         <div class="company-profile-logo">🚀 Launchpad</div>
 
         <ul class="company-profile-links">
-            <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/company/dashboard}">Dashboard</a></li>
-            <li><a th:href="@{/company/logout}">Logout</a></li>
+            <li><a href="/" th:href="@{/}">Home</a></li>
+            <li><a href="/company-dashboard.html" th:href="@{/company-dashboard.html}">Dashboard</a></li>
+            <li><a href="/logout" th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
@@ -29,10 +29,10 @@
 
             <div class="company-profile-left">
                 <div class="company-profile-image">
-                    <img th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
+                    <img src="/images/main_logo.jpeg" th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
                 </div>
-                <h2  th:text="${company.name}">Company Name</h2>
-                <span th:text="${company.industry}">Industry</span>
+                <h2>Tech Company</h2>
+                <span>Software Development</span>
             </div>
 
             <div class="company-profile-right">
@@ -40,51 +40,47 @@
 
                 <div class="profile-row">
                     <span class="profile-label">Company Name</span>
-                    <span class="profile-value" th:text="${company.name}"></span>
+                    <span class="profile-value">Tech Company</span>
                 </div>
 
                 <div class="profile-row">
                     <span class="profile-label">Email</span>
-                    <span class="profile-value" th:text="${company.email}"></span>
+                    <span class="profile-value">company@email.com</span>
                 </div>
 
                 <div class="profile-row">
                     <span class="profile-label">Phone Number</span>
-                    <span class="profile-value" th:text="${company.phone}"></span>
+                    <span class="profile-value">+20 123 456 789</span>
                 </div>
 
                 <div class="profile-row">
                     <span class="profile-label">Location</span>
-                    <span class="profile-value" th:text="${company.location}"></span>
+                    <span class="profile-value">Cairo, Egypt</span>
                 </div>
 
                 <div class="profile-row">
-                    <span class="profile-label">Industry</span>
-                <span class="profile-value" th:text="${company.industry}"></span>
+                    <span class="profile-label">Field / Industry</span>
+                    <span class="profile-value">Software Development</span>
                 </div>
 
                 <div class="profile-row">
                     <span class="profile-label">Website</span>
-                    <span class="profile-value" th:text="${company.website}"></span>
+                    <span class="profile-value">www.techcompany.com</span>
                 </div>
 
                 <div class="profile-row description-row">
                     <span class="profile-label">Description</span>
-                    <span class="profile-value" th:text="${company.description}"></span>
+                    <span class="profile-value">
+                        Tech Company provides internship opportunities for students in web development,
+                        software engineering, and UI/UX design.
+                    </span>
                 </div>
 
                 <div class="company-profile-buttons">
-                    <a th:href="@{/company/edit-profile}" class="profile-btn">
-                    Edit Profile
-                </a>
-
-                <a th:href="@{/company/dashboard}" class="profile-btn">
-                    Back to Dashboard
-                </a>
-
+                    <a href="/edit-company-profile.html" th:href="@{/edit-company-profile.html}" class="profile-btn">Edit Profile</a>
+                    <a href="/company-dashboard.html" th:href="@{/company-dashboard.html}" class="profile-btn">Back to Dashboard</a>
+                </div>
             </div>
-
-        </div>
 
         </section>
 

@@ -17,7 +17,7 @@ public class ApplicationController {
     // Show page
     @GetMapping("/application")
     public String showApplications(Model model) {
-        model.addAttribute("applications", applicationService.getAllApplications());
+        model.addAttribute("application", applicationService.getAllApplications());
         return "application";
     }
 

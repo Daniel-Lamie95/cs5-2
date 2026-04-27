@@ -101,19 +101,6 @@ public class InternshipService {
         internship.setApplicantsCount(internship.getApplicantsCount() + 1);
         return "Application successful!";
     }
-    public List<Internship> getInternshipsByCompany(String companyName) {
-
-        List<Internship> result = new ArrayList<>();
-
-        for (Internship i : internships) {
-            if (i.getCompanyName() != null &&
-                i.getCompanyName().equalsIgnoreCase(companyName)) {
-                result.add(i);
-            }
-        }
-
-        return result;
-    }
 
     public List<Internship> searchInternshipsByTitle(String title) {
         List<Internship> result = new ArrayList<>();
