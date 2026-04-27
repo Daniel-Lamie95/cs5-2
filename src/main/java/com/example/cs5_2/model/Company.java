@@ -7,7 +7,9 @@ import java.util.List;
 
 @Entity
 public class Company extends User {
-
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String field;
     private String location;
     private String website;
@@ -31,9 +33,16 @@ public class Company extends User {
         this.website = website;
         this.description = description;
     }
+    
 
 
-    public String getField() {
+    public Long getId() {
+		return id;
+	}
+
+
+	
+	public String getField() {
         return field;
     }
 

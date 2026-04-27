@@ -6,10 +6,6 @@ import jakarta.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private String name;
     private String email;
     private String password;
@@ -23,9 +19,7 @@ public abstract class User {
         this.password = password;
     }
 
-    public Long getId() {
-        return id;
-    }
+ 
 
     public String getName() {
         return name;
