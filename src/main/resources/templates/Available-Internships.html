@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+// this class needs to be fixed
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -32,12 +33,12 @@
 
     <section class="company-dashboard-stats">
         <div class="dashboard-stat-card">
-            <h3 th:text="${#lists.size(internships)}">12</h3>
+            <h3 th:text="${totalInternships}">12</h3>
             <p>Posted Internships</p>
         </div>
 
         <div class="dashboard-stat-card">
-            <h3 th:text="${internships != null ? internships.stream().mapToInt(i -> i.applicantsCount).sum() : 0}">48</h3>
+            <h3 th:text="${totalApplicants}">48</h3>
             <p>Applicants</p>
         </div>
 
@@ -68,7 +69,9 @@
             <a th:each="internship : ${internships}" th:href="@{/internship-details(id=${internship.id})}" class="dashboard-internship-card">
                 <h3 th:text="${internship.title}">Frontend Internship</h3>
                 <p th:text="${internship.requirements}">Web Development</p>
-                <span th:text="${#temporals.format(internship.startDate, 'MMMM yyyy')} + ' - ' + ${#temporals.format(internship.endDate, 'MMMM yyyy')}">June 2026 - August 2026</span>
+                <span th:if="${internship.startDate != null and internship.endDate != null}"
+                      th:text="|${#temporals.format(internship.startDate, 'MMMM yyyy')} - ${#temporals.format(internship.endDate, 'MMMM yyyy')}|">June 2026 - August 2026</span>
+                <span th:unless="${internship.startDate != null and internship.endDate != null}">Dates not available</span>
             </a>
 
         </div>

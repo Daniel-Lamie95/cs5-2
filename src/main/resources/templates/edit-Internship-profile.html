@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+//this class is totally wrong please fix
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -32,8 +34,8 @@
             <div class="company-profile-image">
                 <img th:src="@{/images/main_logo.jpeg}">
             </div>
-            <h2 th:text="${internship.title}">Internship Title</h2>
-            <span th:text="${internship.companyName}">Company Name</span>
+            <h2 th:text="${internship?.title ?: 'Internship Title'}">Internship Title</h2>
+            <span th:text="${internship?.companyName ?: 'Company Name'}">Company Name</span>
         </div>
 
         <div class="company-profile-right">
