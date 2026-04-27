@@ -17,7 +17,7 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-   
+
     @GetMapping("/register")
     public String showRegister(Model model) {
         model.addAttribute("company", new Company());
@@ -41,7 +41,7 @@ public class CompanyController {
         }
     }
 
-  
+
     @GetMapping("/login")
     public String showLogin(Model model) {
         model.addAttribute("company", new Company());
@@ -79,7 +79,7 @@ public class CompanyController {
 
         return "company-dashboard";
     }
-    
+
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
 
@@ -94,7 +94,7 @@ public class CompanyController {
         return "company-profile";
     }
 
-   
+
     @GetMapping("/profile/edit")
     public String editProfile(HttpSession session, Model model) {
 
@@ -107,7 +107,7 @@ public class CompanyController {
         return "edit-company-profile";
     }
 
-   
+
     @PostMapping("/profile/update")
     public String updateProfile(@ModelAttribute Company updatedCompany,HttpSession session,Model model) {
 

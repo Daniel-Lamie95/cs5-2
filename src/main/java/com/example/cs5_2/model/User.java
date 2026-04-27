@@ -2,10 +2,8 @@ package com.example.cs5_2.model;
 
 import jakarta.persistence.*;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public abstract class User {
-
     private String name;
     private String email;
     private String password;
@@ -18,8 +16,6 @@ public abstract class User {
         this.email = email;
         this.password = password;
     }
-
- 
 
     public String getName() {
         return name;

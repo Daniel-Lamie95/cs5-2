@@ -33,8 +33,11 @@ public class Internship implements Serializable {
         this.requirements = requirements;
     }
 
+
+
     @ManyToMany(mappedBy = "appliedInternships")
     private List<Student> students = new ArrayList<>();
+
     public String getTitle() {
         return title;
     }
@@ -101,6 +104,18 @@ public class Internship implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     @Override

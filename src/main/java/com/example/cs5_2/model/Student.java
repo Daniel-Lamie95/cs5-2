@@ -28,11 +28,36 @@ public class Student extends User implements Serializable {
 
     @ManyToMany
     @JoinTable(
-        name = "student_internship",
-        joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "internship_id")
+            name = "student_internship",
+            joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "internship_id", referencedColumnName = "id")
     )
     private List<Internship> appliedInternships = new ArrayList<>();
+
+    public List<Internship> getAppliedInternships() {
+        return appliedInternships;
+    }
+
+    public void setAppliedInternships(List<Internship> appliedInternships) {
+        this.appliedInternships = appliedInternships;
+    }
+
+    // helper methods to keep both sides in sync
+    public void addAppliedInternship(Internship internship) {
+        if (internship == null) return;
+        if (!this.appliedInternships.contains(internship)) {
+            this.appliedInternships.add(internship);
+        }
+        if (!internship.getStudents().contains(this)) {
+            internship.getStudents().add(this);
+        }
+    }
+
+    public void removeAppliedInternship(Internship internship) {
+        if (internship == null) return;
+        this.appliedInternships.remove(internship);
+        internship.getStudents().remove(this);
+    }
 
 
     public Student() {
@@ -44,6 +69,8 @@ public class Student extends User implements Serializable {
         this.major = major;
         this.dateOfBirth = dateOfBirth;
     }
+
+    // id getter/setter inherited from User
 
     public Long getId() {
         return id;
@@ -126,7 +153,6 @@ public class Student extends User implements Serializable {
     @Override
     public String toString() {
         return "Student{" +
-                "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", email='" + getEmail() + '\'' +
                 ", phoneNum='" + phoneNum + '\'' +
