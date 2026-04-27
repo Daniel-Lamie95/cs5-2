@@ -4,7 +4,7 @@ import com.example.cs5_2.model.Company;
 
 public class Validation {
 
-	// Company validation 
+//Company validation 
 
 	    public static void validateRegister(Company company) {
 
