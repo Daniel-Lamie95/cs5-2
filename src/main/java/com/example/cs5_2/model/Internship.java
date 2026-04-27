@@ -37,7 +37,9 @@ public class Internship implements Serializable {
 
     @ManyToMany(mappedBy = "appliedInternships")
     private List<Student> students = new ArrayList<>();
-
+    @ManyToOne
+    @JoinColumn(name= "companyID")
+    private Company company;
     public String getTitle() {
         return title;
     }
