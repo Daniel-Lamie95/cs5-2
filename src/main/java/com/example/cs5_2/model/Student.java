@@ -59,7 +59,6 @@ public class Student extends User implements Serializable {
         internship.getStudents().remove(this);
     }
 
-
     public Student() {
     }
 

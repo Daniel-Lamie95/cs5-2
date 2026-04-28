@@ -1,5 +1,7 @@
 package com.example.cs5_2.service;
 
+import com.example.cs5_2.model.Application;
+import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.model.Student;
 import com.example.cs5_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -15,29 +17,29 @@ public class StudentService {
     }
     //private final BuildCVRepository buildCVRepo;
 
-    public Student registerStudent(Student student){
-        if (student == null){
+    public Student registerStudent(Student student) {
+        if (student == null) {
             throw new IllegalArgumentException("Student cannot be null");
-        }else if (student.getEmail() == null || student.getEmail().isEmpty()) {
+        } else if (student.getEmail() == null || student.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Email is required");
-        }else if (student.getPassword() == null || student.getPassword().isEmpty()) {
+        } else if (student.getPassword() == null || student.getPassword().isEmpty()) {
             throw new IllegalArgumentException("Password is required");
         } else if (student.getPassword().length() < 8) {
             throw new IllegalArgumentException("Password length must be at least 8 characters");
-        }else{
-                studentRepo.save(student);
-        return student;
+        } else {
+            studentRepo.save(student);
+            return student;
         }
     }
 
     public List<Student> getAllStudents() {
-            return studentRepo.findAll();
+        return studentRepo.findAll();
     }
 
     public Student getStudentByEmail(String email) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
-        }else return studentRepo.findByEmail(email);
+        } else return studentRepo.findByEmail(email);
     }
 
     public Student updateStudent(String email, Student updated) {
@@ -120,5 +122,7 @@ public class StudentService {
                 .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
         return student.getProfilePhotoContentType();
     }
+
+    //public Application applyToInternship(Student student, Internship internship){}
 
 }
