@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
-    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="company-dashboard-page">
 
@@ -12,13 +12,13 @@
         <div class="company-dashboard-logo">🚀 Launchpad</div>
 
         <ul class="company-dashboard-links">
-            <li><a href="/student-home" th:href="@{/student-home}">Home</a></li>
-            <li><a href="/student-profile" th:href="@{/student-profile}">Profile</a></li>
-            <li><a href="/logout" th:href="@{/logout}">Logout</a></li>
+            <li><a th:href="@{/student-home}">Home</a></li>
+            <li><a  th:href="@{/student-profile}">Profile</a></li>
+            <li><a  th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
-    <main class="company-dashboard-container">
+    <main class="company-dashboard-container"> 
 
         <section class="company-dashboard-hero">
             <div>
@@ -30,15 +30,11 @@
         <section class="company-dashboard-top">
             <div class="company-dashboard-profile-card">
                 <div class="company-dashboard-avatar">
-                    <img
-                        th:src="@{/student/{id}/photo(id=${student.id})}"
-                        alt="Student profile photo"
-                    >
+                    <img th:src="@{/student/{id}/photo(id=${student.id})}" alt="Student profile photo">
+                    
                 </div>
-                <h3>
-                    <span th:text ="${student.name}">Student Name</span>
-                </h3>
-                <span th:text="${student.major}">Major</span>
+                <h3 th:text="${student.name}">Student Name</h3>
+            <span th:text="${student.major}">Major</span>
             </div>
 
             <div class="company-dashboard-info-card">
@@ -78,7 +74,7 @@
             </div>
 
             <div class="dashboard-stat-card">
-                <h3 th:text="${acceptedCount}">0</h3>
+                <h3 th:text="${activeCount}">0</h3>
                 <p>Active Internships</p>
             </div>
 
@@ -88,12 +84,35 @@
         <section class="company-dashboard-internships">
             <h2>Applied Internships</h2>
 
-            <div class="company-dashboard-internships-grid" th:each="app : ${studentApplications}">
-                <div class="dashboard-internship-card">
-                    <h3 th:text="${app.internship.title}">title</h3>
-                    <p th:text="${app.internship.companyName}">company name</p>
-                    <span th:text="${app.internship.startDate}">startdate</span>
-                    <div class="application-status">Status: <span th:text="${app.status}">Pending</span></div>
+            <div class="company-dashboard-internships-grid">
+                <div class="dashboard-internship-card"
+                th:each="internship : ${internships}">
+                
+                    <h3 th:text="${internship.title}">Title</h3>
+                    <p th:text="${internship.companyName}">Company</p>
+                    <span th:text="${internship.duration}">Duration</span>
+                </div>
+
+                <div class="dashboard-internship-card" 
+                 th:each="internship : ${internships}">
+                
+                    <h3 th:text="${internship.title}">Backend Internship</h3>
+                    <p th:text="${internship.field}">Software Engineering</p>
+                    <span th:text="${internship.duration}">
+                     July 2026 - September 2026
+                    </span>
+                    
+                </div>
+
+                <div class="dashboard-internship-card"
+                 th:each="internship : ${internships}">
+                
+                    <h3 th:text="${internship.title}">UI/UX Internship</h3>
+                    <p th:text="${internship.field}">Design</p>
+                    
+                    <span th:text="${internship.duration}">
+            August 2026 - October 2026
+        </span>
                 </div>
             </div>
         </section>

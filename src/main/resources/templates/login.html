@@ -12,9 +12,9 @@
         <div class="logo">🚀 Launchpad</div>
 
         <ul class="nav-links">
-            <li><a href="/" th:href="@{/}">Home</a></li>
-            <li><a href="/about.html" th:href="@{/about.html}">About Us</a></li>
-            <li><a href="/contact.html" th:href="@{/contact.html}">Contact</a></li>
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/about.html}">About Us</a></li>
+            <li><a th:href="@{/contact.html}">Contact</a></li>
         </ul>
     </nav>
 
@@ -24,7 +24,9 @@
             <p>
                 Launch your journey toward internships, growth, and real opportunities.
             </p>
-            <a href="/register" th:href="@{/register}" class="main-btn">Create Account</a>
+            <a th:href="@{/register}" class="main-btn">
+            Create Account
+        </a>
         </div>
 
         <div class="form-box">

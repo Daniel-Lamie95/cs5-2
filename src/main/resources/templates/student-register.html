@@ -13,9 +13,9 @@
         <div class="logo">🚀 Launchpad</div>
 
         <ul class="nav-links">
-            <li><a href="/student-home" th:href="@{/student-home}">Home</a></li>
-            <li><a href="/about.html" th:href="@{/about.html}">About Us</a></li>
-            <li><a href="/contact.html" th:href="@{/contact.html}">Contact</a></li>
+            <li><a th:href="@{/student-home}">Home</a></li>
+            <li><a th:href="@{/about.html}">About Us</a></li>
+            <li><a th:href="@{/contact.html}">Contact</a></li>
         </ul>
     </nav>
 
@@ -30,19 +30,29 @@
         <div class="form-box company-form-box">
             <h2>Student Register</h2>
 
-            <form action="/register" th:action="@{/register}" method="post" enctype="multipart/form-data">
-                <input type="text" name="name" placeholder="Name" required>
-                <input type="text" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <input type="text" name="university" placeholder="University" required>
-                <input type="text" name="major" placeholder="Major" required>
-                <input type="text" name="phoneNum" placeholder="Phone Number" required>
-                <input type="text" name="location" placeholder="Location (City, Country)" required>
+            <form th:action="@{/register}" method="post">
+
+            <input type="text" name="name" placeholder="Name" required>
+
+            <input type="email" name="email" placeholder="Email" required>
+
+            <input type="password" name="password" placeholder="Password" required>
+
+            <input type="text" name="university" placeholder="University" required>
+
+            <input type="text" name="major" placeholder="Major" required>
+            
+                
                 <label class="file-label">Date of Birth</label>
-                <input type="date" name="dateOfBirth" required>
+                <input type="date" name="date-of-birth">
                 <br><br>
-                <label class="file-label">Upload Profile Photo (optional)</label>
-                <input type="file" name="profilePhoto" accept="image/*">
+                
+                <label class="file-label">Upload CV</label>
+                <input type="file" name="cv" disabled>
+                
+                <label class="file-label">Upload profile image</label>
+                <input type="file" name="logo" accept="image/*" disabled>
+                
                 <button type="submit" class="form-btn">Complete Registration</button>
             </form>
         </div>

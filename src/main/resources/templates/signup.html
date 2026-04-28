@@ -12,9 +12,9 @@
         <div class="logo">🚀 Launchpad</div>
 
         <ul class="nav-links">
-            <li><a href="/" th:href="@{/}">Home</a></li>
-            <li><a href="/about.html" th:href="@{/about.html}">About Us</a></li>
-            <li><a href="/contact.html" th:href="@{/contact.html}">Contact</a></li>
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/about.html}">About Us</a></li>
+            <li><a th:href="@{/contact.html}">Contact</a></li>
         </ul>
     </nav>
 
@@ -24,33 +24,37 @@
             <p>
                  Launch your journey toward internship growth and real opportunities. Discover hands-on experiences, connect with real companies, and turn your potential into powerful results. 
             </p>
-            <a href="/login" th:href="@{/login}" class="main-btn">Already Have an Account?</a>
+            <a th:href="@{/login}" class="main-btn">Already Have an Account?</a>
         </div>
 
         <div class="form-box">
             <h2>Sign Up</h2>
 
-            <form action="/signup" th:action="@{/signup}" method="post">
-                <input type="text" name="name" placeholder="Enter Name" required>
-                <input type="email" name="email" placeholder="Enter Email" required>
-                <input type="password" name="password" placeholder="Enter Password" required>
+            <form  th:action="@{/register}" method="post" th:object="${student}">
+            
+            <input type="text" th:field="*{name}" placeholder="Enter Name" required>
+            
+            <input type="email" th:field="*{email}" placeholder="Enter Email" required>
+            
+            <input type="password" th:field="*{password}" placeholder="Enter Password" required>
 
+            
                 <div class="role-box">
                     <p>Select Role:</p>
 
                     <div class="role-options">
                         <label>
-                            <input type="radio" name="role" value="student" required>
+                            <input type="radio" th:field="*{role}" value="student" required>
                             Student
                         </label>
 
                         <label>
-                            <input type="radio" name="role" value="company">
+                            <input  type="radio" th:field="*{role}" value="company">
                             Company
                         </label>
 
                         <label>
-                            <input type="radio" name="role" value="admin">
+                            <input type="radio" th:field="*{role}" value="admin">
                             Admin
                         </label>
                     </div>

@@ -12,9 +12,9 @@
         <div class="company-profile-logo">🚀 Launchpad</div>
 
         <ul class="company-profile-links">
-            <li><a href="/student-home" th:href="@{/student-home}">Home</a></li>
-            <li><a href="/student-dashboard" th:href="@{/student-dashboard}">Dashboard</a></li>
-            <li><a href="/logout" th:href="@{/logout}">Logout</a></li>
+            <li><a th:href="@{/student-home}">Home</a></li>
+            <li><a th:href="@{/student-dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
@@ -30,12 +30,11 @@
             <div class="company-profile-left">
                 <div class="company-profile-image">
                     <img
-                            src="./images/Screenshot%202026-03-23%20192924.png"
                             th:src="@{/student/{id}/photo(id=${student.id})}"
-                            alt="Student profile photo"
+                    alt="Student profile photo"
                     >
                 </div>
-                <h2>Daniel Adel</h2>
+                <h2 th:text="${student.name}">Student Name</h2>
             </div>
 
             <div class="company-profile-right">
@@ -67,8 +66,13 @@
                 </div>
 
                 <div class="company-profile-buttons">
-                    <a href="/edit-student-profile.html" th:href="@{/edit-student-profile.html}" class="profile-btn">Edit Profile</a>
-                    <a href="/student-dashboard" th:href="@{/student-dashboard}" class="profile-btn">Back to Dashboard</a>
+                    <a th:href="@{/edit-student-profile}" class="profile-btn">
+                    Edit Profile
+                </a>
+
+                <a th:href="@{/student-dashboard}" class="profile-btn">
+                    Back to Dashboard
+                </a>
                 </div>
             </div>
 
