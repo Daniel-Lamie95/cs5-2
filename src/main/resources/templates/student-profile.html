@@ -35,7 +35,7 @@
                             alt="Student profile photo"
                     >
                 </div>
-                <h2>Daniel Adel</h2>
+                <h2 th:text="${student.name}">name</h2>
             </div>
 
             <div class="company-profile-right">
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="company-profile-buttons">
-                    <a href="/edit-student-profile.html" th:href="@{/edit-student-profile.html}" class="profile-btn">Edit Profile</a>
+                    <a href="/edit-student-profile" th:href="@{/edit-student-profile}" class="profile-btn">Edit Profile</a>
                     <a href="/student-dashboard" th:href="@{/student-dashboard}" class="profile-btn">Back to Dashboard</a>
                 </div>
             </div>

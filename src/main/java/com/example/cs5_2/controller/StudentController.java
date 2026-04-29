@@ -130,7 +130,16 @@ public class StudentController {
         return "student-dashboard";
     }
 
+    @GetMapping("/edit-student-profile")
+    public String editStudentProfile(HttpSession session, Model model) {
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
 
+        model.addAttribute("student", student);
+        return "edit-student-profile";
+    }
 
     @PostMapping("/profile-photo")
     public String uploadProfilePhoto(@RequestParam("photo") MultipartFile photo,
@@ -187,7 +196,7 @@ public class StudentController {
         return "redirect:/login";
     }
 
-    @PostMapping("/update")
+   @PostMapping("/update")
     public String updateStudent(@RequestParam String email,
                                 @ModelAttribute Student updated,
                                 Model model) {
