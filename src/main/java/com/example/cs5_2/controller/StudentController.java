@@ -1,4 +1,5 @@
 package com.example.cs5_2.controller;
+import com.example.cs5_2.model.ApplicationStatus;
 import org.springframework.ui.Model;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Student;
@@ -120,7 +121,7 @@ public class StudentController {
         }
 
         int appliedCount = studentApps.size();
-        long acceptedCountLong = studentApps.stream().filter(a -> "Accepted".equalsIgnoreCase(a.getStatus())).count();
+        long acceptedCountLong = studentApps.stream().filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED).count();
         int acceptedCount = (int) acceptedCountLong;
 
         model.addAttribute("appliedCount", appliedCount);

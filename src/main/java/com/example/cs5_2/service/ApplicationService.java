@@ -1,61 +1,90 @@
 package com.example.cs5_2.service;
 
-import com.example.cs5_2.model.Application;
-import com.example.cs5_2.model.Student;
-import com.example.cs5_2.model.Internship;
+import com.example.cs5_2.model.*;
+import com.example.cs5_2.repository.ApplicationRepository;
+import com.example.cs5_2.repository.BuildCVRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ApplicationService {
 
-    private final List<Application> application = new ArrayList<>();
+    private final ApplicationRepository applicationRepository;
     private final InternshipService internshipService;
+    private final BuildCVRepository buildCVRepository;
 
-    public ApplicationService(InternshipService internshipService) {
+    public ApplicationService(ApplicationRepository applicationRepository,
+                              InternshipService internshipService,
+                              BuildCVRepository buildCVRepository) {
+        this.applicationRepository = applicationRepository;
         this.internshipService = internshipService;
+        this.buildCVRepository = buildCVRepository;
     }
 
-    // Create application
-    public void addApplication(int id, String studentName, Long internshipId) {
-        try {
-            internshipService.applyToInternship(internshipId);
+    // APPLY
+    public void addApplication(long studentId,
+                               String studentName,
+                               Long internshipId) {
 
-            Application app = new Application();
+        Internship internship = internshipService.findById(internshipId);
 
-            app.setApplicationId(id);
-            app.setApplicationDate(LocalDateTime.now());
-            app.setStatus("Pending");
-
-            Student student = new Student();
-            student.setName(studentName);
-
-            Internship internship = internshipService.findById(internshipId);
-
-            app.setStudent(student);
-            app.setInternship(internship);
-
-            application.add(app);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Cannot apply to internship: " + e.getMessage());
+        if (internship == null) {
+            throw new IllegalArgumentException("Internship not found");
         }
+
+        // lightweight student object (your current design)
+        Student student = new Student();
+        student.setId(studentId);
+        student.setName(studentName);
+
+        // AUTO GET CV FROM DB
+        BuildCV cv = buildCVRepository.findByStudent(student);
+
+        if (cv == null) {
+            throw new IllegalArgumentException("Student has no CV");
+        }
+
+        Application app = new Application();
+        app.setApplicationDate(LocalDateTime.now());
+        app.setStatus(ApplicationStatus.PENDING);
+
+        app.setStudent(student);
+        app.setInternship(internship);
+        app.setBuildCV(cv);
+
+        app.setMatchScore(calculateMatchScore(student, internship));
+
+        applicationRepository.save(app);
     }
 
-    // Get all
+    // GET ALL
     public List<Application> getAllApplications() {
-        return application;
+        return applicationRepository.findAll();
     }
 
-    // Update status
-    public void updateStatus(int id, String status) {
-        for (Application app : application) {
-            if (app.getApplicationId() == id) {
-                app.setStatus(status);
-                break;
-            }
+    // UPDATE STATUS
+    public void updateStatus(int id, ApplicationStatus status) {
+
+        Application app = applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        app.setStatus(status);
+        applicationRepository.save(app);
+    }
+
+    // MATCH SCORE
+    private int calculateMatchScore(Student student, Internship internship) {
+        int score = 0;
+
+        if (student.getMajor() != null &&
+                internship.getRequirements() != null &&
+                internship.getRequirements().toLowerCase()
+                        .contains(student.getMajor().toLowerCase())) {
+            score += 50;
         }
+
+        return score;
     }
 }
