@@ -31,6 +31,7 @@ public class StudentService {
             return student;
         }
     }
+   
 
     public List<Student> getAllStudents() {
         return studentRepo.findAll();
@@ -66,6 +67,7 @@ public class StudentService {
 
         return studentRepo.save(existingStudent);
     }
+   
 
     public void deleteStudent(String email) {
         if (email == null || email.isEmpty()) {
@@ -122,6 +124,7 @@ public class StudentService {
                 .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
         return student.getProfilePhotoContentType();
     }
+   
 
     //public Application applyToInternship(Student student, Internship internship){}
 
