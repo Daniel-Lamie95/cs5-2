@@ -57,7 +57,15 @@ public class StudentService {
         }
         // Update allowed fields
         existingStudent.setName(updated.getName());
-        existingStudent.setPassword(updated.getPassword());
+
+        // Only update password if provided (not empty)
+        if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
+            if (updated.getPassword().length() < 8) {
+                throw new IllegalArgumentException("Password length must be at least 8 characters");
+            }
+            existingStudent.setPassword(updated.getPassword());
+        }
+
         existingStudent.setMajor(updated.getMajor());
         existingStudent.setUniversity(updated.getUniversity());
         existingStudent.setPhoneNum(updated.getPhoneNum());

@@ -1,5 +1,5 @@
 package com.example.cs5_2.allvalidations;
-import com.example.cs5_2.exception.ValidationException;
+
 public class BaseValidator {
 	
 	public static void notNull(Object value, String message) {

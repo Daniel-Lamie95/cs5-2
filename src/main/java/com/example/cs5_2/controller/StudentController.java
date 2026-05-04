@@ -1,4 +1,5 @@
 package com.example.cs5_2.controller;
+import com.example.cs5_2.model.ApplicationStatus;
 import org.springframework.ui.Model;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Student;
@@ -120,7 +121,7 @@ public class StudentController {
         }
 
         int appliedCount = studentApps.size();
-        long acceptedCountLong = studentApps.stream().filter(a -> "Accepted".equalsIgnoreCase(a.getStatus())).count();
+        long acceptedCountLong = studentApps.stream().filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED).count();
         int acceptedCount = (int) acceptedCountLong;
 
         model.addAttribute("appliedCount", appliedCount);
@@ -130,7 +131,16 @@ public class StudentController {
         return "student-dashboard";
     }
 
+    @GetMapping("/edit-student-profile")
+    public String editStudentProfile(HttpSession session, Model model) {
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
 
+        model.addAttribute("student", student);
+        return "edit-student-profile";
+    }
 
     @PostMapping("/profile-photo")
     public String uploadProfilePhoto(@RequestParam("photo") MultipartFile photo,
@@ -187,7 +197,7 @@ public class StudentController {
         return "redirect:/login";
     }
 
-    @PostMapping("/update")
+   @PostMapping("/update")
     public String updateStudent(@RequestParam String email,
                                 @ModelAttribute Student updated,
                                 Model model) {
