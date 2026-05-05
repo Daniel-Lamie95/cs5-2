@@ -40,12 +40,6 @@ public class Company extends User {
         this.id = id;
     }
 
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
 	
 	public String getField() {
         return field;

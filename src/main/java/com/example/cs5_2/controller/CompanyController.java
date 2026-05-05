@@ -20,8 +20,7 @@ public class CompanyController {
 
 
     @GetMapping("/register")
-    public String showRegister(Model model) {
-        model.addAttribute("company", new Company());
+    public String showRegister() {
         return "company-register";
     }
 
@@ -30,7 +29,6 @@ public class CompanyController {
 
         try {
             companyService.register(company);
-            // Redirect to shared login page with a success message and pre-select company
             redirectAttributes.addFlashAttribute("message", "Registration successful! Please login.");
             redirectAttributes.addFlashAttribute("selectedUserType", "company");
             return "redirect:/login";
@@ -44,8 +42,7 @@ public class CompanyController {
 
 
     @GetMapping("/login")
-    public String showLogin(Model model) {
-        model.addAttribute("company", new Company());
+    public String showLogin() {
         return "login";
     }
 
@@ -60,7 +57,7 @@ public class CompanyController {
 
             session.setAttribute("company", loggedCompany);
 
-            return "redirect:/company-dashboard";
+            return "redirect:/company/dashboard";
 
         } catch (IllegalArgumentException e) {
             model.addAttribute("message", e.getMessage());
