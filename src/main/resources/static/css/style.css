@@ -1,4 +1,3 @@
-
 :root {
     --space-dark: #1d1b5b;
     --space-overlay: rgba(12, 10, 40, 0.68);
@@ -26,8 +25,8 @@ body {
 .auth-page {
     min-height: 100vh;
     background:
-            linear-gradient(rgba(10,10,40,0.6), rgba(10,10,40,0.6)),
-            url("../images/bg.jpg");
+          linear-gradient(rgba(10,10,40,0.6), rgba(10,10,40,0.6)),
+    url("../images/bg.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -104,7 +103,7 @@ body {
 .main-btn {
     display: inline-block;
     text-decoration: none;
-    background: linear-gradient(90deg, var(--rocket-red), var(--flame-yellow));
+    background: linear-gradient(90deg, var(--space-dark), var(--window-blue));
     color: var(--soft-white);
     padding: 14px 30px;
     border-radius: 10px;
@@ -187,7 +186,7 @@ body {
     font-weight: bold;
     color: var(--soft-white);
     cursor: pointer;
-    background: linear-gradient(90deg, var(--rocket-red), var( --flame-yellow));
+    background: linear-gradient(90deg, var(--space-dark), var(--window-blue));
     transition: 0.3s ease;
 }
 
@@ -309,7 +308,8 @@ body {
 
 .company-dashboard-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, #d3b7ab, #ddb09d);
+    background:var(--card-dark);
+   
     font-family: Arial, sans-serif;
 }
 
@@ -322,7 +322,7 @@ body {
     padding: 22px 60px;
 
     background: rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);     
 
     position: absolute;
     top: 0;
@@ -363,25 +363,25 @@ body {
 
 /* Hero */
 .company-dashboard-hero {
-    background: linear-gradient(135deg, var(--rocket-red), var(--flame-yellow));
+    background: linear-gradient(135deg, var(--space-dark), var(--window-blue));
     color: white;
     border-radius: 22px;
     padding: 30px;
     margin-bottom: 25px;
-    box-shadow: 0 8px 22px rgba(194, 24, 91, 0.12);
+   box-shadow: 0 8px 22px rgba(194, 24, 91, 0.12);
 }
 
 .company-dashboard-hero h1 {
     font-size: 38px;
     margin-bottom: 10px;
-
+   
 }
 
 .company-dashboard-hero p {
     font-size: 17px;
     line-height: 1.6;
     color: #fff4eb;
-
+   
 }
 
 /* Top section */
@@ -398,7 +398,7 @@ body {
 .company-dashboard-internships {
     background: white;
     border-radius: 18px;
-    border: 1px solid #f4ddd3;
+    border: 1px solid #fff4eb;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
@@ -414,7 +414,7 @@ body {
     margin: 0 auto 15px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid #ffe1d3;
+    border: 4px solid #f4dfd4;
     background: #fff4ef;
     display: flex;
     justify-content: center;
@@ -429,7 +429,7 @@ body {
 
 .company-dashboard-profile-card h3 {
     font-size: 22px;
-    color: var(--rocket-red);
+    color: var(--space-dark);
     margin-bottom: 6px;
 }
 
@@ -448,14 +448,14 @@ body {
 .company-dashboard-internships h2 {
     font-size: 24px;
     margin-bottom: 18px;
-    color: var(--flame-orange);
+    color: var(--space-dark);
 }
 
 .dashboard-info-row {
     display: grid;
     grid-template-columns: 180px 1fr;
     padding: 12px 0;
-    border-bottom: 1px solid #f3e5df;
+    border-bottom: 1px solid #fff4eb;
 }
 
 .dashboard-info-row:last-child {
@@ -480,7 +480,7 @@ body {
 }
 
 .dashboard-stat-card {
-    background: linear-gradient(135deg, var(--rocket-red), var(--flame-orange));
+    background: linear-gradient(135deg, var(--space-dark), var(--window-blue));
     color: white;
     padding: 24px 18px;
     text-align: center;
@@ -513,7 +513,7 @@ body {
 .dashboard-action-card {
     text-decoration: none;
     background: var(--begie);
-    border: 1px solid #f6ddd2;
+    border: 1px solid #f4dfd4;
     border-radius: 16px;
     padding: 18px 16px;
     transition: 0.3s ease;
@@ -521,11 +521,11 @@ body {
 
 .dashboard-action-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 18px var(--flame-orange);
+    box-shadow: 0 8px 18px var(--flame-yellow);
 }
 
 .dashboard-action-card h3 {
-    color: var(--rocket-red);
+    color: var(--space-dark);
     margin-bottom: 8px;
     font-size: 18px;
 }
@@ -555,7 +555,7 @@ body {
     border-radius: 15px;
     padding: 18px 16px;
     transition: 0.3s ease;
-    display: block;
+       display: block;
     text-decoration: none; /* removes underline */
     color: inherit;        /* keeps your original colors */
 }
@@ -566,7 +566,7 @@ body {
 }
 
 .dashboard-internship-card h3 {
-    color: var(--rocket-red);
+    color: var(--space-dark);
     margin-bottom: 8px;
     font-size: 18px;
 }
@@ -648,7 +648,7 @@ body {
 
 .company-profile-page {
     min-height: 100vh;
-    background:linear-gradient(rgba(10,10,40,0.6), rgba(10,10,40,0.6));
+    background:var(--card-dark);
     color: #2b2b2b;
     font-family: Arial, sans-serif;
 }
@@ -676,8 +676,8 @@ body {
     list-style: none;
     display: flex;
     gap: 90px;
-    margin: 0;
-    padding: 0;
+    margin: 1;
+    padding: 1;
 }
 
 .company-profile-links a {
@@ -697,7 +697,7 @@ body {
 }
 
 .company-profile-hero {
-    background: linear-gradient(135deg, var(--rocket-red), var(--flame-yellow));
+    background: linear-gradient(135deg, var(--space-dark), var(--window-blue));
     color: white;
     border-radius: 22px;
     padding: 30px;
@@ -756,7 +756,7 @@ body {
 
 .company-profile-left h2 {
     font-size: 24px;
-    color: var(--rocket-red);
+    color: var(--space-dark);
     margin-bottom: 8px;
 }
 
@@ -768,7 +768,7 @@ body {
 
 .company-profile-right h2 {
     font-size: 26px;
-    color: var(--rocket-red);
+    color: var(--space-dark);
     margin-bottom: 18px;
 }
 
@@ -802,13 +802,13 @@ body {
     display: flex;
     gap: 20px;
     margin-top: 25px;
-
+   
 }
 
 .profile-btn {
     display: inline-block;
     text-decoration: none;
-    background: linear-gradient(135deg, var(--rocket-red), var(--flame-orange));
+    background: linear-gradient(135deg, var(--space-dark), var(--window-blue));
     color: white;
     padding: 12px 22px;
     border-radius: 12px;
@@ -855,22 +855,22 @@ body {
 
     .company-profile-hero p {
         font-size: 15px;
+       
 
+    .profile-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+}}
+ <!-- SEARCH BAR---->
+.search-box {
+    width: 85%;
+    margin: 20px auto 30px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    
+    transform: translateY(10px);
 
-        .profile-row {
-            grid-template-columns: 1fr;
-            gap: 6px;
-        }
-    }}
-/* SEARCH BAR */
-     .search-box {
-         width: 85%;
-         margin: 20px auto 30px auto;
-         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-
-         transform: translateY(10px);
-
-     }
+}
 
 .search-box form {
     display: flex;
@@ -919,9 +919,9 @@ body {
 
 .dashboard-internship-card:hover {
     transform: translateY(-4px);
-    box-shadow:
-            0 10px 20px rgba(255, 136, 0, 0.438),
-            0 0 0 1px rgba(255, 90, 40, 0.774);
+    box-shadow: 
+        0 10px 20px rgba(255, 136, 0, 0.438),
+        0 0 0 1px rgba(255, 90, 40, 0.774);
 }
 
 #uploadStatus {
@@ -929,3 +929,4 @@ body {
     font-size: 14px;
     color: green;
 }
+
