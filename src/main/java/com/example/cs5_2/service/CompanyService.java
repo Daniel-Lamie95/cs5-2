@@ -1,9 +1,10 @@
 package com.example.cs5_2.service;
 
+import org.springframework.stereotype.Service;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.repository.CompanyRepository;
 import com.example.cs5_2.validation.Validation;
-import org.springframework.stereotype.Service;
+
 
 @Service
 public class CompanyService {
