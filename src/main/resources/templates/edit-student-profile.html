@@ -32,37 +32,40 @@
             <form th:action="@{/update}" th:object="${student}" method="post" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{email}">
 
-            <input type="text" th:field="*{name}" placeholder="Name" required>
+                <h3>Personal Information</h3>
+                <input type="text" th:field="*{name}" placeholder="Full Name" required>
 
-            <input type="email" th:field="*{email}" placeholder="Email" required>
+                <input type="email" th:field="*{email}" placeholder="Email" required disabled>
 
-            <input type="password" th:field="*{password}" placeholder="Password">
+                <input type="password" th:field="*{password}" placeholder="Password (leave blank to keep current)">
 
-            <input type="text" th:field="*{university}" placeholder="University" required>
+                <input type="tel" th:field="*{phoneNum}" placeholder="Phone Number" required>
 
-            <input type="text" th:field="*{major}" placeholder="Major" required>
+                <input type="text" th:field="*{location}" placeholder="Location (City, Country)" required>
 
-            <label>Date of Birth</label>
-            <input type="date" th:field="*{dateOfBirth}">
+                <label>Date of Birth</label>
+                <input type="date" th:field="*{dateOfBirth}">
 
-            <br><br>
+                <h3>Education & Career</h3>
+                <input type="text" th:field="*{university}" placeholder="University" required>
 
-            <label>Upload CV</label>
-            <input type="file" name="cv">
+                <input type="text" th:field="*{major}" placeholder="Major/Field of Study" required>
 
-            <label>Upload profile image</label>
-            <input type="file" name="logo">
+                <h3>Documents & Media</h3>
+                <label>Upload CV</label>
+                <input type="file" name="cv" accept=".pdf,.doc,.docx">
 
-            <button type="submit" class="form-btn">Save Changes</button>
+                <label>Upload Profile Picture</label>
+                <input type="file" name="logo" accept="image/*">
 
-            <br><br>
+                <button type="submit" class="form-btn">Save Changes</button>
 
-            <button type="button"
-                    class="form-btn"
-                    th:onclick="|window.location.href='@{/student-profile}'|">
-                Cancel
-            </button>
-                
+                <button type="button"
+                        class="form-btn"
+                        th:onclick="|window.location.href='@{/student-profile}'|">
+                    Cancel
+                </button>
+
             </form>
         </div>
     </section>

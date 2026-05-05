@@ -27,18 +27,24 @@
         </div>
 
         <div class="form-box company-form-box">
-            <h2>Company Register</h2>
+             <h2>Company Register</h2>
 
-            <form th:action="@{/company/complete-profile}" method="post">
+             <form th:action="@{/company/register}" method="post">
 
-            <input type="text" name="industry" placeholder="Field / Industry" required>
+             <div th:if="${message}" style="color: green; margin-bottom: 12px; text-align: center;">
+                <strong th:text="${message}"></strong>
+             </div>
 
+             <div th:if="${error}" style="color: red; margin-bottom: 12px; text-align: center;">
+                <strong th:text="${error}"></strong>
+             </div>
+
+             <input type="text" name="name" placeholder="Company Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="field" placeholder="Field / Industry" required>
             <input type="text" name="location" placeholder="Location" required>
-
-            <input type="text" name="phone" placeholder="Phone Number" required>
-
             <textarea name="description" placeholder="Company Description" rows="4" required></textarea>
-
             <input type="url" name="website" placeholder="Company Website">
 
             <button type="submit" class="form-btn">

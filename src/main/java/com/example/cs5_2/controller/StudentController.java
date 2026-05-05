@@ -1,8 +1,13 @@
 package com.example.cs5_2.controller;
+import com.example.cs5_2.model.ApplicationStatus;
 import org.springframework.ui.Model;
+import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Student;
 
+import com.example.cs5_2.service.CompanyService;
 import com.example.cs5_2.service.StudentService;
+import com.example.cs5_2.service.ApplicationService;
+import com.example.cs5_2.model.Application;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +21,13 @@ import java.io.IOException;
 @Controller
 public class StudentController {
     private final StudentService studentService;
+    private final CompanyService companyService;
+    private final ApplicationService applicationService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, CompanyService companyService, ApplicationService applicationService) {
         this.studentService = studentService;
+        this.companyService = companyService;
+        this.applicationService = applicationService;
     }
 
     @GetMapping("/register")
@@ -49,22 +58,25 @@ public class StudentController {
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
+                        @RequestParam(defaultValue = "student") String userType,
                         HttpSession session,
                         Model model) {
         try {
-            Student student = studentService.loginStudent(email, password);
-
-            if (student == null) {
-                model.addAttribute("error", "Invalid Login!");
-                return "login";
+            if ("company".equalsIgnoreCase(userType)) {
+                Company company = companyService.login(email, password);
+                session.removeAttribute("user");
+                session.setAttribute("company", company);
+                return "redirect:/company/dashboard";
             }
 
-            // Store student in session
+            Student student = studentService.loginStudent(email, password);
+            session.removeAttribute("company");
             session.setAttribute("user", student);
-            return "redirect:/student-home";
+            return "redirect:/student-dashboard";
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("selectedUserType", userType);
             return "login";
         }
     }
@@ -95,11 +107,40 @@ public class StudentController {
             return "redirect:/login";
         }
 
+        // add student to model
         model.addAttribute("student", student);
+
+        // compute application counts and list from ApplicationService
+        java.util.List<Application> allApps = applicationService.getAllApplications();
+        java.util.List<Application> studentApps = new java.util.ArrayList<>();
+        for (Application app : allApps) {
+            if (app.getStudent() != null && app.getStudent().getName() != null
+                    && app.getStudent().getName().equals(student.getName())) {
+                studentApps.add(app);
+            }
+        }
+
+        int appliedCount = studentApps.size();
+        long acceptedCountLong = studentApps.stream().filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED).count();
+        int acceptedCount = (int) acceptedCountLong;
+
+        model.addAttribute("appliedCount", appliedCount);
+        model.addAttribute("acceptedCount", acceptedCount);
+        model.addAttribute("studentApplications", studentApps);
+
         return "student-dashboard";
     }
 
+    @GetMapping("/edit-student-profile")
+    public String editStudentProfile(HttpSession session, Model model) {
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
 
+        model.addAttribute("student", student);
+        return "edit-student-profile";
+    }
 
     @PostMapping("/profile-photo")
     public String uploadProfilePhoto(@RequestParam("photo") MultipartFile photo,
@@ -156,12 +197,13 @@ public class StudentController {
         return "redirect:/login";
     }
 
-    @PostMapping("/update")
+   @PostMapping("/update")
     public String updateStudent(@RequestParam String email,
                                 @ModelAttribute Student updated,
                                 Model model) {
         try {
-            Student student = studentService.updateStudent(email, updated);
+            // call service to update student; result isn't needed here so don't create an unused local variable
+            studentService.updateStudent(email, updated);
             model.addAttribute("message", "Profile updated successfully!");
             return "redirect:/student-profile";
         } catch (Exception e) {
