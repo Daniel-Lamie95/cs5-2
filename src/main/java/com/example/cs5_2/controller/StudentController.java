@@ -1,9 +1,9 @@
 package com.example.cs5_2.controller;
 import com.example.cs5_2.model.ApplicationStatus;
+
 import org.springframework.ui.Model;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Student;
-
 import com.example.cs5_2.service.CompanyService;
 import com.example.cs5_2.service.InternshipService;
 import com.example.cs5_2.service.StudentService;
@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-
+//import java.util.List;
+//import java.util.Map;
+//import java.util.stream.Collectors;
 @Controller
 public class StudentController {
     private final StudentService studentService;
@@ -220,19 +222,25 @@ public class StudentController {
    
    
  /* @GetMapping("/latest-internships")
-   public String latestInternships(HttpSession session, Model model) {
+public String latestInternships(HttpSession session, Model model) {
 
-       Object user = session.getAttribute("user");
+    Object user = session.getAttribute("user");
 
-       if (!(user instanceof Student student)) {
-           return "redirect:/login";
-       }
+    if (!(user instanceof Student student)) {
+        return "redirect:/login";
+    }
 
-       model.addAttribute("student", student);
-     model.addAttribute("internships", internshipService.getAllInternships());
+    List<Internship> internships = internshipService.getAllInternships();
 
-       return "latest-internships";
-   }
+    Map<String, List<Internship>> internshipsByCompany =
+            internships.stream()
+                    .collect(Collectors.groupingBy(Internship::getCompanyName));
+
+    model.addAttribute("student", student);
+    model.addAttribute("internshipsByCompany", internshipsByCompany);
+
+    return "latest-internships";
+}
    */
    
    

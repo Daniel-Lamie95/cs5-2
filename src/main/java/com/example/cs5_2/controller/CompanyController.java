@@ -181,16 +181,6 @@ public class CompanyController {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     // logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
