@@ -13,6 +13,7 @@ public class Company extends User {
     private String field;
     private String location;
     private String website;
+    private String phone;
 
     @Column(length = 1000)
     private String description;
@@ -65,7 +66,16 @@ public class Company extends User {
         this.website = website;
     }
 
-    public String getDescription() {
+    
+    public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getDescription() {
         return description;
     }
 
