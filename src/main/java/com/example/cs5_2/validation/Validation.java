@@ -12,7 +12,7 @@ public class Validation {
 	            throw new IllegalArgumentException("Company data is required");
 	        }
 
-	        if (company.getName() == null || company.getName().trim().length() < 3) {
+	        if (company.getName() == null || company.getName().trim().length() < 2) {
 	            throw new IllegalArgumentException("Company name must be at least 3 characters");
 	        }
 
@@ -32,7 +32,7 @@ public class Validation {
 	            throw new IllegalArgumentException("Field must be at least 3 characters");
 	        }
 
-	        if (company.getLocation() == null || company.getLocation().trim().length() < 3) {
+	        if (company.getLocation() == null || company.getLocation().trim().length() < 4) {
 	            throw new IllegalArgumentException("Location must be at least 3 characters");
 	        }
 
@@ -47,7 +47,7 @@ public class Validation {
 	            throw new IllegalArgumentException("Company data is required");
 	        }
 
-	        if (company.getName() == null || company.getName().trim().length() < 3) {
+	        if (company.getName() == null || company.getName().trim().length() < 2) {
 	            throw new IllegalArgumentException("Company name must be at least 3 characters");
 	        }
 
