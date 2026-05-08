@@ -5,6 +5,7 @@ import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Student;
 
 import com.example.cs5_2.service.CompanyService;
+import com.example.cs5_2.service.InternshipService;
 import com.example.cs5_2.service.StudentService;
 import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.model.Application;
@@ -23,11 +24,14 @@ public class StudentController {
     private final StudentService studentService;
     private final CompanyService companyService;
     private final ApplicationService applicationService;
-
-    public StudentController(StudentService studentService, CompanyService companyService, ApplicationService applicationService) {
+    //private final InternshipService internshipService;
+    
+    
+    public StudentController(StudentService studentService, CompanyService companyService, ApplicationService applicationService, InternshipService internshipService) {
         this.studentService = studentService;
         this.companyService = companyService;
         this.applicationService = applicationService;
+      //  this.internshipService = internshipService;
     }
 
     @GetMapping("/register")
@@ -211,4 +215,28 @@ public class StudentController {
             return "student-profile";
         }
     }
+   
+   
+   
+   
+ /* @GetMapping("/latest-internships")
+   public String latestInternships(HttpSession session, Model model) {
+
+       Object user = session.getAttribute("user");
+
+       if (!(user instanceof Student student)) {
+           return "redirect:/login";
+       }
+
+       model.addAttribute("student", student);
+     model.addAttribute("internships", internshipService.getAllInternships());
+
+       return "latest-internships";
+   }
+   */
+   
+   
+   
+   
+   
 }

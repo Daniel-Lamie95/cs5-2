@@ -3,7 +3,6 @@ package com.example.cs5_2.service;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.repository.InternshipRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

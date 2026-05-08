@@ -4,74 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Dashboard - Launchpad</title>
-    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
 <body class="company-dashboard-page">
 
-    <nav class="company-dashboard-navbar">
-        <div class="company-dashboard-logo">🚀 Launchpad</div>
+<nav class="company-dashboard-navbar">
+    <div class="company-dashboard-logo">🚀 Launchpad</div>
 
-        <ul class="company-dashboard-links">
-            <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/company/profile}">Profile</a></li>
-            <li><a th:href="@{/company/logout}">Logout</a></li>
-        </ul>
-    </nav>
+    <ul class="company-dashboard-links">
+        <li><a th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/company/profile}">Profile</a></li>
+        <li><a th:href="@{/company/logout}">Logout</a></li>
+    </ul>
+</nav>
 
-    <main class="company-dashboard-container">
+<main class="company-dashboard-container">
 
-        <section class="company-dashboard-hero">
-            <div>
-                <h1>Company Dashboard</h1>
-                <p>Manage your company profile, internships, and applicants in one place.</p>
-            </div>
-        </section>
+    <section class="company-dashboard-hero">
+        <div>
+            <h1>Company Dashboard</h1>
+            <p>Manage your company profile, internships, and applicants in one place.</p>
+        </div>
+    </section>
 
-        <section class="company-dashboard-top">
-            <div class="company-dashboard-profile-card">
-                <div class="company-dashboard-avatar">
-                    <img th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
-                </div>
-                <h3 th:text="${company.name}">Company Name</h3>
-                <span th:text="${company.field}">Field</span>
+    <section class="company-dashboard-top">
+        <div class="company-dashboard-profile-card">
+            <div class="company-dashboard-avatar">
+                <img th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
             </div>
 
-            <div class="company-dashboard-info-card">
-                <h2>Company Information</h2>
+            <h3 th:text="${company.name}">Company Name</h3>
+            <span th:text="${company.field}">Field</span>
+        </div>
 
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Company Name</span>
-                <span class="dashboard-value" th:text="${company.name}"></span>
-                </div>
+        <div class="company-dashboard-info-card">
+            <h2>Company Information</h2>
 
-                <div class="dashboard-info-row">
-                     <span class="dashboard-label">Field</span>
-                <span class="dashboard-value" th:text="${company.field}"></span>
-                </div>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Email</span>
-                <span class="dashboard-value" th:text="${company.email}"></span>
-                </div>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Location</span>
-                <span class="dashboard-value" th:text="${company.location}"></span>
-                </div>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Phone</span>
-                <span class="dashboard-value" th:text="${company.phone}"></span>
-                </div>
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Company Name</span>
+                <span class="dashboard-value" th:text="${company.name}">Company Name</span>
             </div>
-        </section>
 
-        <section class="company-dashboard-internships">
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Field</span>
+                <span class="dashboard-value" th:text="${company.field}">Field</span>
+            </div>
+
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Email</span>
+                <span class="dashboard-value" th:text="${company.email}">Email</span>
+            </div>
+
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Location</span>
+                <span class="dashboard-value" th:text="${company.location}">Location</span>
+            </div>
+
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Phone</span>
+                <span class="dashboard-value" th:text="${company.phone}">Phone</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="company-dashboard-stats">
+        <div class="dashboard-stat-card">
+            <h3 th:text="${postedInternshipsCount}">0</h3>
+            <p>Posted Internships</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <h3 th:text="${applicantsCount}">0</h3>
+            <p>Applicants</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <h3 th:text="${activeInternshipsCount}">0</h3>
+            <p>Active Internships</p>
+        </div>
+    </section>
+
+    <section class="company-dashboard-actions">
+        <h2>Quick Actions</h2>
+
+        <div class="company-dashboard-actions-grid">
+
+            <a th:href="@{/company/internships/post}" class="dashboard-action-card">
+                <h3>Post Internship</h3>
+                <p>Add a new internship opportunity</p>
+            </a>
+
+            <a th:href="@{/company/internships/manage}" class="dashboard-action-card">
+                <h3>Manage Internships</h3>
+                <p>View and edit posted internships</p>
+            </a>
+
+            <a th:href="@{/company/applicants}" class="dashboard-action-card">
+                <h3>View Applicants</h3>
+                <p>Check students applications</p>
+            </a>
+
+        </div>
+    </section>
+
+    <section class="company-dashboard-internships">
         <h2>Recent Internships</h2>
-        
+
         <div th:if="${#lists.isEmpty(internships)}">
             <p>No internships yet</p>
         </div>
+
         <div class="company-dashboard-internships-grid"
              th:if="${!#lists.isEmpty(internships)}">
 
@@ -82,7 +125,7 @@
 
                 <p>
                     <b>Company:</b>
-                    <span th:text="${internship.companyName}"></span>
+                    <span th:text="${internship.companyName}">Company Name</span>
                 </p>
 
                 <p>
@@ -94,16 +137,16 @@
 
                 <p>
                     <b>Applicants:</b>
-                    <span th:text="${internship.applicantsCount}"></span>
+                    <span th:text="${internship.applicantsCount}">0</span>
                     /
-                    <span th:text="${internship.maxApplicants}"></span>
+                    <span th:text="${internship.maxApplicants}">0</span>
                 </p>
 
             </div>
-         </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
+</main>
 
 </body>
 </html>
