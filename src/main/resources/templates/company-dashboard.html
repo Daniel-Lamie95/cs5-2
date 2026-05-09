@@ -1,21 +1,22 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Dashboard - Launchpad</title>
+    <title>Company Dashboard - Launchpath</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body class="company-dashboard-page">
 
 <nav class="company-dashboard-navbar">
-    <div class="company-dashboard-logo">🚀 Launchpad</div>
+    <div class="company-dashboard-logo">🚀 Launchpath</div>
 
     <ul class="company-dashboard-links">
-        <li><a th:href="@{/}">Home</a></li>
-        <li><a th:href="@{/company/profile}">Profile</a></li>
-        <li><a th:href="@{/company/logout}">Logout</a></li>
+        <li><a th:href="@{/index}">Home</a></li>
+        <li><a th:href="@{/company-profile}">Profile</a></li>
+        <li><a th:href="@{/logout}">Logout</a></li>
     </ul>
 </nav>
 
@@ -29,78 +30,84 @@
     </section>
 
     <section class="company-dashboard-top">
+
         <div class="company-dashboard-profile-card">
             <div class="company-dashboard-avatar">
-                <img th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
+                <img th:src="${company.logo}" alt="Company Logo">
             </div>
 
-            <h3 th:text="${company.name}">Company Name</h3>
-            <span th:text="${company.field}">Field</span>
+            <h3 th:text="${company.name}"></h3>
+            <span th:text="${company.field}"></span>
         </div>
 
         <div class="company-dashboard-info-card">
+
             <h2>Company Information</h2>
 
             <div class="dashboard-info-row">
                 <span class="dashboard-label">Company Name</span>
-                <span class="dashboard-value" th:text="${company.name}">Company Name</span>
+                <span class="dashboard-value" th:text="${company.name}"></span>
             </div>
 
             <div class="dashboard-info-row">
                 <span class="dashboard-label">Field</span>
-                <span class="dashboard-value" th:text="${company.field}">Field</span>
+                <span class="dashboard-value" th:text="${company.field}"></span>
             </div>
 
             <div class="dashboard-info-row">
                 <span class="dashboard-label">Email</span>
-                <span class="dashboard-value" th:text="${company.email}">Email</span>
+                <span class="dashboard-value" th:text="${company.email}"></span>
             </div>
 
             <div class="dashboard-info-row">
                 <span class="dashboard-label">Location</span>
-                <span class="dashboard-value" th:text="${company.location}">Location</span>
+                <span class="dashboard-value" th:text="${company.location}"></span>
             </div>
 
             <div class="dashboard-info-row">
                 <span class="dashboard-label">Phone</span>
-                <span class="dashboard-value" th:text="${company.phone}">Phone</span>
+                <span class="dashboard-value" th:text="${company.phone}"></span>
             </div>
+
         </div>
     </section>
 
     <section class="company-dashboard-stats">
+
         <div class="dashboard-stat-card">
-            <h3 th:text="${postedInternshipsCount}">0</h3>
+            <h3 th:text="${#lists.size(postedInternships)}"></h3>
             <p>Posted Internships</p>
         </div>
 
         <div class="dashboard-stat-card">
-            <h3 th:text="${applicantsCount}">0</h3>
+            <h3>48</h3>
             <p>Applicants</p>
         </div>
 
         <div class="dashboard-stat-card">
-            <h3 th:text="${activeInternshipsCount}">0</h3>
+            <h3>6</h3>
             <p>Active Internships</p>
         </div>
+
     </section>
 
     <section class="company-dashboard-actions">
+
         <h2>Quick Actions</h2>
 
         <div class="company-dashboard-actions-grid">
 
-            <a th:href="@{/company/internships/post}" class="dashboard-action-card">
+            <a th:href="@{/company-post-internship}" class="dashboard-action-card">
                 <h3>Post Internship</h3>
                 <p>Add a new internship opportunity</p>
             </a>
 
-            <a th:href="@{/company/internships/manage}" class="dashboard-action-card">
+            <a th:href="@{/manage-internships}" class="dashboard-action-card">
                 <h3>Manage Internships</h3>
                 <p>View and edit posted internships</p>
             </a>
 
-            <a th:href="@{/company/applicants}" class="dashboard-action-card">
+            <a th:href="@{/view-applicants}" class="dashboard-action-card">
                 <h3>View Applicants</h3>
                 <p>Check students applications</p>
             </a>
@@ -109,44 +116,34 @@
     </section>
 
     <section class="company-dashboard-internships">
+
         <h2>Recent Internships</h2>
 
-        <div th:if="${#lists.isEmpty(internships)}">
-            <p>No internships yet</p>
+        <div class="company-dashboard-internships-grid">
+
+            <p th:if="${#lists.isEmpty(postedInternships)}">
+                You have no accepted internships.
+            </p>
+
+            <a th:each="act : ${postedInternships}"
+               th:href="@{/internship-details(id=${act.id})}"
+               class="dashboard-internship-card">
+
+                <h3 th:text="${act.title}"></h3>
+
+                <p th:text="${act.field}"></p>
+
+                <span th:text="${#dates.format(act.startDate, 'MMMM yyyy') + ' - ' + act.duration}"></span>
+
+            </a>
+
         </div>
 
-        <div class="company-dashboard-internships-grid"
-             th:if="${!#lists.isEmpty(internships)}">
-
-            <div class="dashboard-internship-card"
-                 th:each="internship : ${internships}">
-
-                <h3 th:text="${internship.title}">Title</h3>
-
-                <p>
-                    <b>Company:</b>
-                    <span th:text="${internship.companyName}">Company Name</span>
-                </p>
-
-                <p>
-                    <b>Duration:</b>
-                    <span th:text="${#temporals.format(internship.startDate,'dd MMM yyyy')}"></span>
-                    -
-                    <span th:text="${#temporals.format(internship.endDate,'dd MMM yyyy')}"></span>
-                </p>
-
-                <p>
-                    <b>Applicants:</b>
-                    <span th:text="${internship.applicantsCount}">0</span>
-                    /
-                    <span th:text="${internship.maxApplicants}">0</span>
-                </p>
-
-            </div>
-        </div>
     </section>
 
 </main>
 
 </body>
 </html>
+
+
