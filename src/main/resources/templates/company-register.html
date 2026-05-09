@@ -47,12 +47,31 @@
             <textarea name="description" placeholder="Company Description" rows="4" required></textarea>
             <input type="url" name="website" placeholder="Company Website">
 
+            <label class="file-label">Upload Logo (Optional)</label>
+            <input type="file" id="logoInput" accept="image/*">
+            <input type="hidden" name="logo" id="logoPath">
+
             <button type="submit" class="form-btn">
                 Complete Registration
             </button>
             </form>
         </div>
     </section>
+
+    <script>
+        // convert selected file name to path under /images/ and put into hidden field
+        const logoInput = document.getElementById('logoInput');
+        if (logoInput) {
+            logoInput.addEventListener('change', function (e) {
+                const f = e.target.files[0];
+                if (f) {
+                    document.getElementById('logoPath').value = '/images/' + f.name;
+                } else {
+                    document.getElementById('logoPath').value = '';
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
