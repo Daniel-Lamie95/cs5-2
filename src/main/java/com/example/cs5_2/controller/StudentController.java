@@ -82,14 +82,6 @@ public class StudentController {
         }
     }
 
-    @GetMapping("/student-home")
-    public String studentHome(HttpSession session) {
-        if (!(session.getAttribute("user") instanceof Student)) {
-            return "redirect:/login";
-        }
-        return "student-home";
-    }
-
     @GetMapping("/student-profile")
     public String studentProfile(HttpSession session, Model model) {
         Object user = session.getAttribute("user");
