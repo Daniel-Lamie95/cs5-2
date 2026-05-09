@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
+
 
 @Controller
 @RequestMapping("/company")
@@ -54,6 +56,10 @@ public class CompanyController {
             return "redirect:/login";
         }
 
+
+        var postedInternships = internshipService.getInternshipsByCompany(company.getName());
+        model.addAttribute("postedInternships",
+                postedInternships != null ? postedInternships : Collections.emptyList());
         model.addAttribute("company", company);
         return "company-dashboard";
     }

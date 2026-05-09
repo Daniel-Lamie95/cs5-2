@@ -33,7 +33,7 @@
 
         <div class="company-dashboard-profile-card">
             <div class="company-dashboard-avatar">
-                <img th:src="${company.logo}" alt="Company Logo">
+                <img th:src="${company.logo != null ? company.logo : '/images/main_logo.jpeg'}" alt="Company Logo">
             </div>
 
             <h3 th:text="${company.name}"></h3>
