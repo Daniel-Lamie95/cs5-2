@@ -206,14 +206,15 @@ public class StudentController {
    @PostMapping("/update")
     public String updateStudent(@RequestParam String email,
                                 @ModelAttribute Student updated,
-                                Model model) {
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
         try {
-            // call service to update student; result isn't needed here so don't create an unused local variable
-            studentService.updateStudent(email, updated);
-            model.addAttribute("message", "Profile updated successfully!");
+            Student savedStudent = studentService.updateStudent(email, updated);
+            session.setAttribute("user", savedStudent);
+            redirectAttributes.addFlashAttribute("message", "Profile updated successfully!");
             return "redirect:/student-profile";
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "student-profile";
         }
     }

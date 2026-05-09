@@ -31,7 +31,7 @@
             <div class="company-dashboard-profile-card">
                 <div class="company-dashboard-avatar">
                     <img th:src="@{/student/{id}/photo(id=${student.id})}" alt="Student profile photo">
-                    
+
                 </div>
                 <h3 th:text="${student.name}">Student Name</h3>
             <span th:text="${student.major}">Major</span>
@@ -54,17 +54,8 @@
                     <span class="dashboard-label">Email</span>
                     <span class="dashboard-value" th:text="${student.email}">email</span>
                 </div>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Location</span>
-                    <span class="dashboard-value" th:text="${student.location}">Location</span>
-                </div>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Phone</span>
-                    <span class="dashboard-value" th:text="${student.phoneNum}">phone</span>
-                </div>
             </div>
+
         </section>
 
         <section class="company-dashboard-stats">

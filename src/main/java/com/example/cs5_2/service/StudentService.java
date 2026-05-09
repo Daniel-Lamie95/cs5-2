@@ -27,6 +27,8 @@ public class StudentService {
         } else if (student.getPassword().length() < 8) {
             throw new IllegalArgumentException("Password length must be at least 8 characters");
         } else {
+            // Trim email before saving to database
+            student.setEmail(student.getEmail().trim());
             studentRepo.save(student);
             return student;
         }
@@ -40,13 +42,18 @@ public class StudentService {
     public Student getStudentByEmail(String email) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
-        } else return studentRepo.findByEmail(email);
+        }
+        // Trim whitespace from email input
+        email = email.trim();
+        return studentRepo.findByEmail(email);
     }
 
     public Student updateStudent(String email, Student updated) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
+        // Trim whitespace from email input
+        email = email.trim();
         if (updated == null) {
             throw new IllegalArgumentException("Updated student cannot be null");
         }
@@ -57,15 +64,6 @@ public class StudentService {
         }
         // Update allowed fields
         existingStudent.setName(updated.getName());
-
-        // Only update password if provided (not empty)
-        if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
-            if (updated.getPassword().length() < 8) {
-                throw new IllegalArgumentException("Password length must be at least 8 characters");
-            }
-            existingStudent.setPassword(updated.getPassword());
-        }
-
         existingStudent.setMajor(updated.getMajor());
         existingStudent.setUniversity(updated.getUniversity());
         existingStudent.setPhoneNum(updated.getPhoneNum());
@@ -81,6 +79,8 @@ public class StudentService {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
+        // Trim whitespace from email input
+        email = email.trim();
         Student existingStudent = studentRepo.findByEmail(email);
         if (existingStudent == null) {
             throw new IllegalArgumentException("Student with email " + email + " not found");
@@ -96,6 +96,8 @@ public class StudentService {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Password is required");
         }
+        // Trim whitespace from email input
+        email = email.trim();
         Student student = studentRepo.findByEmail(email);
         if (student == null) {
             throw new IllegalArgumentException("Student with email " + email + " not found");
