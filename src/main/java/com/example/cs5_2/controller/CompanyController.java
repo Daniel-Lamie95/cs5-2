@@ -62,7 +62,7 @@ public class CompanyController {
         return "company-dashboard";
     }
 
-    @GetMapping("/company-profile")
+    @GetMapping({"/profile", "/company-profile"})
     public String profile(HttpSession session, Model model) {
 
         Object companyObj = session.getAttribute("company");
