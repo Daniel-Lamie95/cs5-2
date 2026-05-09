@@ -70,6 +70,7 @@ public class StudentService {
         existingStudent.setLocation(updated.getLocation());
         existingStudent.setDateOfBirth(updated.getDateOfBirth());
         existingStudent.setBuildCV(updated.getBuildCV());
+        existingStudent.setProfilePhotoPath(updated.getProfilePhotoPath());
 
         return studentRepo.save(existingStudent);
     }
@@ -108,34 +109,8 @@ public class StudentService {
         return student;
     }
 
-    public void uploadProfilePhoto(Long studentId, String contentType, byte[] photoBytes) {
-        if (photoBytes == null || photoBytes.length == 0) {
-            throw new IllegalArgumentException("Profile photo cannot be empty");
-        }
-        if (contentType == null || !contentType.startsWith("image/")) {
-            throw new IllegalArgumentException("Uploaded file must be an image");
-        }
-
-        Student student = studentRepo.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
-
-        student.setProfilePhoto(contentType, photoBytes);
-        studentRepo.save(student);
-    }
-
-    public byte[] getProfilePhoto(Long studentId) {
-        Student student = studentRepo.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
-        return student.getProfilePhoto();
-    }
-
-    public String getProfilePhotoContentType(Long studentId) {
-        Student student = studentRepo.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("Student with id " + studentId + " not found"));
-        return student.getProfilePhotoContentType();
-    }
-   
 
     //public Application applyToInternship(Student student, Internship internship){}
 
 }
+

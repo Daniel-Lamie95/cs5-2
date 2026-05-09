@@ -10,14 +10,9 @@ import com.example.cs5_2.service.StudentService;
 import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.model.Application;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.IOException;
 //import java.util.List;
 //import java.util.Map;
 //import java.util.stream.Collectors;
@@ -148,54 +143,6 @@ public class StudentController {
         return "edit-student-profile";
     }
 
-    @PostMapping("/profile-photo")
-    public String uploadProfilePhoto(@RequestParam("photo") MultipartFile photo,
-                                     HttpSession session,
-                                     RedirectAttributes redirectAttributes) {
-        Object user = session.getAttribute("user");
-        if (!(user instanceof Student student)) {
-            return "redirect:/login";
-        }
-
-        if (photo.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please select an image.");
-            return "redirect:/student-profile";
-        }
-
-        try {
-            studentService.uploadProfilePhoto(student.getId(), photo.getContentType(), photo.getBytes());
-            student.setProfilePhotoContentType(photo.getContentType());
-            session.setAttribute("user", student);
-            redirectAttributes.addFlashAttribute("message", "Profile photo updated.");
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("error", "Could not read uploaded file.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        }
-
-        return "redirect:/student-profile";
-    }
-
-    @GetMapping("/student/{id}/photo")
-    @ResponseBody
-    public ResponseEntity<byte[]> getStudentProfilePhoto(@PathVariable Long id) {
-        byte[] photo = studentService.getProfilePhoto(id);
-        if (photo == null || photo.length == 0) {
-            return ResponseEntity.notFound().build();
-        }
-
-        String contentType = studentService.getProfilePhotoContentType(id);
-        MediaType mediaType;
-        try {
-            mediaType = (contentType == null || contentType.isBlank())
-                    ? MediaType.IMAGE_JPEG
-                    : MediaType.parseMediaType(contentType);
-        } catch (Exception e) {
-            mediaType = MediaType.IMAGE_JPEG;
-        }
-
-        return ResponseEntity.ok().contentType(mediaType).body(photo);
-    }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {

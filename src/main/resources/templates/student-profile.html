@@ -31,8 +31,8 @@
             <div class="company-profile-left">
                 <div class="company-profile-image">
                     <img
-                            th:src="@{/student/{id}/photo(id=${student.id})}"
-                    alt="Student profile photo"
+                            th:src="${student.profilePhotoPath} != null ? ${student.profilePhotoPath} : '/images/logo.png'"
+                            alt="Student profile photo"
                     >
                 </div>
 

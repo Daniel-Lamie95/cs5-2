@@ -10,6 +10,8 @@ import java.util.List;
 
 @Entity
 public class Student extends User implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,8 +21,8 @@ public class Student extends User implements Serializable {
     private String location;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
-    private String profilePhotoContentType;
-    private byte[] profilePhoto;
+    private String profilePhotoPath;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "build_cv_id", referencedColumnName = "id")
@@ -119,26 +121,12 @@ public class Student extends User implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-
-    public String getProfilePhotoContentType() {
-        return profilePhotoContentType;
+    public String getProfilePhotoPath() {
+        return profilePhotoPath;
     }
 
-    public void setProfilePhotoContentType(String profilePhotoContentType) {
-        this.profilePhotoContentType = profilePhotoContentType;
-    }
-
-    public byte[] getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(byte[] profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
-
-    public void setProfilePhoto(String profilePhotoContentType, byte[] profilePhoto) {
-        this.profilePhotoContentType = profilePhotoContentType;
-        this.profilePhoto = profilePhoto;
+    public void setProfilePhotoPath(String profilePhotoPath) {
+        this.profilePhotoPath = profilePhotoPath;
     }
 
     public BuildCV getBuildCV() {

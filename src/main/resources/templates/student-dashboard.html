@@ -30,7 +30,7 @@
         <section class="company-dashboard-top">
             <div class="company-dashboard-profile-card">
                 <div class="company-dashboard-avatar">
-                    <img th:src="@{/student/{id}/photo(id=${student.id})}" alt="Student profile photo">
+                    <img th:src="${student.profilePhotoPath} != null ? ${student.profilePhotoPath} : '/images/logo.png'" alt="Student profile photo">
 
                 </div>
                 <h3 th:text="${student.name}">Student Name</h3>
