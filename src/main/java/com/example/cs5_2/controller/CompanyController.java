@@ -55,14 +55,10 @@ public class CompanyController {
         }
 
         model.addAttribute("company", company);
-        // provide the company's posted internships so the template can render without errors
-        model.addAttribute("postedInternships",
-                internshipService.getInternshipsByCompany(company.getName()));
-
         return "company-dashboard";
     }
 
-    @GetMapping({"/profile", "/company-profile"})
+    @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
 
         Object companyObj = session.getAttribute("company");
@@ -113,6 +109,7 @@ public class CompanyController {
             return "edit-company-profile";
         }
     }
+    
     // logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
