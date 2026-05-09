@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Internship</title>
+    <title>Post Internship Profile</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -25,38 +25,51 @@
 <main class="company-profile-container">
 
     <section class="company-profile-hero">
-        <h1>Edit Internship Profile</h1>
-        <p>Update Internship information.</p>
+
+        <h1>Post Internship</h1>
+
+        <p>Enter internship information.</p>
+
     </section>
 
     <section class="company-profile-card">
 
-        <!-- 🔵 LEFT SIDE -->
         <div class="company-profile-left">
 
             <div class="company-profile-image">
-                <img th:src="@{'/images/' + ${data.logo}}" alt="Logo">
+                <img th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
             </div>
 
-            <h2 th:text="${data.title}"></h2>
+            <h2>Company</h2>
 
-            <span th:text="${data.field}"></span>
+            <span>Internship Posting</span>
 
         </div>
 
-        <!-- 🔵 RIGHT SIDE -->
         <div class="company-profile-right">
 
-            <h2>Edit Internship</h2>
+            <h2>New Internship</h2>
 
             <form method="post">
 
                 <div class="profile-row">
+
+                    <label class="profile-label">Internship Title</label>
+
+                    <input type="text"
+                           name="title"
+                           required>
+
+                </div>
+
+                <div class="profile-row">
+
                     <label class="profile-label">Duration</label>
 
                     <input type="text"
                            name="duration"
-                           th:value="${data.duration}">
+                           required>
+
                 </div>
 
                 <div class="profile-row description-row">
@@ -65,7 +78,7 @@
 
                     <textarea name="description"
                               rows="5"
-                              th:text="${data.description}"></textarea>
+                              required></textarea>
 
                 </div>
 
@@ -75,7 +88,8 @@
 
                     <input type="date"
                            name="startDate"
-                           th:value="${data.startDate}">
+                           required>
+
                 </div>
 
                 <div class="profile-row">
@@ -84,7 +98,8 @@
 
                     <input type="text"
                            name="location"
-                           th:value="${data.location}">
+                           required>
+
                 </div>
 
                 <div class="profile-row">
@@ -93,7 +108,8 @@
 
                     <input type="text"
                            name="field"
-                           th:value="${data.field}">
+                           required>
+
                 </div>
 
                 <div class="company-profile-buttons">
@@ -105,7 +121,7 @@
 
                     <button type="submit"
                             class="profile-btn">
-                        Save Changes
+                        Post Internship
                     </button>
 
                 </div>
