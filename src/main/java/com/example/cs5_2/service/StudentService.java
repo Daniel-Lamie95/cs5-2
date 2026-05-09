@@ -1,5 +1,6 @@
 package com.example.cs5_2.service;
 
+import com.example.cs5_2.allvalidations.StudentValidation;
 import com.example.cs5_2.model.Application;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.model.Student;
@@ -18,20 +19,13 @@ public class StudentService {
     //private final BuildCVRepository buildCVRepo;
 
     public Student registerStudent(Student student) {
-        if (student == null) {
-            throw new IllegalArgumentException("Student cannot be null");
-        } else if (student.getEmail() == null || student.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        } else if (student.getPassword() == null || student.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        } else if (student.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Password length must be at least 8 characters");
-        } else {
-            // Trim email before saving to database
-            student.setEmail(student.getEmail().trim());
-            studentRepo.save(student);
-            return student;
-        }
+        // Validate student using StudentValidation
+        StudentValidation.validateRegister(student);
+
+        // Trim email before saving to database
+        student.setEmail(student.getEmail().trim());
+        studentRepo.save(student);
+        return student;
     }
    
 
@@ -54,9 +48,9 @@ public class StudentService {
         }
         // Trim whitespace from email input
         email = email.trim();
-        if (updated == null) {
-            throw new IllegalArgumentException("Updated student cannot be null");
-        }
+
+        // Validate updated student using StudentValidation
+        StudentValidation.validateUpdate(updated);
 
         Student existingStudent = studentRepo.findByEmail(email);
         if (existingStudent == null) {
