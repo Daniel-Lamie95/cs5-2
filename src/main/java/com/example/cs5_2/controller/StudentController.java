@@ -82,6 +82,7 @@ public class StudentController {
         }
     }
 
+
     @GetMapping("/student-profile")
     public String studentProfile(HttpSession session, Model model) {
         Object user = session.getAttribute("user");
