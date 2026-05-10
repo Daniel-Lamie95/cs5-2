@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
+
 
 @Controller
 @RequestMapping("/company")
@@ -54,6 +56,10 @@ public class CompanyController {
             return "redirect:/login";
         }
 
+
+        var postedInternships = internshipService.getInternshipsByCompany(company.getName());
+        model.addAttribute("postedInternships",
+                postedInternships != null ? postedInternships : Collections.emptyList());
         model.addAttribute("company", company);
         return "company-dashboard";
     }
@@ -109,77 +115,6 @@ public class CompanyController {
             return "edit-company-profile";
         }
     }
-    
-    //Company internships
-
-    @GetMapping("/internships/post")
-    public String postInternshipPage(HttpSession session, Model model) {
-
-        Object companyObj = session.getAttribute("company");
-
-        if (!(companyObj instanceof Company company)) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("company", company);
-        model.addAttribute("internship", new Internship());
-
-        return "post-internship";
-    }
-
-    @PostMapping("/internships/post")
-    public String postInternship(@ModelAttribute Internship internship,
-                                 HttpSession session,
-                                 Model model) {
-
-        Object companyObj = session.getAttribute("company");
-
-        if (!(companyObj instanceof Company company)) {
-            return "redirect:/login";
-        }
-
-        try {
-            internship.setCompanyName(company.getName());
-
-            internshipService.addInternship(internship);
-
-            return "redirect:/company/internships/manage";
-
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("internship", internship);
-            return "post-internship";
-        }
-    }
-    
-    @GetMapping("/internships/manage")
-    public String manageInternships(HttpSession session, Model model) {
-
-        Object companyObj = session.getAttribute("company");
-
-        if (!(companyObj instanceof Company company)) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("company", company);
-
-        model.addAttribute("internships",
-                internshipService.getInternshipsByCompany(company.getName()));
-
-        return "manage-internships";
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     // logout
     @GetMapping("/logout")

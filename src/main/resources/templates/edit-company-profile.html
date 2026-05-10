@@ -28,18 +28,18 @@
 
         <section class="company-profile-card">
 
-            <div class="company-profile-left">
+                <div class="company-profile-left">
                 <div class="company-profile-image">
-                    <img th:src="@{/images/main_logo.jpeg}">
+                    <img th:src="${company.logo != null ? company.logo : '/images/main_logo.jpeg'}" alt="Company Logo">
                 </div>
                 <h2 th:text="${company.name}">Company Name</h2>
-                <span th:text="${company.industry}">Industry</span>
+                <span th:text="${company.field}">Industry</span>
             </div>
 
             <div class="company-profile-right">
                 <h2>Edit Information</h2>
 
-                <form th:action="@{/company/edit-profile}"
+                <form th:action="@{/company/update}"
                   th:object="${company}"
                   method="post">
 
@@ -65,7 +65,7 @@
 
                 <div class="profile-row">
                     <label>Industry</label>
-                    <input type="text" th:field="*{industry}">
+                    <input type="text" th:field="*{field}">
                 </div>
 
                 <div class="profile-row">
@@ -79,6 +79,12 @@
                 </div>
 
                 <div class="company-profile-buttons">
+
+                    <div class="profile-row">
+                        <label>Upload Logo (optional)</label>
+                        <input type="file" id="companyLogoInput" accept="image/*">
+                        <input type="hidden" th:field="*{logo}" id="companyLogoPath">
+                    </div>
 
                     <a th:href="@{/company/profile}" class="profile-btn">
                         Cancel
@@ -95,6 +101,19 @@
         </section>
 
     </main>
+
+    <script>
+        const logoInput = document.getElementById('companyLogoInput');
+        if (logoInput) {
+            logoInput.addEventListener('change', function (e) {
+                const f = e.target.files[0];
+                const pathField = document.getElementById('companyLogoPath');
+                if (f && pathField) {
+                    pathField.value = '/images/' + f.name;
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>

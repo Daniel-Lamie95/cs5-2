@@ -66,8 +66,10 @@ public class CompanyService {
 
         company.setName(updatedCompany.getName());
         company.setField(updatedCompany.getField());
+        company.setPhone(updatedCompany.getPhone());
         company.setLocation(updatedCompany.getLocation());
         company.setWebsite(updatedCompany.getWebsite());
+        company.setLogo(updatedCompany.getLogo());
         company.setDescription(updatedCompany.getDescription());
 
         return companyRepository.save(company);

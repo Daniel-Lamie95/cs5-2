@@ -14,6 +14,7 @@ public class Company extends User {
     private String location;
     private String website;
     private String phone;
+    private String logo;
 
     @Column(length = 1000)
     private String description;
@@ -32,7 +33,15 @@ public class Company extends User {
         this.website = website;
         this.description = description;
     }
-    
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
     public Long getId() {
 		return id;
 	}

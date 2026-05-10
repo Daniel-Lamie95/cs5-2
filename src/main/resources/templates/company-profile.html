@@ -13,8 +13,8 @@
 
         <ul class="company-profile-links">
             <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/company/dashboard}">Dashboard</a></li>
-            <li><a th:href="@{/company/logout}">Logout</a></li>
+            <li><a th:href="@{/company-dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
@@ -29,10 +29,10 @@
 
             <div class="company-profile-left">
                 <div class="company-profile-image">
-                    <img th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
+                    <img th:src="${company.logo != null ? company.logo : '/images/main_logo.jpeg'}" alt="Company Logo">
                 </div>
                 <h2  th:text="${company.name}">Company Name</h2>
-                <span th:text="${company.industry}">Industry</span>
+                <span th:text="${company.field}">Industry</span>
             </div>
 
             <div class="company-profile-right">
@@ -60,7 +60,7 @@
 
                 <div class="profile-row">
                     <span class="profile-label">Industry</span>
-                <span class="profile-value" th:text="${company.industry}"></span>
+                <span class="profile-value" th:text="${company.field}"></span>
                 </div>
 
                 <div class="profile-row">
