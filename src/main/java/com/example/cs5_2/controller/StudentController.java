@@ -21,6 +21,7 @@ public class StudentController {
     private final StudentService studentService;
     private final CompanyService companyService;
     private final ApplicationService applicationService;
+    
     //private final InternshipService internshipService;
     
     

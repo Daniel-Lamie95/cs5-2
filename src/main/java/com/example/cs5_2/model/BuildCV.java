@@ -9,7 +9,7 @@ import java.util.List;
 public class BuildCV {
 
     @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
@@ -27,183 +27,80 @@ public class BuildCV {
     @Column(columnDefinition = "TEXT")
     private String certifications;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(name = "cv_education", joinColumns = @JoinColumn(name = "cv_id"))
     private List<EducationEntry> educationList = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(name = "cv_experience", joinColumns = @JoinColumn(name = "cv_id"))
     private List<ExperienceEntry> experiences = new ArrayList<>();
 
-    public BuildCV() {
-
-        if (educationList.isEmpty()) {
-            educationList.add(new EducationEntry("High School", "", ""));
-            educationList.add(new EducationEntry("Bachelor's Degree", "", ""));
-            educationList.add(new EducationEntry("Master's Degree", "", ""));
-            educationList.add(new EducationEntry("Doctorate (PhD)", "", ""));
-        }
-
-        if (experiences.isEmpty()) {
-            experiences.add(new ExperienceEntry());
-            experiences.add(new ExperienceEntry());
-        }
-    }
+    public BuildCV() {}
 
     @Embeddable
     public static class EducationEntry {
-
         private String degree;
-
         private String institution;
-
         private String graduationYear;
 
         public EducationEntry() {}
 
-        public EducationEntry(String degree, String institution, String graduationYear) {
-            this.degree = degree;
-            this.institution = institution;
-            this.graduationYear = graduationYear;
-        }
+        public String getDegree() { return degree; }
+        public void setDegree(String degree) { this.degree = degree; }
 
-        public String getDegree() {
-            return degree;
-        }
+        public String getInstitution() { return institution; }
+        public void setInstitution(String institution) { this.institution = institution; }
 
-        public void setDegree(String degree) {
-            this.degree = degree;
-        }
-
-        public String getInstitution() {
-            return institution;
-        }
-
-        public void setInstitution(String institution) {
-            this.institution = institution;
-        }
-
-        public String getGraduationYear() {
-            return graduationYear;
-        }
-
-        public void setGraduationYear(String graduationYear) {
-            this.graduationYear = graduationYear;
-        }
+        public String getGraduationYear() { return graduationYear; }
+        public void setGraduationYear(String graduationYear) { this.graduationYear = graduationYear; }
     }
 
     @Embeddable
     public static class ExperienceEntry {
-
         private String title;
-
         private String organization;
 
         @Column(columnDefinition = "TEXT")
         private String description;
 
-        public String getTitle() {
-            return title;
-        }
+        public ExperienceEntry() {}
 
-        public void setTitle(String title) {
-            this.title = title;
-        }
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
 
-        public String getOrganization() {
-            return organization;
-        }
+        public String getOrganization() { return organization; }
+        public void setOrganization(String organization) { this.organization = organization; }
 
-        public void setOrganization(String organization) {
-            this.organization = organization;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Student getStudent() { return student; }
+    public void setStudent(Student student) { this.student = student; }
 
-    public Student getStudent() {
-        return student;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+    public String getJobTitle() { return jobTitle; }
+    public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
 
-    public String getName() {
-        return name;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public String getJobTitle() {
-        return jobTitle;
-    }
+    public String getSkills() { return skills; }
+    public void setSkills(String skills) { this.skills = skills; }
 
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
+    public String getCertifications() { return certifications; }
+    public void setCertifications(String certifications) { this.certifications = certifications; }
 
-    public String getEmail() {
-        return email;
-    }
+    public List<EducationEntry> getEducationList() { return educationList; }
+    public void setEducationList(List<EducationEntry> educationList) { this.educationList = educationList; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getSkills() {
-        return skills;
-    }
-
-    public void setSkills(String skills) {
-        this.skills = skills;
-    }
-
-    public String getCertifications() {
-        return certifications;
-    }
-
-    public void setCertifications(String certifications) {
-        this.certifications = certifications;
-    }
-
-    public List<EducationEntry> getEducationList() {
-        return educationList;
-    }
-
-    public void setEducationList(List<EducationEntry> educationList) {
-        this.educationList = educationList;
-    }
-
-    public List<ExperienceEntry> getExperiences() {
-        return experiences;
-    }
-
-    public void setExperiences(List<ExperienceEntry> experiences) {
-        this.experiences = experiences;
-    }
+    public List<ExperienceEntry> getExperiences() { return experiences; }
+    public void setExperiences(List<ExperienceEntry> experiences) { this.experiences = experiences; }
 }
