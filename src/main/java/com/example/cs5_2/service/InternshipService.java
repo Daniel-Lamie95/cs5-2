@@ -1,5 +1,6 @@
 package com.example.cs5_2.service;
-
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.repository.InternshipRepository;
 import org.springframework.stereotype.Service;
@@ -113,4 +114,36 @@ public class InternshipService {
         return repository.findByTitleContainingIgnoreCase(title);
     }
 
+    public String calculateRemainingTime(LocalDate startDate) {
+
+        if (startDate == null) {
+            return "No deadline";
+        }
+
+        LocalDate today = LocalDate.now();
+
+        if (startDate.isBefore(today)) {
+            return "Closed";
+        }
+
+        long days = java.time.temporal.ChronoUnit.DAYS
+                .between(today, startDate);
+
+        long weeks = days / 7;
+
+        long remainingDays = days % 7;
+
+        if (weeks > 0 && remainingDays > 0) {
+
+            return weeks + " week(s) and "
+                    + remainingDays + " day(s) left";
+        }
+
+        if (weeks > 0) {
+
+            return weeks + " week(s) left";
+        }
+
+        return remainingDays + " day(s) left";
+    }
 }

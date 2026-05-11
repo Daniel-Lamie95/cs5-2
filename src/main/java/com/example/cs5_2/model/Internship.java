@@ -22,6 +22,7 @@ public class Internship implements Serializable {
     private int applicantsCount;
     private int maxApplicants;
 
+
     public Internship() {}
 
     public Internship(String title, String companyName, LocalDate startDate, LocalDate endDate, int duration, String requirements) {

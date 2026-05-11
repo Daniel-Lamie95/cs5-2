@@ -82,7 +82,7 @@
         <div class="company-dashboard-internships-grid">
 
             <a th:each="row : ${internships}"
-               th:href="@{/internship-details(id=${row.id})}"
+               th:href="@{/internships/internship-details(id=${row.id})}"
                class="dashboard-internship-card">
 
                 <h3 th:text="${row.title}"></h3>

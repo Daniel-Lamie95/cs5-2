@@ -33,6 +33,9 @@ build/
 ### VS Code ###
 .vscode/
 
-# Local environment-specific Spring settings
-**/application.properties
+# Optional overrides (passwords, URLs) — not committed
+**/application-local.properties
+
+# H2 file database created at runtime
+/data/
 
