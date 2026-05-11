@@ -59,6 +59,26 @@
 
         </section>
 
+        <section class="company-dashboard-actions">
+
+            <h2>Quick Actions</h2>
+
+            <div class="company-dashboard-actions-grid">
+
+                <a th:href="@{/student-profile}" class="dashboard-action-card">
+                    <h3>Back to Profile</h3>
+                    <p>Check profile</p>
+                </a>
+
+
+                <a th:href="@{/build}" class="dashboard-action-card">
+                    <h3>CV Builder</h3>
+                    <p>Build your CV</p>
+                </a>
+
+            </div>
+        </section>
+
         <section class="company-dashboard-stats">
             <div class="dashboard-stat-card">
                 <h3 th:text="${appliedCount}">0</h3>

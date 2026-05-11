@@ -1,5 +1,5 @@
 package com.example.cs5_2.service;
-
+import java.time.LocalDate;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.repository.InternshipRepository;
 import org.springframework.stereotype.Service;
@@ -16,24 +16,29 @@ public class InternshipService {
     }
 
 
-    public String addInternship(Internship internship) {
+    public void addInternship(Internship internship) {
 
-        if (internship.getTitle() == null || internship.getTitle().isEmpty()) {
+        if (internship == null) {
+            throw new IllegalArgumentException("Internship is required");
+        }
+
+        if (isBlank(internship.getTitle())) {
             throw new IllegalArgumentException("Title is required");
         }
 
-        if (internship.getCompanyName() == null || internship.getCompanyName().isEmpty()) {
+        if (isBlank(internship.getCompanyName())) {
             throw new IllegalArgumentException("Company name is required");
+        }
+
+        if (internship.getDuration() <= 0) {
+            throw new IllegalArgumentException("Duration must be greater than zero");
         }
 
         internship.setApplicantsCount(0);
         internship.setMaxApplicants(5);
 
         repository.save(internship);
-
-        return "Internship added successfully!";
     }
-
 
 
     public List<Internship> getAllInternships() {
@@ -48,49 +53,51 @@ public class InternshipService {
 
 
 
-    public String updateInternship(Long id,
-                                   Internship updated) {
+    @SuppressWarnings("unused")
+    public Internship updateInternship(Long id, Internship updated) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("ID is required");
+        }
+
+        if (updated == null) {
+            throw new IllegalArgumentException("Internship is required");
+        }
+
+        // Required fields (similar to how student edits are validated)
+        if (isBlank(updated.getTitle())) {
+            throw new IllegalArgumentException("Title is required");
+        }
+
+        if (isBlank(updated.getCompanyName())) {
+            throw new IllegalArgumentException("Company name is required");
+        }
+
+        if (updated.getDuration() <= 0) {
+            throw new IllegalArgumentException("Duration must be greater than zero");
+        }
 
         Internship existing = findById(id);
 
-        if(existing == null){
-            throw new IllegalArgumentException(
-                    "Internship not found");
+        if (existing == null) {
+            throw new IllegalArgumentException("Internship not found");
         }
 
-        // Update only the fields that the company can edit from UI
-        if(updated.getStartDate()!=null){
-            existing.setStartDate(
-                    updated.getStartDate()
-            );
-        }
+        // Update allowed fields (mirror student update behavior: assign provided values)
+        existing.setTitle(updated.getTitle().trim());
+        existing.setCompanyName(updated.getCompanyName().trim());
+        existing.setStartDate(updated.getStartDate());
+        existing.setEndDate(updated.getEndDate());
+        existing.setDuration(updated.getDuration());
+        existing.setDescription(updated.getDescription());
+        existing.setPhotoPath(updated.getPhotoPath());
+        existing.setMaxApplicants(updated.getMaxApplicants());
 
-        if(updated.getEndDate()!=null){
-            existing.setEndDate(
-                    updated.getEndDate()
-            );
-        }
+        return repository.save(existing);
+    }
 
-        if(updated.getDuration()>0){
-            existing.setDuration(
-                    updated.getDuration()
-            );
-        }
-
-        if(updated.getRequirements()!=null &&
-                !updated.getRequirements().isEmpty()){
-
-            existing.setRequirements(
-                    updated.getRequirements()
-            );
-        }
-
-        // Note: applicantsCount and maxApplicants are NOT updated here
-        // as they are system-managed values
-
-        repository.save(existing);
-
-        return "Internship updated successfully!";
+    private static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
 
@@ -113,4 +120,36 @@ public class InternshipService {
         return repository.findByTitleContainingIgnoreCase(title);
     }
 
+    public String calculateRemainingTime(LocalDate startDate) {
+
+        if (startDate == null) {
+            return "No deadline";
+        }
+
+        LocalDate today = LocalDate.now();
+
+        if (startDate.isBefore(today)) {
+            return "Closed";
+        }
+
+        long days = java.time.temporal.ChronoUnit.DAYS
+                .between(today, startDate);
+
+        long weeks = days / 7;
+
+        long remainingDays = days % 7;
+
+        if (weeks > 0 && remainingDays > 0) {
+
+            return weeks + " week(s) and "
+                    + remainingDays + " day(s) left";
+        }
+
+        if (weeks > 0) {
+
+            return weeks + " week(s) left";
+        }
+
+        return remainingDays + " day(s) left";
+    }
 }

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0">
+
+    <title>
+        Internship Details
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body class="company-dashboard-page">
+
+<nav class="company-dashboard-navbar">
+
+    <div class="company-profile-logo">
+        🚀 Launchpad
+    </div>
+
+    <ul class="company-profile-links">
+
+        <li>
+            <a th:href="@{/student-dashboard}">
+                Home
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/internships}">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/logout}">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+<main class="company-profile-container">
+
+    <section class="company-profile-hero">
+
+        <h1>
+            Internship Details
+        </h1>
+
+        <p>
+            View internship details and apply.
+        </p>
+
+    </section>
+
+    <div th:if="${message}"
+
+         style="
+     background-color: #f8d7da;
+     color: #721c24;
+     padding: 12px;
+     margin: 20px;
+     border-radius: 4px;
+     border: 1px solid #f5c6cb;">
+
+    <span th:text="${message}">
+    </span>
+
+    </div>
+
+    <section class="company-profile-card">
+
+        <div class="company-profile-left">
+
+            <div class="company-profile-image">
+
+                <img th:src="${#strings.isEmpty(data.photoPath)} ? '/images/logo.png' : '/images/' + data.photoPath"
+                     alt="logo">
+
+            </div>
+
+            <h2 th:text="${data.title}">
+            </h2>
+
+        </div>
+
+        <div class="company-profile-right">
+
+            <h2>
+                Internship Information
+            </h2>
+
+            <div class="profile-row">
+
+            <span class="profile-label">
+                Internship Name
+            </span>
+
+                <span class="profile-value"
+                      th:text="${data.title}">
+            </span>
+
+            </div>
+
+            <div class="profile-row">
+
+            <span class="profile-label">
+                Company
+            </span>
+
+                <span class="profile-value"
+                      th:text="${data.companyName}">
+            </span>
+
+            </div>
+
+            <div class="profile-row">
+
+            <span class="profile-label">
+                Duration
+            </span>
+
+                <span class="profile-value"
+                      th:text="${data.duration}">
+            </span>
+
+            </div>
+
+            <div class="profile-row">
+
+            <span class="profile-label">
+                Description
+            </span>
+
+                <span class="profile-value"
+                      th:text="${data.description}">
+            </span>
+
+            </div>
+
+            <div class="profile-row">
+
+            <span class="profile-label">
+                Start Date
+            </span>
+
+                <span class="profile-value"
+                      th:text="${data.startDate}">
+            </span>
+
+            </div>
+
+            <div class="profile-row">
+
+            <span class="profile-label">
+                Remaining Time
+            </span>
+
+                <span class="profile-value"
+
+                      th:text=
+                              "${@internshipService
+                  .calculateRemainingTime(
+                  data.startDate)}">
+
+            </span>
+
+            </div>
+
+            <div class="profile-row">
+
+            <span class="profile-label">
+                Applicants
+            </span>
+
+                <span class="profile-value">
+
+                <span th:text="${data.applicantsCount}">
+                </span>
+
+                /
+
+                <span th:text="${data.maxApplicants}">
+                </span>
+
+            </span>
+
+            </div>
+
+            <div class="company-profile-buttons">
+
+                <form th:if="${showApplyButton}"
+                      th:action=
+                              "@{/internships/apply(id=${data.id})}"
+
+                      method="post">
+
+                    <button type="submit"
+                            class="profile-btn">
+
+                        Apply Internship
+
+                    </button>
+
+                </form>
+
+                <a th:if="${showOwnerEditButton}"
+                   th:href="@{/internships/edit(id=${data.id})}"
+                   class="profile-btn">
+
+                    Edit Internship
+
+                </a>
+
+                <a th:href="@{/internships}"
+                   class="profile-btn">
+
+                    Back
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

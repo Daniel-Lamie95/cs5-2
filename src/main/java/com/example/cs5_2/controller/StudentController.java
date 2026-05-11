@@ -23,8 +23,8 @@ public class StudentController {
     private final ApplicationService applicationService;
     
     //private final InternshipService internshipService;
-    
-    
+
+
     public StudentController(StudentService studentService, CompanyService companyService, ApplicationService applicationService, InternshipService internshipService) {
         this.studentService = studentService;
         this.companyService = companyService;
@@ -145,18 +145,22 @@ public class StudentController {
     }
 
    @PostMapping("/update")
-    public String updateStudent(@RequestParam String email,
-                                @ModelAttribute Student updated,
+    public String updateStudent(@ModelAttribute Student updated,
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
         try {
-            Student savedStudent = studentService.updateStudent(email, updated);
+            Object user = session.getAttribute("user");
+            if (!(user instanceof Student currentStudent)) {
+                return "redirect:/login";
+            }
+
+            Student savedStudent = studentService.updateStudent(currentStudent.getEmail(), updated);
             session.setAttribute("user", savedStudent);
             redirectAttributes.addFlashAttribute("message", "Profile updated successfully!");
             return "redirect:/student-profile";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "student-profile";
+            return "redirect:/student-profile";
         }
     }
    

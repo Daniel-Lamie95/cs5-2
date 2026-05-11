@@ -1,11 +1,15 @@
 package com.example.cs5_2.controller;
 
+import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
+import com.example.cs5_2.model.Student;
 import com.example.cs5_2.service.InternshipService;
+
+import jakarta.servlet.http.HttpSession;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,73 +24,17 @@ public class InternshipController {
         this.service = service;
     }
 
-
-    @GetMapping
-    public String viewInternships(@RequestParam(required = false) String keyword, Model model) {
-        List<Internship> internships = hasText(keyword)
-                ? service.searchInternshipsByTitle(keyword)
-                : service.getAllInternships();
-
-        addInternshipListModel(model, internships);
-        model.addAttribute("keyword", keyword == null ? "" : keyword);
-        return "Available-Internships";
-    }
-
     @GetMapping("/edit")
-    public String showEditForm(@RequestParam Long id, Model model) {
-        Internship internship = service.findById(id);
+    public String editForm(@RequestParam Long id,
+                           HttpSession session,
+                           Model model) {
 
-        if (internship == null) {
-            model.addAttribute("message", "Internship not found");
-            addInternshipListModel(model, service.getAllInternships());
-            return "Available-Internships";
+        Object companyObj = session.getAttribute("company");
+
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
         }
 
-        model.addAttribute("internship", internship);
-        model.addAttribute("data", InternshipEditData.from(internship));
-        return "edit-Internship-profile";
-    }
-
-    @PostMapping("/edit")
-    public String updateFromEditForm(@RequestParam Long id,
-                                     @RequestParam(required = false) Integer duration,
-                                     @RequestParam(required = false)
-                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                     LocalDate startDate,
-                                     @RequestParam(required = false) String description,
-                                     @RequestParam(required = false) String location,
-                                     @RequestParam(required = false) String field,
-                                     Model model) {
-        Internship internship = new Internship();
-        if (duration != null) {
-            internship.setDuration(duration);
-        }
-        internship.setStartDate(startDate);
-        internship.setRequirements(description);
-
-        // Ignore location and field as they come from company, not internship
-
-        return updateExistingInternship(id, internship, model);
-    }
-
-    private String updateExistingInternship(Long id, Internship internship, Model model) {
-        try {
-            service.updateInternship(id, internship);
-            return "redirect:/company-dashboard";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("message", e.getMessage());
-
-            Internship existing = service.findById(id);
-            Internship dataSource = existing == null ? internship : existing;
-            model.addAttribute("internship", dataSource);
-            model.addAttribute("data", InternshipEditData.from(dataSource));
-            return "edit-Internship-profile";
-        }
-    }
-
-
-    @GetMapping("/internship-details")
-    public String showInternshipDetails(@RequestParam Long id, Model model) {
         Internship internship = service.findById(id);
 
         if (internship == null) {
@@ -94,173 +42,208 @@ public class InternshipController {
             return "redirect:/internships";
         }
 
+        if (!internshipOwnedByCompany(internship, company)) {
+            model.addAttribute("message", "Not authorized to edit this internship");
+            return "redirect:/internships";
+        }
+
+        model.addAttribute("data", internship);
         model.addAttribute("internship", internship);
-        model.addAttribute("data", InternshipEditData.from(internship));
-        return "edit-Internship-profile"; // Reuse the edit template for viewing
+
+        return "edit-Internship-profile";
     }
 
-    private void addInternshipListModel(Model model, List<Internship> internships) {
-        model.addAttribute("internships", internships.stream()
-                .map(InternshipCard::from)
-                .toList());
-        model.addAttribute("totalInternships", internships.size());
-        model.addAttribute("totalApplicants", internships.stream().mapToInt(Internship::getApplicantsCount).sum());
-        model.addAttribute("activeInternships", internships.stream()
-                .filter(i -> i.getEndDate() != null && i.getEndDate().isAfter(LocalDate.now()))
-                .count());
-    }
+    @PostMapping("/edit")
+    public String submitEdit(@RequestParam Long id,
+                             @RequestParam(required = false) Integer duration,
+                             @RequestParam(required = false, name = "description") String description,
+                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                             @RequestParam(required = false) String photoPath,
+                             @RequestParam(required = false) String title,
+                             HttpSession session,
+                             Model model) {
 
-    private static void applyTemplateFields(Internship internship, String description) {
-        if (hasText(description)) {
-            internship.setRequirements(description);
-        }
-    }
+        Object companyObj = session.getAttribute("company");
 
-    private static boolean hasText(String value) {
-        return value != null && !value.trim().isEmpty();
-    }
-
-    private static String displayField(Internship internship) {
-        if (internship.getCompany() != null && hasText(internship.getCompany().getField())) {
-            return internship.getCompany().getField();
-        }
-        if (hasText(internship.getCompanyName())) {
-            return internship.getCompanyName();
-        }
-        if (hasText(internship.getRequirements())) {
-            return internship.getRequirements();
-        }
-        return "";
-    }
-
-    private static String displayLocation(Internship internship) {
-        if (internship.getCompany() != null && hasText(internship.getCompany().getLocation())) {
-            return internship.getCompany().getLocation();
-        }
-        return "";
-    }
-
-    private static String displayLogo(Internship internship) {
-        if (internship.getCompany() == null || !hasText(internship.getCompany().getLogo())) {
-            return "logo.png";
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
         }
 
-        String logo = internship.getCompany().getLogo().replace("\\", "/");
-        int slashIndex = logo.lastIndexOf('/');
-        return slashIndex >= 0 ? logo.substring(slashIndex + 1) : logo;
-    }
+        Internship existing = service.findById(id);
 
-    public static final class InternshipCard {
-        private final Long id;
-        private final String title;
-        private final String field;
-        private final LocalDate startDate;
-
-        private InternshipCard(Long id, String title, String field, LocalDate startDate) {
-            this.id = id;
-            this.title = title;
-            this.field = field;
-            this.startDate = startDate;
+        if (existing == null) {
+            model.addAttribute("message", "Internship not found");
+            return "redirect:/internships";
         }
 
-        public static InternshipCard from(Internship internship) {
-            return new InternshipCard(
-                    internship.getId(),
-                    internship.getTitle(),
-                    displayField(internship),
-                    internship.getStartDate()
-            );
+        if (!internshipOwnedByCompany(existing, company)) {
+            model.addAttribute("message", "Not authorized to edit this internship");
+            return "redirect:/internships";
         }
 
-        public Long getId() {
-            return id;
-        }
+        // Build an updated Internship object that contains required fields
+        Internship updated = new Internship();
+        // ensure required fields are present for service.updateInternship
+        updated.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : existing.getTitle());
+        updated.setCompanyName(existing.getCompanyName());
+        updated.setMaxApplicants(existing.getMaxApplicants());
 
-        public String getTitle() {
-            return title;
-        }
+        // apply editable fields from the form
+        updated.setDuration(duration != null ? duration : existing.getDuration());
+        updated.setDescription(description != null ? description.trim() : existing.getDescription());
+        updated.setStartDate(startDate != null ? startDate : existing.getStartDate());
+        updated.setEndDate(existing.getEndDate());
+        updated.setPhotoPath(
+                photoPath != null && !photoPath.trim().isEmpty()
+                        ? photoPath.trim()
+                        : existing.getPhotoPath());
 
-        public String getField() {
-            return field;
-        }
+        // Keep the existing company reference unchanged (do not edit company from internship form)
+        updated.setCompany(existing.getCompany());
 
-        public LocalDate getStartDate() {
-            return startDate;
+        try {
+            service.updateInternship(id, updated);
+            return "redirect:/internships/internship-details?id=" + id;
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("data", existing);
+            model.addAttribute("internship", existing);
+            return "edit-Internship-profile";
         }
     }
 
-    public static final class InternshipEditData {
-        private final Long id;
-        private final String logo;
-        private final String title;
-        private final String field;
-        private final int duration;
-        private final String description;
-        private final LocalDate startDate;
-        private final String location;
+    @GetMapping
+    public String viewInternships(
+            @RequestParam(required = false) String keyword,
+            Model model) {
 
-        private InternshipEditData(Long id,
-                                   String logo,
-                                   String title,
-                                   String field,
-                                   int duration,
-                                   String description,
-                                   LocalDate startDate,
-                                   String location) {
-            this.id = id;
-            this.logo = logo;
-            this.title = title;
-            this.field = field;
-            this.duration = duration;
-            this.description = description;
-            this.startDate = startDate;
-            this.location = location;
+        List<Internship> internships = hasText(keyword)
+                ? service.searchInternshipsByTitle(keyword)
+                : service.getAllInternships();
+
+        addInternshipListModel(model, internships);
+
+        model.addAttribute("keyword",
+                keyword == null ? "" : keyword);
+
+        return "Available-Internships";
+    }
+
+    @GetMapping("/internship-details")
+    public String showInternshipDetails(
+            @RequestParam Long id,
+            HttpSession session,
+            Model model) {
+
+        Internship internship = service.findById(id);
+
+        if (internship == null) {
+
+            model.addAttribute("message",
+                    "Internship not found");
+
+            return "redirect:/internships";
         }
 
-        public static InternshipEditData from(Internship internship) {
-            return new InternshipEditData(
-                    internship.getId(),
-                    displayLogo(internship),
-                    hasText(internship.getTitle()) ? internship.getTitle() : "New Internship",
-                    displayField(internship),
-                    internship.getDuration(),
-                    internship.getRequirements(),
-                    internship.getStartDate(),
-                    displayLocation(internship)
-            );
+        model.addAttribute("internship",
+                internship);
+
+        model.addAttribute("data",
+                internship);
+
+        boolean showApplyButton =
+                session.getAttribute("user")
+                        instanceof Student;
+
+        boolean showOwnerEditButton = false;
+
+        Object companySession = session.getAttribute("company");
+
+        if (companySession instanceof Company loggedIn) {
+
+            showOwnerEditButton =
+                    internshipOwnedByCompany(
+                            internship,
+                            loggedIn);
         }
 
-        public Long getId() {
-            return id;
+        model.addAttribute("showApplyButton",
+                showApplyButton);
+
+        model.addAttribute("showOwnerEditButton",
+                showOwnerEditButton);
+
+        return "internship-details";
+    }
+
+    private static boolean internshipOwnedByCompany(
+            Internship internship,
+            Company company) {
+
+        if (internship.getCompany() != null
+                && company.getId() != null) {
+
+            return company.getId()
+                    .equals(
+                            internship.getCompany()
+                                    .getId());
         }
 
-        public String getLogo() {
-            return logo;
+        if (internship.getCompanyName() != null
+                && company.getName() != null) {
+
+            return internship.getCompanyName()
+                    .equalsIgnoreCase(
+                            company.getName());
         }
 
-        public String getTitle() {
-            return title;
-        }
+        return false;
+    }
 
-        public String getField() {
-            return field;
-        }
 
-        public int getDuration() {
-            return duration;
-        }
 
-        public String getDescription() {
-            return description;
-        }
 
-        public LocalDate getStartDate() {
-            return startDate;
-        }
 
-        public String getLocation() {
-            return location;
-        }
+
+
+    private void addInternshipListModel(
+            Model model,
+            List<Internship> internships) {
+
+        model.addAttribute("internships",
+                internships);
+
+        model.addAttribute("totalInternships",
+                internships.size());
+
+        model.addAttribute("totalApplicants",
+
+                internships.stream()
+                        .mapToInt(
+                                Internship::getApplicantsCount)
+                        .sum());
+
+        model.addAttribute("activeInternships",
+
+                internships.stream()
+
+                        .filter(i ->
+                                i.getEndDate() != null
+                                        &&
+                                        i.getEndDate()
+                                                .isAfter(
+                                                        LocalDate.now()
+                                                ))
+
+                        .count());
+    }
+
+    private static boolean hasText(
+            String value) {
+
+        return value != null
+                &&
+                !value.trim().isEmpty();
     }
 }
 

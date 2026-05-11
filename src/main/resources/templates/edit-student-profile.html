@@ -43,7 +43,6 @@
                 <h2>Edit Information</h2>
 
                 <form th:action="@{/update}" th:object="${student}" method="post" enctype="multipart/form-data">
-                    <input type="hidden" th:field="*{email}">
 
                     <div class="profile-row">
                         <label for="studentName">Full Name</label>

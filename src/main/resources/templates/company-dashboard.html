@@ -119,7 +119,7 @@
             </p>
 
             <a th:each="act : ${postedInternships}"
-               th:href="@{/internship-details(id=${act.id})}"
+               th:href="@{/internships/internship-details(id=${act.id})}"
                class="dashboard-internship-card">
 
                 <h3 th:text="${act.title}"></h3>

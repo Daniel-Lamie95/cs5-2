@@ -15,9 +15,9 @@
     <div class="company-profile-logo">🚀 Launchpad</div>
 
     <ul class="company-profile-links">
-        <li><a th:href="@{/index}">Home</a></li>
-        <li><a th:href="@{/company-dashboard}">Dashboard</a></li>
-        <li><a th:href="@{/logout}">Logout</a></li>
+        <li><a th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/company/dashboard}">Dashboard</a></li>
+        <li><a th:href="@{/company/logout}">Logout</a></li>
     </ul>
 
 </nav>
@@ -35,12 +35,12 @@
         <div class="company-profile-left">
 
             <div class="company-profile-image">
-                <img th:src="@{'/images/' + ${data.logo}}" alt="Logo">
+                <img th:src="${#strings.isEmpty(data.photoPath)} ? '/images/logo.png' : '/images/' + data.photoPath" alt="Internship">
             </div>
 
             <h2 th:text="${data.title}"></h2>
 
-            <span th:text="${data.field}"></span>
+            <span th:text="${data.company.field}"></span>
 
         </div>
 
@@ -50,6 +50,23 @@
             <h2>Edit Internship</h2>
 
             <form th:action="@{/internships/edit(id=${internship.id})}" method="post">
+
+                <div class="profile-row">
+                    <label class="profile-label">Internship Name</label>
+
+                    <input type="text"
+                           name="title"
+                           th:value="${data.title}">
+                </div>
+
+                <div class="profile-row">
+                    <label class="profile-label">Photo File Name</label>
+
+                    <input type="text"
+                           name="photoPath"
+                           placeholder="example: ad1.png"
+                           th:value="${data.photoPath}">
+                </div>
 
                 <div class="profile-row">
                     <label class="profile-label">Duration</label>
@@ -80,27 +97,11 @@
                            th:value="${data.startDate}">
                 </div>
 
-                <div class="profile-row">
-
-                    <label class="profile-label">Location</label>
-
-                    <input type="text"
-                           name="location"
-                           th:value="${data.location}">
-                </div>
-
-                <div class="profile-row">
-
-                    <label class="profile-label">Field / Industry</label>
-
-                    <input type="text"
-                           name="field"
-                           th:value="${data.field}">
-                </div>
+                <!-- Company fields removed from internship edit form: edits to company profile must use Company edit page -->
 
                 <div class="company-profile-buttons">
 
-                    <a th:href="@{/company-dashboard}"
+                    <a th:href="@{/company/dashboard}"
                        class="profile-btn">
                         Cancel
                     </a>

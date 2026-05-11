@@ -18,19 +18,21 @@ public class Internship implements Serializable {
     private LocalDate startDate;
     private LocalDate endDate;
     private int duration;
-    private String requirements;
+    private String description;
+    private String photoPath;
     private int applicantsCount;
     private int maxApplicants;
 
+
     public Internship() {}
 
-    public Internship(String title, String companyName, LocalDate startDate, LocalDate endDate, int duration, String requirements) {
+    public Internship(String title, String companyName, LocalDate startDate, LocalDate endDate, int duration, String description) {
         this.title = title;
         this.companyName = companyName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.duration = duration;
-        this.requirements = requirements;
+        this.description = description;
     }
 
     @ManyToMany(mappedBy = "appliedInternships")
@@ -79,12 +81,20 @@ public class Internship implements Serializable {
         this.duration = duration;
     }
 
-    public String getRequirements() {
-        return requirements;
+    public String getDescription() {
+        return description;
     }
 
-    public void setRequirements(String requirements) {
-        this.requirements = requirements;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
     public int getMaxApplicants() {
@@ -135,7 +145,8 @@ public class Internship implements Serializable {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", duration=" + duration +
-                ", requirements='" + requirements + '\'' +
+                ", description='" + description + '\'' +
+                ", photoPath='" + photoPath + '\'' +
                 ", applicantsCount=" + applicantsCount +
                 ", maxApplicants=" + maxApplicants +
                 '}';
