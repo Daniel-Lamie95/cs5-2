@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile - Launchpad</title>
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .cv-container { max-width: 850px; margin: 50px auto; background: white; padding: 50px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-top: 10px solid #1d1b5b; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { margin: 0; color: #1d1b5b; font-size: 32px; }
+        .header p { color: #666; margin: 5px 0; }
+        .section { margin-bottom: 30px; }
+        .section-title { border-bottom: 2px solid #1d1b5b; color: #1d1b5b; font-size: 18px; font-weight: bold; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; }
+        .entry { margin-bottom: 15px; }
+        .entry-header { display: flex; justify-content: space-between; font-weight: bold; }
+        .toolbar { max-width: 850px; margin: 20px auto; display: flex; gap: 10px; justify-content: flex-end; }
+        .btn { padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; cursor: pointer; border: none; }
+        .btn-edit { background: #1d1b5b; color: white; }
+        .btn-pdf { background: #4fc3f7; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="toolbar">
+    <a th:href="@{/build}" class="btn btn-edit">✏️ Edit CV</a>
+    <a th:href="@{/download}" class="btn btn-pdf">📄 Download PDF</a>
+    <a th:href="@{/student-dashboard}" class="btn" style="background:#ccc;">Back Home</a>
+</div>
+
+<div class="cv-container">
+    <div class="header">
+        <h1 th:text="${cv.name}">Name</h1>
+        <p th:text="${cv.jobTitle}">Job Title</p>
+        <p th:text="${cv.email + ' • ' + cv.location}">Email • Location</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Education</div>
+        <div th:each="edu : ${cv.educationList}" th:if="${!#strings.isEmpty(edu.institution)}" class="entry">
+            <div class="entry-header">
+                <span th:text="${edu.degree}">Degree</span>
+                <span th:text="${edu.graduationYear}">Year</span>
+            </div>
+            <div th:text="${edu.institution}">Institution</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Experience</div>
+        <div th:each="exp : ${cv.experiences}" class="entry">
+            <div class="entry-header">
+                <span th:text="${exp.title}">Position</span>
+                <span th:text="${exp.organization}">Organization</span>
+            </div>
+            <p th:text="${exp.description}" style="margin-top: 5px; color: #444;"></p>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Skills & Certifications</div>
+        <p th:text="${cv.skills}"></p>
+        <p th:if="${!#strings.isEmpty(cv.certifications)}" th:text="${'Certifications: ' + cv.certifications}"></p>
+    </div>
+</div>
+
+</body>
+</html>

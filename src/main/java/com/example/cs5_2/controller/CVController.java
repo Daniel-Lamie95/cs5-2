@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,63 +28,87 @@ public class CVController {
     @ModelAttribute("userCV")
     public BuildCV userCV(HttpSession session) {
         Student student = (Student) session.getAttribute("user");
-        BuildCV cv = null;
+        if (student == null) return new BuildCV();
 
-        if (student != null) {
-            cv = cvRepository.findByStudent(student);
-        }
-
+        BuildCV cv = cvRepository.findByStudent(student);
         if (cv == null) {
             cv = new BuildCV();
-            if (student != null) {
-                cv.setStudent(student);
-                cv.setName(student.getName());
-                cv.setEmail(student.getEmail());
-            }
+            cv.setStudent(student);
+            cv.setName(student.getName());
+            cv.setEmail(student.getEmail());
 
-            // Initialize with default Education levels
             List<BuildCV.EducationEntry> defaultEdu = new ArrayList<>();
             List<String> levels = Arrays.asList("High School", "Bachelor's Degree", "Master's Degree", "Doctorate");
-            
             for (String level : levels) {
                 BuildCV.EducationEntry entry = new BuildCV.EducationEntry();
                 entry.setDegree(level);
                 defaultEdu.add(entry);
             }
             cv.setEducationList(defaultEdu);
-
-            // Initialize with one empty experience
-            cv.setExperiences(new ArrayList<>());
-            cv.getExperiences().add(new BuildCV.ExperienceEntry());
+            cv.setExperiences(new ArrayList<>(List.of(new BuildCV.ExperienceEntry())));
         }
         return cv;
     }
 
     @GetMapping("/build")
     public String showForm(HttpSession session) {
-        if (session.getAttribute("user") == null) {
-            return "redirect:/login";
-        }
+        if (session.getAttribute("user") == null) return "redirect:/login";
         return "cv";
     }
 
-    @PostMapping("/download")
-    public ResponseEntity<byte[]> downloadPdf(@ModelAttribute("userCV") BuildCV cv, HttpSession session) {
+    @PostMapping("/save")
+    public String saveCV(@ModelAttribute("userCV") BuildCV formData, HttpSession session) {
+        Student student = (Student) session.getAttribute("user");
+        if (student == null) return "redirect:/login";
+
+        BuildCV existingCV = cvRepository.findByStudent(student);
+
+        if (existingCV != null) {
+            // Map form data to existing managed entity
+            existingCV.setName(formData.getName());
+            existingCV.setJobTitle(formData.getJobTitle());
+            existingCV.setEmail(formData.getEmail());
+            existingCV.setLocation(formData.getLocation());
+            existingCV.setSkills(formData.getSkills());
+            existingCV.setCertifications(formData.getCertifications());
+            
+            // Re-sync collections
+            existingCV.getEducationList().clear();
+            existingCV.getEducationList().addAll(formData.getEducationList());
+            existingCV.getExperiences().clear();
+            existingCV.getExperiences().addAll(formData.getExperiences());
+
+            cvRepository.save(existingCV);
+        } else {
+            formData.setStudent(student);
+            cvRepository.save(formData);
+        }
+        return "redirect:/view-cv";
+    }
+
+    @GetMapping("/view-cv")
+    public String viewCV(HttpSession session, Model model) {
+        Student student = (Student) session.getAttribute("user");
+        if (student == null) return "redirect:/login";
+
+        BuildCV cv = cvRepository.findByStudent(student);
+        if (cv == null) return "redirect:/build";
+
+        model.addAttribute("cv", cv);
+        return "cv-view";
+    }
+
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadPdf(HttpSession session) {
         Student student = (Student) session.getAttribute("user");
         if (student == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        cv.setStudent(student);
-        cvRepository.save(cv);
-
+        BuildCV cv = cvRepository.findByStudent(student);
         byte[] pdfBytes = cvService.generatePdf(cv);
-        String filename = (cv.getName() != null && !cv.getName().isEmpty()) 
-                          ? cv.getName().replace(" ", "_") + "_CV.pdf" 
-                          : "CV.pdf";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(ContentDisposition.attachment().filename(filename).build());
-
+        headers.setContentDisposition(ContentDisposition.attachment().filename("CV.pdf").build());
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 }

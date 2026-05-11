@@ -64,7 +64,7 @@
         <p>Fill in your academic and professional history below.</p>
     </header>
 
-    <form th:action="@{/download}" th:object="${userCV}" method="post">
+    <form th:action="@{/save}" th:object="${userCV}" method="post">
         
         <!-- 1. PERSONAL INFO -->
         <div class="cv-form-section">
@@ -152,7 +152,8 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-download">Download My PDF</button>
+        <button type="submit" class="btn-download">View my CV</button>
+      
     </form>
 </div>
 
