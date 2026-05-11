@@ -126,7 +126,7 @@
 
                 <p th:text="${act.company != null ? act.company.field : act.companyName}"></p>
 
-                <span th:text="${#dates.format(act.startDate, 'MMMM yyyy') + ' - ' + act.duration + ' months'}"></span>
+                <span th:text="${#temporals.format(act.startDate, 'MMMM yyyy') + ' - ' + act.duration + ' months'}"></span>
 
             </a>
 

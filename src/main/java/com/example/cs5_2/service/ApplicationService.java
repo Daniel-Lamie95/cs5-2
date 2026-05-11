@@ -3,6 +3,7 @@ package com.example.cs5_2.service;
 import com.example.cs5_2.model.*;
 import com.example.cs5_2.repository.ApplicationRepository;
 import com.example.cs5_2.repository.BuildCVRepository;
+import com.example.cs5_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,13 +15,16 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final InternshipService internshipService;
     private final BuildCVRepository buildCVRepository;
+    private final StudentRepository studentRepository;
 
     public ApplicationService(ApplicationRepository applicationRepository,
                               InternshipService internshipService,
-                              BuildCVRepository buildCVRepository) {
+                              BuildCVRepository buildCVRepository,
+                              StudentRepository studentRepository) {
         this.applicationRepository = applicationRepository;
         this.internshipService = internshipService;
         this.buildCVRepository = buildCVRepository;
+        this.studentRepository = studentRepository;
     }
 
     // APPLY
@@ -34,10 +38,12 @@ public class ApplicationService {
             throw new IllegalArgumentException("Internship not found");
         }
 
-        // lightweight student object (your current design)
-        Student student = new Student();
-        student.setId(studentId);
-        student.setName(studentName);
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        if (student.getName() == null && studentName != null) {
+            student.setName(studentName);
+        }
 
         // AUTO GET CV FROM DB
         BuildCV cv = buildCVRepository.findByStudent(student);

@@ -54,7 +54,9 @@
                 <div class="profile-row">
                     <label class="profile-label">Duration</label>
 
-                    <input type="text"
+                    <input type="number"
+                           min="1"
+                           step="1"
                            name="duration"
                            th:value="${data.duration}">
                 </div>

@@ -11,10 +11,6 @@ import java.util.List;
 @Entity
 public class Student extends User implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String major;
     private String university;
     private String phoneNum;
@@ -71,15 +67,6 @@ public class Student extends User implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    // id getter/setter inherited from User
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getMajor() {
         return major;

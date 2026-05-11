@@ -2,9 +2,7 @@ package com.example.cs5_2.model;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "users")
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public abstract class User {
 
     @Id
@@ -27,6 +25,10 @@ public abstract class User {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
