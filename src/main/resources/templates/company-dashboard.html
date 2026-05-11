@@ -80,14 +80,11 @@
         </div>
 
         <div class="dashboard-stat-card">
-            <h3>48</h3>
-            <p>Applicants</p>
+            <h3 th:text="${totalApplicants}"></h3>
+            <p>Total Applicants</p>
         </div>
 
-        <div class="dashboard-stat-card">
-            <h3>6</h3>
-            <p>Active Internships</p>
-        </div>
+
 
     </section>
 
@@ -97,7 +94,7 @@
 
         <div class="company-dashboard-actions-grid">
 
-            <a th:href="@{/company-post-internship}" class="dashboard-action-card">
+            <a th:href="@{/company/post-internship}" class="dashboard-action-card">
                 <h3>Post Internship</h3>
                 <p>Add a new internship opportunity</p>
             </a>
@@ -127,9 +124,9 @@
 
                 <h3 th:text="${act.title}"></h3>
 
-                <p th:text="${act.field}"></p>
+                <p th:text="${act.company != null ? act.company.field : act.companyName}"></p>
 
-                <span th:text="${#dates.format(act.startDate, 'MMMM yyyy') + ' - ' + act.duration}"></span>
+                <span th:text="${#dates.format(act.startDate, 'MMMM yyyy') + ' - ' + act.duration + ' months'}"></span>
 
             </a>
 

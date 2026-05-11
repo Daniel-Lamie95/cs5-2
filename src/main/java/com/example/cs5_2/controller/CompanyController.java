@@ -56,12 +56,64 @@ public class CompanyController {
             return "redirect:/login";
         }
 
-
         var postedInternships = internshipService.getInternshipsByCompany(company.getName());
-        model.addAttribute("postedInternships",
-                postedInternships != null ? postedInternships : Collections.emptyList());
+        postedInternships = postedInternships != null ? postedInternships : Collections.emptyList();
+        
+        // Calculate statistics
+        int totalApplicants = (int) postedInternships.stream()
+                .mapToInt(Internship::getApplicantsCount)
+                .sum();
+        
+        long activeInternships = postedInternships.stream()
+                .filter(i -> i.getEndDate() != null && i.getEndDate().isAfter(java.time.LocalDate.now()))
+                .count();
+
+        model.addAttribute("postedInternships", postedInternships);
+        model.addAttribute("totalApplicants", totalApplicants);
+        model.addAttribute("activeInternships", activeInternships);
         model.addAttribute("company", company);
         return "company-dashboard";
+    }
+
+    @GetMapping("/post-internship")
+    public String showPostInternshipForm(HttpSession session, Model model) {
+        Object companyObj = session.getAttribute("company");
+
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("internship", new Internship());
+        model.addAttribute("company", company);
+        return "company-post-internship";
+    }
+
+    @PostMapping("/post-internship")
+    public String postInternship(@ModelAttribute Internship internship,
+                                 HttpSession session,
+                                 Model model) {
+        Object companyObj = session.getAttribute("company");
+
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
+        }
+
+        try {
+            // Set company name and company reference
+            internship.setCompanyName(company.getName());
+            internship.setCompany(company);
+
+            // Save internship
+            internshipService.addInternship(internship);
+
+            return "redirect:/company/dashboard";
+
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("internship", internship);
+            model.addAttribute("company", company);
+            return "company-post-internship";
+        }
     }
 
     @GetMapping("/profile")
