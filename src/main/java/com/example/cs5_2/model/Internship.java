@@ -147,6 +147,14 @@ public class Internship implements Serializable {
         return location;
     }
 
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     @Override
     public String toString() {
         return "Internship{" +

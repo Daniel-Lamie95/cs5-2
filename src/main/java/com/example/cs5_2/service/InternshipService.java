@@ -92,6 +92,8 @@ public class InternshipService {
         existing.setDescription(updated.getDescription());
         existing.setPhotoPath(updated.getPhotoPath());
         existing.setMaxApplicants(updated.getMaxApplicants());
+        existing.setField(updated.getField());
+        existing.setLocation(updated.getLocation());
 
         return repository.save(existing);
     }
