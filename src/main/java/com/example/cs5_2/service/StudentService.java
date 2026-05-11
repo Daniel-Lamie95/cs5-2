@@ -1,6 +1,6 @@
 package com.example.cs5_2.service;
 
-import com.example.cs5_2.allvalidations.StudentValidation;
+
 import com.example.cs5_2.model.Application;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.model.Student;
@@ -27,6 +27,14 @@ public class StudentService {
             throw new IllegalArgumentException("Password is required");
         } else if (student.getPassword().length() < 8) {
             throw new IllegalArgumentException("Password length must be at least 8 characters");
+        } else if (student.getName() == null || student.getName().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        } else if (student.getName().length() < 3) {
+            throw new IllegalArgumentException("Name must be at least 3 chars");
+        } else if (student.getMajor() == null || student.getMajor().isEmpty()) {
+            throw new IllegalArgumentException("Major is required");
+        } else if (student.getUniversity() == null || student.getUniversity().isEmpty()) {
+            throw new IllegalArgumentException("University is required");
         } else {
             // Normalize email before saving to database
             student.setEmail(student.getEmail().trim().toLowerCase());
@@ -53,11 +61,21 @@ public class StudentService {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
-        // Normalize email input for lookup
+
         email = email.trim().toLowerCase();
 
-        // Validate updated student using StudentValidation
-        StudentValidation.validateUpdate(updated);
+        if (updated == null) {
+            throw new IllegalArgumentException("Student is required");
+        }
+        if (updated.getName() == null || updated.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        if (updated.getMajor() == null || updated.getMajor().trim().isEmpty()) {
+            throw new IllegalArgumentException("Major is required");
+        }
+        if (updated.getUniversity() == null || updated.getUniversity().trim().isEmpty()) {
+            throw new IllegalArgumentException("University is required");
+        }
 
         Student existingStudent = studentRepo.findByEmail(email);
         if (existingStudent == null) {
