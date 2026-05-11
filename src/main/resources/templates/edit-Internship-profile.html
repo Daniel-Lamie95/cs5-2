@@ -60,12 +60,12 @@
                 </div>
 
                 <div class="profile-row">
-                    <label class="profile-label">Photo File Name</label>
-
-                    <input type="text"
-                           name="photoPath"
-                           placeholder="example: ad1.png"
-                           th:value="${data.photoPath}">
+                    <label for="photoInput" class="profile-label">Select Internship Picture</label>
+                    <div>
+                        <input type="file" id="photoInput" accept="image/*">
+                        <input type="hidden" name="photoPath" id="photoPath" th:value="${data.photoPath}">
+                        <p id="selectedPhoto" style="margin-top: 8px; font-size: 0.9em; color: #666;"></p>
+                    </div>
                 </div>
 
                 <div class="profile-row">
