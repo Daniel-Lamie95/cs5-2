@@ -48,22 +48,6 @@ public class InternshipService {
 
 
 
-    public String deleteInternship(Long id) {
-
-        Internship i = findById(id);
-
-        if(i == null){
-            throw new IllegalArgumentException(
-                    "Internship not found");
-        }
-
-        repository.delete(i);
-
-        return "Internship deleted successfully!";
-    }
-
-
-
     public String updateInternship(Long id,
                                    Internship updated) {
 
@@ -74,7 +58,7 @@ public class InternshipService {
                     "Internship not found");
         }
 
-
+        // Update only the fields that the company can edit from UI
         if(updated.getStartDate()!=null){
             existing.setStartDate(
                     updated.getStartDate()
@@ -101,47 +85,14 @@ public class InternshipService {
             );
         }
 
-        if(updated.getMaxApplicants()>0){
-            existing.setMaxApplicants(
-                    updated.getMaxApplicants()
-            );
-        }
-
+        // Note: applicantsCount and maxApplicants are NOT updated here
+        // as they are system-managed values
 
         repository.save(existing);
 
         return "Internship updated successfully!";
     }
 
-
-
-
-    public String applyToInternship(Long id){
-
-        Internship internship = findById(id);
-
-        if(internship==null){
-            throw new IllegalArgumentException(
-                    "Internship not found");
-        }
-
-
-        if(internship.getApplicantsCount()
-                >= internship.getMaxApplicants()){
-
-            throw new IllegalArgumentException(
-                    "Application limit reached!"
-            );
-        }
-
-        internship.setApplicantsCount(
-                internship.getApplicantsCount()+1
-        );
-
-        repository.save(internship);
-
-        return "Application successful!";
-    }
 
 
 

@@ -21,44 +21,16 @@ public class InternshipController {
     }
 
 
-    @GetMapping("/new")
+    @GetMapping
+    public String viewInternships(@RequestParam(required = false) String keyword, Model model) {
+        List<Internship> internships = hasText(keyword)
+                ? service.searchInternshipsByTitle(keyword)
+                : service.getAllInternships();
 
-    public String showForm(Model model) {
-        Internship internship = new Internship();
-        model.addAttribute("internship", internship);
-        model.addAttribute("data", InternshipEditData.from(internship));
-        return "edit-Internship-profile";
+        addInternshipListModel(model, internships);
+        model.addAttribute("keyword", keyword == null ? "" : keyword);
+        return "Available-Internships";
     }
-
-
-    @PostMapping
-    public String createInternship(@ModelAttribute Internship internship,
-                                   @RequestParam(required = false) String description,
-                                   Model model) {
-        try {
-            applyTemplateFields(internship, description);
-            service.addInternship(internship);
-            return "redirect:/internships";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("message", e.getMessage());
-            model.addAttribute("internship", internship);
-            model.addAttribute("data", InternshipEditData.from(internship));
-            return "edit-Internship-profile";
-        }
-    }
-     @GetMapping
-     public String viewInternships(@RequestParam(required = false) String keyword, Model model) {
-         List<Internship> internships = hasText(keyword)
-                 ? service.searchInternshipsByTitle(keyword)
-                 : service.getAllInternships();
-
-         addInternshipListModel(model, internships);
-         model.addAttribute("keyword", keyword == null ? "" : keyword);
-         return "Available-Internships";
-     }
-
-
-
 
     @GetMapping("/edit")
     public String showEditForm(@RequestParam Long id, Model model) {
@@ -82,6 +54,8 @@ public class InternshipController {
                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                      LocalDate startDate,
                                      @RequestParam(required = false) String description,
+                                     @RequestParam(required = false) String location,
+                                     @RequestParam(required = false) String field,
                                      Model model) {
         Internship internship = new Internship();
         if (duration != null) {
@@ -90,22 +64,15 @@ public class InternshipController {
         internship.setStartDate(startDate);
         internship.setRequirements(description);
 
-        return updateExistingInternship(id, internship, model);
-    }
+        // Ignore location and field as they come from company, not internship
 
-    @PostMapping("/update")
-    public String updateInternship(@RequestParam Long id,
-                                   @ModelAttribute Internship internship,
-                                   @RequestParam(required = false) String description,
-                                   Model model) {
-        applyTemplateFields(internship, description);
         return updateExistingInternship(id, internship, model);
     }
 
     private String updateExistingInternship(Long id, Internship internship, Model model) {
         try {
             service.updateInternship(id, internship);
-            return "redirect:/internships";
+            return "redirect:/company-dashboard";
         } catch (IllegalArgumentException e) {
             model.addAttribute("message", e.getMessage());
 
@@ -117,19 +84,20 @@ public class InternshipController {
         }
     }
 
-     @GetMapping("/search")
-     public String searchInternships(@RequestParam(required = false) String query,
-                                     @RequestParam(required = false) String keyword,
-                                     Model model) {
-         String searchTerm = hasText(query) ? query : keyword;
-         List<Internship> internships = hasText(searchTerm)
-                 ? service.searchInternshipsByTitle(searchTerm)
-                 : service.getAllInternships();
 
-         addInternshipListModel(model, internships);
-         model.addAttribute("keyword", searchTerm == null ? "" : searchTerm);
-         return "Available-Internships";
-     }
+    @GetMapping("/internship-details")
+    public String showInternshipDetails(@RequestParam Long id, Model model) {
+        Internship internship = service.findById(id);
+
+        if (internship == null) {
+            model.addAttribute("message", "Internship not found");
+            return "redirect:/internships";
+        }
+
+        model.addAttribute("internship", internship);
+        model.addAttribute("data", InternshipEditData.from(internship));
+        return "edit-Internship-profile"; // Reuse the edit template for viewing
+    }
 
     private void addInternshipListModel(Model model, List<Internship> internships) {
         model.addAttribute("internships", internships.stream()

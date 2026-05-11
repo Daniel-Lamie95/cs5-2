@@ -41,17 +41,17 @@
     <section class="company-dashboard-stats">
 
         <div class="dashboard-stat-card">
-            <h3>12</h3>
+            <h3 th:text="${totalInternships}">12</h3>
             <p>Posted Internships</p>
         </div>
 
         <div class="dashboard-stat-card">
-            <h3>48</h3>
+            <h3 th:text="${totalApplicants}">48</h3>
             <p>Applicants</p>
         </div>
 
         <div class="dashboard-stat-card">
-            <h3>6</h3>
+            <h3 th:text="${activeInternships}">6</h3>
             <p>Active Internships</p>
         </div>
 
@@ -61,7 +61,7 @@
 
         <div class="search-box">
 
-            <form action="" method="get">
+            <form th:action="@{/internships}" method="get">
 
                 <input type="text"
                        name="keyword"
@@ -100,4 +100,4 @@
 </main>
 
 </body>
-</html>l>
+</html>

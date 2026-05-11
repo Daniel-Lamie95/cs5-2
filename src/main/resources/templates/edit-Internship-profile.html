@@ -49,7 +49,7 @@
 
             <h2>Edit Internship</h2>
 
-            <form method="post">
+            <form th:action="@{/internships/edit(id=${internship.id})}" method="post">
 
                 <div class="profile-row">
                     <label class="profile-label">Duration</label>
