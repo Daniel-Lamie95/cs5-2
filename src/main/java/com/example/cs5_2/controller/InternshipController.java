@@ -24,6 +24,94 @@ public class InternshipController {
         this.service = service;
     }
 
+    @GetMapping("/edit")
+    public String editForm(@RequestParam Long id,
+                           HttpSession session,
+                           Model model) {
+
+        Object companyObj = session.getAttribute("company");
+
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
+        }
+
+        Internship internship = service.findById(id);
+
+        if (internship == null) {
+            model.addAttribute("message", "Internship not found");
+            return "redirect:/internships";
+        }
+
+        if (!internshipOwnedByCompany(internship, company)) {
+            model.addAttribute("message", "Not authorized to edit this internship");
+            return "redirect:/internships";
+        }
+
+        model.addAttribute("data", internship);
+        model.addAttribute("internship", internship);
+
+        return "edit-Internship-profile";
+    }
+
+    @PostMapping("/edit")
+    public String submitEdit(@RequestParam Long id,
+                             @RequestParam(required = false) Integer duration,
+                             @RequestParam(required = false, name = "description") String description,
+                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                             @RequestParam(required = false) String photoPath,
+                             @RequestParam(required = false) String title,
+                             HttpSession session,
+                             Model model) {
+
+        Object companyObj = session.getAttribute("company");
+
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
+        }
+
+        Internship existing = service.findById(id);
+
+        if (existing == null) {
+            model.addAttribute("message", "Internship not found");
+            return "redirect:/internships";
+        }
+
+        if (!internshipOwnedByCompany(existing, company)) {
+            model.addAttribute("message", "Not authorized to edit this internship");
+            return "redirect:/internships";
+        }
+
+        // Build an updated Internship object that contains required fields
+        Internship updated = new Internship();
+        // ensure required fields are present for service.updateInternship
+        updated.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : existing.getTitle());
+        updated.setCompanyName(existing.getCompanyName());
+        updated.setMaxApplicants(existing.getMaxApplicants());
+
+        // apply editable fields from the form
+        updated.setDuration(duration != null ? duration : existing.getDuration());
+        updated.setDescription(description != null ? description.trim() : existing.getDescription());
+        updated.setStartDate(startDate != null ? startDate : existing.getStartDate());
+        updated.setEndDate(existing.getEndDate());
+        updated.setPhotoPath(
+                photoPath != null && !photoPath.trim().isEmpty()
+                        ? photoPath.trim()
+                        : existing.getPhotoPath());
+
+        // Keep the existing company reference unchanged (do not edit company from internship form)
+        updated.setCompany(existing.getCompany());
+
+        try {
+            service.updateInternship(id, updated);
+            return "redirect:/internships/internship-details?id=" + id;
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("data", existing);
+            model.addAttribute("internship", existing);
+            return "edit-Internship-profile";
+        }
+    }
+
     @GetMapping
     public String viewInternships(
             @RequestParam(required = false) String keyword,
@@ -112,95 +200,11 @@ public class InternshipController {
         return false;
     }
 
-    @GetMapping("/edit")
-    public String showEditForm(
-            @RequestParam Long id,
-            Model model) {
 
-        Internship internship = service.findById(id);
 
-        if (internship == null) {
 
-            model.addAttribute("message",
-                    "Internship not found");
 
-            return "redirect:/internships";
-        }
 
-        model.addAttribute("internship",
-                internship);
-
-        model.addAttribute("data",
-                internship);
-
-        return "edit-Internship-profile";
-    }
-
-    @PostMapping("/edit")
-    public String updateFromEditForm(
-
-            @RequestParam Long id,
-
-            @RequestParam(required = false)
-            Integer duration,
-
-            @RequestParam(required = false)
-            @DateTimeFormat(
-                    iso = DateTimeFormat.ISO.DATE)
-            LocalDate startDate,
-
-            @RequestParam(required = false)
-            String description,
-
-            Model model) {
-
-        Internship internship = new Internship();
-
-        if (duration != null) {
-            internship.setDuration(duration);
-        }
-
-        internship.setStartDate(startDate);
-
-        internship.setRequirements(description);
-
-        return updateExistingInternship(
-                id,
-                internship,
-                model
-        );
-    }
-
-    private String updateExistingInternship(
-            Long id,
-            Internship internship,
-            Model model) {
-
-        try {
-
-            service.updateInternship(id,
-                    internship);
-
-            return "redirect:/internships";
-        }
-
-        catch (IllegalArgumentException e) {
-
-            model.addAttribute("message",
-                    e.getMessage());
-
-            Internship existing =
-                    service.findById(id);
-
-            model.addAttribute("internship",
-                    existing);
-
-            model.addAttribute("data",
-                    existing);
-
-            return "edit-Internship-profile";
-        }
-    }
 
     private void addInternshipListModel(
             Model model,

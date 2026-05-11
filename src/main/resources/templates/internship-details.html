@@ -86,7 +86,7 @@
 
             <div class="company-profile-image">
 
-                <img th:src="@{/images/logo.png}"
+                <img th:src="${#strings.isEmpty(data.photoPath)} ? '/images/logo.png' : '/images/' + data.photoPath"
                      alt="logo">
 
             </div>
@@ -145,7 +145,7 @@
             </span>
 
                 <span class="profile-value"
-                      th:text="${data.requirements}">
+                      th:text="${data.description}">
             </span>
 
             </div>

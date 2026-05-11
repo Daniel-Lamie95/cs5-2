@@ -85,8 +85,8 @@ public class ApplicationService {
         int score = 0;
 
         if (student.getMajor() != null &&
-                internship.getRequirements() != null &&
-                internship.getRequirements().toLowerCase()
+                internship.getDescription() != null &&
+                internship.getDescription().toLowerCase()
                         .contains(student.getMajor().toLowerCase())) {
             score += 50;
         }
