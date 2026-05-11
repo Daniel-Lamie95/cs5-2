@@ -3,94 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Student Profile - Launchpad</title>
+    <title>Edit Student Profile</title>
     <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
 </head>
-<body class="auth-page">
+<body class="company-profile-page">
 
-    <nav class="navbar">
-        <div class="logo">🚀 Launchpad</div>
+    <nav class="company-profile-navbar">
+        <div class="company-profile-logo">🚀 Launchpad</div>
 
-        <ul class="nav-links">
+        <ul class="company-profile-links">
             <li><a th:href="@{/student-home}">Home</a></li>
-            <li><a th:href="@{/about.html}">About Us</a></li>
-            <li><a th:href="@{/contact.html}">Contact</a></li>
+            <li><a th:href="@{/student-dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/student-profile}">Profile</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
     </nav>
 
-    <section class="hero">
-        <div class="hero-text">
-            <h1>Edit Your <span class="highlight">Profile</span></h1>
-            <p>
-                Update your student information to keep your profile complete and up to date.
-            </p>
-        </div>
+    <main class="company-profile-container">
 
-        <div class="form-box company-form-box">
-            <h2>Edit Student Profile</h2>
+        <section class="company-profile-hero">
+            <h1>Edit Student Profile</h1>
+            <p>Update your student information to keep your profile complete and up to date.</p>
+        </section>
 
-            <form th:action="@{/update}" th:object="${student}" method="post" enctype="multipart/form-data">
-                <input type="hidden" th:field="*{email}">
+        <section class="company-profile-card">
 
-                <h3>Personal Information</h3>
-                <input type="text" th:field="*{name}" placeholder="Full Name" required>
+            <div class="company-profile-left">
+                <div class="company-profile-image">
+                    <img
+                            th:src="${student.profilePhotoPath} != null ? ${student.profilePhotoPath} : '/images/logo.png'"
+                            alt="Student profile photo"
+                    >
+                </div>
+                <h2 th:text="${student.name}">Student Name</h2>
+                <span th:text="${student.major}">Major</span>
+            </div>
 
-                <input type="email" th:field="*{email}" placeholder="Email" required disabled>
+            <div class="company-profile-right">
+                <h2>Edit Information</h2>
 
-                <input type="password" th:field="*{password}" placeholder="Password (leave blank to keep current)">
+                <form th:action="@{/update}" th:object="${student}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{email}">
 
-                <input type="tel" th:field="*{phoneNum}" placeholder="Phone Number" required>
+                    <div class="profile-row">
+                        <label for="studentName">Full Name</label>
+                        <input type="text" th:field="*{name}" id="studentName" required>
+                    </div>
 
-                <input type="text" th:field="*{location}" placeholder="Location (City, Country)" required>
+                    <div class="profile-row">
+                        <label for="studentEmail">Email</label>
+                        <input type="email" th:field="*{email}" id="studentEmail" readonly required>
+                    </div>
 
-                <label>Date of Birth</label>
-                <input type="date" th:field="*{dateOfBirth}">
+                    <div class="profile-row">
+                        <label for="studentPassword">Password</label>
+                        <input type="password" th:field="*{password}" id="studentPassword" placeholder="Leave blank to keep current">
+                    </div>
 
-                <h3>Education & Career</h3>
-                <input type="text" th:field="*{university}" placeholder="University" required>
+                    <div class="profile-row">
+                        <label for="studentPhone">Phone Number</label>
+                        <input type="tel" th:field="*{phoneNum}" id="studentPhone" required>
+                    </div>
 
-                <input type="text" th:field="*{major}" placeholder="Major/Field of Study" required>
+                    <div class="profile-row">
+                        <label for="studentLocation">Location</label>
+                        <input type="text" th:field="*{location}" id="studentLocation" required>
+                    </div>
 
-                <h3>Documents & Media</h3>
-                <label>Upload CV</label>
-                <input type="file" name="cv" accept=".pdf,.doc,.docx">
+                    <div class="profile-row">
+                        <label for="studentDob">Date of Birth</label>
+                        <input type="date" th:field="*{dateOfBirth}" id="studentDob">
+                    </div>
 
-                <label>Select Profile Picture</label>
-                <input type="file" id="photoInput" accept="image/*">
-                <input type="hidden" th:field="*{profilePhotoPath}" id="profilePhotoPath">
-                <p id="selectedPhoto" style="margin-top: 8px; font-size: 0.9em; color: #666;"></p>
+                    <div class="profile-row">
+                        <label for="studentUniversity">University</label>
+                        <input type="text" th:field="*{university}" id="studentUniversity" required>
+                    </div>
 
-                <button type="submit" class="form-btn">Save Changes</button>
+                    <div class="profile-row">
+                        <label for="studentMajor">Major</label>
+                        <input type="text" th:field="*{major}" id="studentMajor" required>
+                    </div>
 
-                <button type="button"
-                        class="form-btn"
-                        th:onclick="|window.location.href='@{/student-profile}'|">
-                    Cancel
-                </button>
+                    <div class="profile-row">
+                        <label for="studentCv">Upload CV</label>
+                        <input type="file" name="cv" id="studentCv" accept=".pdf,.doc,.docx">
+                    </div>
 
-            </form>
-        </div>
-    </section>
+                    <div class="profile-row">
+                        <label for="photoInput">Select Profile Picture</label>
+                        <div>
+                            <input type="file" id="photoInput" accept="image/*">
+                            <input type="hidden" th:field="*{profilePhotoPath}" id="profilePhotoPath">
+                            <p id="selectedPhoto" style="margin-top: 8px; font-size: 0.9em; color: #666;"></p>
+                        </div>
+                    </div>
+
+                    <div class="company-profile-buttons">
+                        <a th:href="@{/student-profile}" class="profile-btn">Cancel</a>
+                        <button type="submit" class="profile-btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+        </section>
+
+    </main>
 
     <script>
-        // Handle profile photo file selection
-        document.getElementById('photoInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                // Extract filename and create path
-                const filename = file.name;
-                const photoPath = '/images/' + filename;
+        const photoInput = document.getElementById('photoInput');
+        if (photoInput) {
+            photoInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const filename = file.name;
+                    const photoPath = '/images/' + filename;
 
-                // Set the hidden field value
-                document.getElementById('profilePhotoPath').value = photoPath;
-
-                // Show feedback to user
-                document.getElementById('selectedPhoto').textContent = 'Selected: ' + photoPath;
-            } else {
-                document.getElementById('profilePhotoPath').value = '';
-                document.getElementById('selectedPhoto').textContent = '';
-            }
-        });
+                    document.getElementById('profilePhotoPath').value = photoPath;
+                    document.getElementById('selectedPhoto').textContent = 'Selected: ' + photoPath;
+                } else {
+                    document.getElementById('profilePhotoPath').value = '';
+                    document.getElementById('selectedPhoto').textContent = '';
+                }
+            });
+        }
     </script>
 
 </body>

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    @Query("SELECT s FROM Student s WHERE s.email = :email")
+    @Query("SELECT s FROM Student s WHERE LOWER(TRIM(s.email)) = LOWER(TRIM(:email))")
     Student findByEmail(@Param("email") String email);
 }

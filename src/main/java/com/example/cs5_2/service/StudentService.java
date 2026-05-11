@@ -19,13 +19,20 @@ public class StudentService {
     //private final BuildCVRepository buildCVRepo;
 
     public Student registerStudent(Student student) {
-        // Validate student using StudentValidation
-        StudentValidation.validateRegister(student);
-
-        // Trim email before saving to database
-        student.setEmail(student.getEmail().trim());
-        studentRepo.save(student);
-        return student;
+        if (student == null) {
+            throw new IllegalArgumentException("Student cannot be null");
+        } else if (student.getEmail() == null || student.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        } else if (student.getPassword() == null || student.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        } else if (student.getPassword().length() < 8) {
+            throw new IllegalArgumentException("Password length must be at least 8 characters");
+        } else {
+            // Normalize email before saving to database
+            student.setEmail(student.getEmail().trim().toLowerCase());
+            studentRepo.save(student);
+            return student;
+        }
     }
    
 
@@ -37,8 +44,8 @@ public class StudentService {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
-        // Trim whitespace from email input
-        email = email.trim();
+        // Normalize email input for lookup
+        email = email.trim().toLowerCase();
         return studentRepo.findByEmail(email);
     }
 
@@ -46,8 +53,8 @@ public class StudentService {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
-        // Trim whitespace from email input
-        email = email.trim();
+        // Normalize email input for lookup
+        email = email.trim().toLowerCase();
 
         // Validate updated student using StudentValidation
         StudentValidation.validateUpdate(updated);
@@ -74,8 +81,8 @@ public class StudentService {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
-        // Trim whitespace from email input
-        email = email.trim();
+        // Normalize email input for lookup
+        email = email.trim().toLowerCase();
         Student existingStudent = studentRepo.findByEmail(email);
         if (existingStudent == null) {
             throw new IllegalArgumentException("Student with email " + email + " not found");
@@ -91,8 +98,8 @@ public class StudentService {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Password is required");
         }
-        // Trim whitespace from email input
-        email = email.trim();
+        // Normalize email input for lookup
+        email = email.trim().toLowerCase();
         Student student = studentRepo.findByEmail(email);
         if (student == null) {
             throw new IllegalArgumentException("Student with email " + email + " not found");
