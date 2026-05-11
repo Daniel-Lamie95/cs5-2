@@ -10,6 +10,10 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Controller
 @SessionAttributes("userCV")
 public class CVController {
@@ -32,11 +36,24 @@ public class CVController {
         if (cv == null) {
             cv = new BuildCV();
             if (student != null) {
-                cv.setStudent(student); 
+                cv.setStudent(student);
                 cv.setName(student.getName());
                 cv.setEmail(student.getEmail());
             }
-            cv.getExperiences().add(new BuildCV.ExperienceEntry());
+
+            // Initialize with default Education levels
+            List<BuildCV.EducationEntry> defaultEdu = new ArrayList<>();
+            List<String> levels = Arrays.asList("High School", "Bachelor's Degree", "Master's Degree", "Doctorate");
+            
+            for (String level : levels) {
+                BuildCV.EducationEntry entry = new BuildCV.EducationEntry();
+                entry.setDegree(level);
+                defaultEdu.add(entry);
+            }
+            cv.setEducationList(defaultEdu);
+
+            // Initialize with one empty experience
+            cv.setExperiences(new ArrayList<>());
             cv.getExperiences().add(new BuildCV.ExperienceEntry());
         }
         return cv;
@@ -51,37 +68,21 @@ public class CVController {
     }
 
     @PostMapping("/download")
-    public ResponseEntity<byte[]> downloadPdf(
-            @ModelAttribute("userCV") BuildCV cv, 
-            @RequestParam(value = "eduYears", required = false) String[] eduYears,
-            HttpSession session) {
-        
+    public ResponseEntity<byte[]> downloadPdf(@ModelAttribute("userCV") BuildCV cv, HttpSession session) {
         Student student = (Student) session.getAttribute("user");
-        if (student == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        if (eduYears != null) {
-            for (int i = 0; i < eduYears.length; i++) {
-                if (i < cv.getEducationList().size() && !eduYears[i].isEmpty()) {
-                    String schoolName = cv.getEducationList().get(i).getDetail();
-                    if (schoolName != null && !schoolName.isEmpty()) {
-                        cv.getEducationList().get(i).setDetail(schoolName + " (" + eduYears[i] + ")");
-                    }
-                }
-            }
-        }
+        if (student == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         cv.setStudent(student);
-        cvRepository.save(cv); 
+        cvRepository.save(cv);
 
         byte[] pdfBytes = cvService.generatePdf(cv);
+        String filename = (cv.getName() != null && !cv.getName().isEmpty()) 
+                          ? cv.getName().replace(" ", "_") + "_CV.pdf" 
+                          : "CV.pdf";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(ContentDisposition.attachment()
-                .filename(cv.getName().replace(" ", "_") + "_CV.pdf")
-                .build());
+        headers.setContentDisposition(ContentDisposition.attachment().filename(filename).build());
 
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
