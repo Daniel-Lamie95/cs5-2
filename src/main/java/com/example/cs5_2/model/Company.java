@@ -1,6 +1,7 @@
 package com.example.cs5_2.model;
 
 import com.example.cs5_2.model.Internship;
+
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,24 +12,31 @@ public class Company extends User {
     private String location;
     private String website;
     private String phone;
+    
+    @Column(length =255)
     private String logo;
     private double rating = 0.0;
     private int ratingCount = 0;
-
+    private static final int MAX_RATING = 5;
     @Column(length = 1000)
     private String description;
 
     @OneToMany(mappedBy = "company")
     private List<Internship> internships= new ArrayList<>();
+    
 
     public Company() {
     }
 
-    public Company(String name, String email, String password, String field, String location, String website, String description) {
+    public Company(String name, String email, String password, String field, String location, String website,
+    		String phone,String logo,
+    		String description) {
 
         super(name, email, password);
         this.field = field;
         this.location = location;
+        this.phone = phone;
+        this.logo = logo;
         this.website = website;
         this.description = description;
     }
@@ -91,7 +99,27 @@ public class Company extends User {
     public void setInternships(List<Internship> internships) {
         this.internships = internships;
     }
-    public void addRating(double newRating) {
+    
+    
+    public double getRating() {
+		return rating;
+	}
+
+	
+	public int getRatingCount() {
+		return ratingCount;
+	}
+
+	
+	public void addRating(double newRating) {
+		
+		if (newRating < 0 || newRating > MAX_RATING) {
+	        throw new IllegalArgumentException(
+	            "Rating must be between 0 and 5"
+	        );
+	    }
+
+	
         this.rating =
             ((this.rating * this.ratingCount) + newRating)
             / (this.ratingCount + 1);
