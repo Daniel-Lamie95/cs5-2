@@ -7,87 +7,44 @@
     <meta charset="UTF-8">
     <title>Company Ranking</title>
 
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
-        }
-
-        body{
-            background:#f4f7fb;
-            padding:40px;
-        }
-
-        .container{
-            width:80%;
-            margin:auto;
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:30px;
-            color:#0f766e;
-        }
-
-        table{
-            width:100%;
-            border-collapse:collapse;
-            background:white;
-            border-radius:12px;
-            overflow:hidden;
-            box-shadow:0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        th{
-            background:#0f766e;
-            color:white;
-            padding:15px;
-        }
-
-        td{
-            padding:15px;
-            text-align:center;
-            border-bottom:1px solid #eee;
-        }
-
-        tr:hover{
-            background:#ecfeff;
-        }
-
-    </style>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body>
+<body class="company-dashboard-page">
 
-<div class="container">
+<div class="company-dashboard-container">
 
-    <h1>🏢 Company Ranking</h1>
+    <div class="company-dashboard-hero">
+        <h1>🏢 Company Ranking</h1>
+        <p>Top companies based on ratings.</p>
+    </div>
 
-    <table>
+    <div class="company-dashboard-internships">
 
-        <thead>
-        <tr>
-            <th>Company</th>
-            <th>Rating</th>
-        </tr>
-        </thead>
+        <table>
 
-        <tbody>
+            <thead>
+            <tr>
+                <th>Company</th>
+                <th>Rating</th>
+            </tr>
+            </thead>
 
-        <tr th:each="entry : ${ranking}">
+            <tbody>
 
-            <td th:text="${entry.key}"></td>
+            <tr th:each="entry : ${ranking}">
 
-            <td th:text="${entry.value}"></td>
+                <td th:text="${entry.key}"></td>
 
-        </tr>
+                <td th:text="${entry.value}"></td>
 
-        </tbody>
+            </tr>
 
-    </table>
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 

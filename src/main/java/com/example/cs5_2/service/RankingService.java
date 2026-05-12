@@ -1,49 +1,69 @@
 package com.example.cs5_2.service;
+import com.example.cs5_2.model.SimpleRanking;
 import com.example.cs5_2.model.Student;
 import com.example.cs5_2.model.Company;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RankingService {
 
-    public Map<String, Double> getUniversityRanking(List<Student> students) {
+    public List<SimpleRanking> getUniversityRanking(List<Student> students) {
 
-        Map<String, List<Double>> map = new HashMap<>();
+        List<SimpleRanking> result = new ArrayList<>();
+
+        List<String> checkedUniversities = new ArrayList<>();
 
         for (Student s : students) {
-            map.computeIfAbsent(s.getUniversity(), k -> new ArrayList<>())
-               .add(s.getPerformanceScore());
-        }
 
-        Map<String, Double> result = new HashMap<>();
+            String uni = s.getUniversity();
 
-        for (String uni : map.keySet()) {
+            // If the university has already been considered, we'll skip it.
+            if (checkedUniversities.contains(uni)) {
+                continue;
+            }
 
-            double avg = map.get(uni)
-                    .stream()
-                    .mapToDouble(Double::doubleValue)
-                    .average()
-                    .orElse(0.0);
+            double sum = 0;
+            int count = 0;
 
-            result.put(uni, avg);
+            // We gather all students from the same university
+            for (Student s2 : students) {
+
+                if (s2.getUniversity() != null &&
+                        s2.getUniversity().equals(uni)) {
+
+                    sum += s2.getPerformanceScore();
+                    count++;
+                }
+            }
+
+            double avg = 0;
+
+            if (count != 0) {
+                avg = sum / count;
+            }
+
+            result.add(new SimpleRanking(uni, avg));
+            checkedUniversities.add(uni);
         }
 
         return result;
     }
 
+    public List<SimpleRanking> getCompanyRanking(List<Company> companies) {
 
-    public Map<String, Double> getCompanyRanking(List<Company> companies) {
-
-        Map<String, Double> result = new HashMap<>();
+        List<SimpleRanking> result = new ArrayList<>();
 
         for (Company c : companies) {
-            result.put(c.getName(), c.getRating());
+
+            result.add(new SimpleRanking(
+                    c.getName(),
+                    c.getRating()
+            ));
         }
 
         return result;
     }
 }
-
-

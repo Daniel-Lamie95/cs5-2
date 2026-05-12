@@ -1,4 +1,5 @@
 package com.example.cs5_2.controller;
+
 import com.example.cs5_2.service.RankingService;
 import com.example.cs5_2.service.StudentService;
 import com.example.cs5_2.service.CompanyService;
@@ -25,8 +26,12 @@ public class RankingController {
     @GetMapping("/universities")
     public String universities(Model model) {
 
-        model.addAttribute("ranking",
-                rankingService.getUniversityRanking(studentService.getAllStudents()));
+        model.addAttribute(
+                "ranking",
+                rankingService.getUniversityRanking(
+                        studentService.getAllStudents()
+                )
+        );
 
         return "university-ranking";
     }
@@ -34,10 +39,13 @@ public class RankingController {
     @GetMapping("/companies")
     public String companies(Model model) {
 
-        model.addAttribute("ranking",
-                rankingService.getCompanyRanking(companyService.getAllCompanies()));
+        model.addAttribute(
+                "ranking",
+                rankingService.getCompanyRanking(
+                        companyService.getAllCompanies()
+                )
+        );
 
         return "company-ranking";
     }
-
 }
