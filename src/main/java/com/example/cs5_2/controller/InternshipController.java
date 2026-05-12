@@ -1,5 +1,6 @@
 package com.example.cs5_2.controller;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.model.Student;
@@ -114,22 +115,88 @@ public class InternshipController {
             return "edit-Internship-profile";
         }
     }
+    @GetMapping("/set-cookie")
+    public String setCookie(HttpServletResponse response) {
+
+        Cookie cookie =
+                new Cookie("theme", "dark");
+
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
 
     @GetMapping("/Available-Internships")
     public String viewInternships(
-            @RequestParam(required = false) String keyword,
+
+            @RequestParam(required = false)
+            String keyword,
+
+            @CookieValue(
+                    value = "lastSearch",
+                    defaultValue = "")
+            String savedKeyword,
+
+            HttpServletResponse response,
+
             Model model) {
 
-        List<Internship> internships = hasText(keyword)
-                ? service.searchInternshipsByTitle(keyword)
-                : service.getAllInternships();
+        if (!hasText(keyword)) {
+            keyword = savedKeyword;
+        }
 
-        addInternshipListModel(model, internships);
+        Cookie cookie =
+                new Cookie(
+                        "lastSearch",
+                        keyword == null ? "" : keyword
+                );
 
-        model.addAttribute("keyword",
-                keyword == null ? "" : keyword);
+        cookie.setMaxAge(
+                7 * 24 * 60 * 60
+        );
+
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+
+        List<Internship> internships =
+
+                hasText(keyword)
+
+                        ?
+
+                        service.searchInternshipsByTitle(keyword)
+
+                        :
+
+                        service.getAllInternships();
+
+        addInternshipListModel(
+                model,
+                internships
+        );
+
+        model.addAttribute(
+                "keyword",
+                keyword == null ? "" : keyword
+        );
 
         return "Available-Internships";
+    }
+
+    @GetMapping("/read-cookie")
+    @ResponseBody
+    public String readCookie(
+            @CookieValue(
+                    value = "theme",
+                    defaultValue = "light")
+            String theme) {
+
+        return "Theme is: " + theme;
     }
 
     @GetMapping("/internship-details")
@@ -208,11 +275,6 @@ public class InternshipController {
 
         return false;
     }
-
-
-
-
-
 
 
     private void addInternshipListModel(
