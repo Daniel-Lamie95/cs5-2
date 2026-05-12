@@ -16,7 +16,7 @@ import java.util.Collections;
 
 @Controller
 @RequestMapping("/company")
-public class CompanyController {
+public class CompanyController{
 
     private final CompanyService companyService;
     private final InternshipService internshipService;
