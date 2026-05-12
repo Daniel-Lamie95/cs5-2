@@ -120,7 +120,7 @@ public class InternshipController {
         normalizePhotoPath(updated);
 
         try {
-            // Validate updated internship data
+
             InternshipValidation.validateAdd(updated);
 
             service.updateInternship(id, updated);
@@ -131,20 +131,6 @@ public class InternshipController {
             model.addAttribute("internship", existing);
             return "edit-Internship-profile";
         }
-    }
-    @GetMapping("/set-cookie")
-    public String setCookie(HttpServletResponse response) {
-
-        Cookie cookie =
-                new Cookie("theme", "dark");
-
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
-
-        return "redirect:/";
     }
 
     @GetMapping("/Available-Internships")
@@ -162,23 +148,26 @@ public class InternshipController {
 
             Model model) {
 
-        if (!hasText(keyword)) {
-            keyword = savedKeyword;
+        if (hasText(keyword)) {
+
+            Cookie cookie =
+                    new Cookie(
+                            "lastSearch",
+                            keyword
+                    );
+
+            cookie.setMaxAge(
+                    7 * 24 * 60 * 60
+            );
+
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
         }
+        else {
 
-        Cookie cookie =
-                new Cookie(
-                        "lastSearch",
-                        keyword == null ? "" : keyword
-                );
-
-        cookie.setMaxAge(
-                7 * 24 * 60 * 60
-        );
-
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
+            keyword = "";
+        }
 
         List<Internship> internships =
 

@@ -10,11 +10,9 @@ public class InternshipService {
 
     private final InternshipRepository repository;
 
-
     public InternshipService(InternshipRepository repository){
         this.repository = repository;
     }
-
 
     public void addInternship(Internship internship) {
 
@@ -35,23 +33,20 @@ public class InternshipService {
         }
 
         internship.setApplicantsCount(0);
-        internship.setMaxApplicants(5);
+        if (internship.getMaxApplicants() <= 0) {
+            internship.setMaxApplicants(5);
+        }
 
         repository.save(internship);
     }
-
 
     public List<Internship> getAllInternships() {
         return repository.findAll();
     }
 
-
-
     public Internship findById(Long id) {
         return repository.findById(id).orElse(null);
     }
-
-
 
     @SuppressWarnings("unused")
     public Internship updateInternship(Long id, Internship updated) {
@@ -83,7 +78,7 @@ public class InternshipService {
             throw new IllegalArgumentException("Internship not found");
         }
 
-        // Update allowed fields (mirror student update behavior: assign provided values)
+        //updating
         existing.setTitle(updated.getTitle().trim());
         existing.setCompanyName(updated.getCompanyName().trim());
         existing.setStartDate(updated.getStartDate());
@@ -103,13 +98,10 @@ public class InternshipService {
     }
 
 
-
-
     public List<Internship>
     getInternshipsByCompany(String companyName){
 
-        return repository
-                .findByCompanyNameIgnoreCase(
+        return repository.findByCompanyNameIgnoreCase(
                         companyName
                 );
     }
