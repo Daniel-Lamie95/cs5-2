@@ -6,14 +6,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.model.Student;
+import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.service.InternshipService;
 
+import com.example.cs5_2.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,10 +27,18 @@ import java.util.List;
 public class InternshipController {
 
     private final InternshipService service;
+    private final StudentService studentService;
+    private final ApplicationService applicationService;
 
-    public InternshipController(InternshipService service) {
+    public InternshipController(InternshipService service,
+                                StudentService studentService,
+                                ApplicationService applicationService) {
         this.service = service;
+        this.studentService = studentService;
+        this.applicationService = applicationService;
     }
+
+
 
     @GetMapping("/edit")
     public String editForm(@RequestParam Long id,
@@ -85,7 +98,6 @@ public class InternshipController {
             return "redirect:/internships";
         }
 
-
         Internship updated = new Internship();
 
         updated.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : existing.getTitle());
@@ -104,7 +116,7 @@ public class InternshipController {
         // Keep the existing company reference unchanged (do not edit company from internship form)
         updated.setCompany(existing.getCompany());
 
-        
+
         normalizePhotoPath(updated);
 
         try {
@@ -194,7 +206,6 @@ public class InternshipController {
     }
 
 
-
     @GetMapping("/internship-details")
     public String showInternshipDetails(
             @RequestParam Long id,
@@ -217,27 +228,19 @@ public class InternshipController {
         model.addAttribute("data",
                 internship);
 
-        boolean showApplyButton =
-                session.getAttribute("user")
-                        instanceof Student;
+        // This is the correct place to add it:
+        boolean showApplyButton = session.getAttribute("user") instanceof Student;
+        model.addAttribute("showApplyButton", showApplyButton);
 
+        // Existing logic for showing edit button for the owner
         boolean showOwnerEditButton = false;
 
         Object companySession = session.getAttribute("company");
 
         if (companySession instanceof Company loggedIn) {
-
-            showOwnerEditButton =
-                    internshipOwnedByCompany(
-                            internship,
-                            loggedIn);
+            showOwnerEditButton = internshipOwnedByCompany(internship, loggedIn);
         }
-
-        model.addAttribute("showApplyButton",
-                showApplyButton);
-
-        model.addAttribute("showOwnerEditButton",
-                showOwnerEditButton);
+        model.addAttribute("showOwnerEditButton", showOwnerEditButton);
 
         // Determine logged-in user type for navigation
         boolean isStudent = session.getAttribute("user") instanceof Student;
@@ -248,29 +251,30 @@ public class InternshipController {
         return "internship-details";
     }
 
-    private static boolean internshipOwnedByCompany(
-            Internship internship,
-            Company company) {
+        private static boolean internshipOwnedByCompany(
+                Internship internship,
+                Company company) {
 
-        if (internship.getCompany() != null
-                && company.getId() != null) {
+            if (internship.getCompany() != null
+                    && company.getId() != null) {
 
-            return company.getId()
-                    .equals(
-                            internship.getCompany()
-                                    .getId());
+                return company.getId()
+                        .equals(
+                                internship.getCompany()
+                                        .getId());
+            }
+
+            if (internship.getCompanyName() != null
+                    && company.getName() != null) {
+
+                return internship.getCompanyName()
+                        .equalsIgnoreCase(
+                                company.getName());
+            }
+
+            return false;
         }
 
-        if (internship.getCompanyName() != null
-                && company.getName() != null) {
-
-            return internship.getCompanyName()
-                    .equalsIgnoreCase(
-                            company.getName());
-        }
-
-        return false;
-    }
 
 
     private void addInternshipListModel(
@@ -326,5 +330,61 @@ public class InternshipController {
             internship.setPhotoPath(p.isEmpty() ? null : p);
         }
     }
-}
 
+    // Show application form (auto CV)
+    @GetMapping("/apply")
+    public String showApplicationForm(@RequestParam("id") Long internshipId,
+                                      HttpSession session,
+                                      Model model) {
+        // Get logged-in student from session
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login"; // redirect if not logged in
+        }
+
+        // Fetch internship
+        Internship internship = service.findById(internshipId);
+        if (internship == null) {
+            model.addAttribute("error", "Internship not found");
+            return "errorpage";
+        }
+
+        model.addAttribute("internship", internship);
+        model.addAttribute("student", student);
+
+        return "applicationform"; // Thymeleaf form page with a submit button only
+    }
+
+    // Submit application using auto CV
+    @PostMapping("/apply")
+    public String submitApplication(@RequestParam("internshipId") Long internshipId,
+                                    HttpSession session,
+                                    Model model) {
+        // Get logged-in student from session
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login"; // redirect if not logged in
+        }
+
+        // Fetch internship to use in case of error
+        Internship internship = service.findById(internshipId);
+        if (internship == null) {
+            model.addAttribute("error", "Internship not found");
+            return "errorpage";
+        }
+
+        try {
+            // Call the service method that automatically fetches the student's CV
+            applicationService.addApplication(student.getId(), student.getName(), internshipId);
+
+            model.addAttribute("message", "Application submitted successfully!");
+            return "successpage"; // or "application-success"
+        } catch (IllegalArgumentException e) {
+            // Student has no CV or other error
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("internship", internship);
+            model.addAttribute("student", student);
+            return "applicationform"; // show form again with error
+        }
+    }
+    }

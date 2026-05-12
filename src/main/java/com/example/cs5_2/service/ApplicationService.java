@@ -107,4 +107,28 @@ public class ApplicationService {
 
         return score;
     }
+
+    // Fetch all applications for a specific company
+    public List<Application> getApplicationsByCompany(String companyName) {
+        return applicationRepository.findByInternshipCompanyName(companyName);
+    }
+
+    // Update application status from a string (from dropdown)
+    public void updateStatus(Integer applicationId, String status) {
+        // Get application by ID
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found with ID: " + applicationId));
+
+        // Convert string from form to enum
+        ApplicationStatus newStatus;
+        try {
+            newStatus = ApplicationStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid status value: " + status);
+        }
+
+        // Update enum field and save
+        application.setStatus(newStatus);
+        applicationRepository.save(application);
+    }
 }

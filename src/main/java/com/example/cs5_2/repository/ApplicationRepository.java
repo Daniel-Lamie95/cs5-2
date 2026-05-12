@@ -19,4 +19,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
 
     // get all applications for an internship
     List<Application> findByInternship(Internship internship);
+    List<Application> findByInternshipCompanyName(String companyName);
 }
