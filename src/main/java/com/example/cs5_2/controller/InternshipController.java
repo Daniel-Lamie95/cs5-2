@@ -1,11 +1,13 @@
 package com.example.cs5_2.controller;
 import com.example.cs5_2.allvalidations.InternshipValidation;
 import com.example.cs5_2.allvalidations.ValidationException;
+import com.example.cs5_2.model.Application;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.model.Student;
+import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.service.InternshipService;
 
 import jakarta.servlet.http.HttpSession;
@@ -13,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,10 +25,15 @@ import java.util.List;
 public class InternshipController {
 
     private final InternshipService service;
+    private final ApplicationService applicationService;
 
-    public InternshipController(InternshipService service) {
+    public InternshipController(InternshipService service,
+                                ApplicationService applicationService) {
         this.service = service;
+        this.applicationService = applicationService;
     }
+
+
 
     @GetMapping("/edit")
     public String editForm(@RequestParam Long id,
@@ -85,7 +93,6 @@ public class InternshipController {
             return "redirect:/internships";
         }
 
-
         Internship updated = new Internship();
 
         updated.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : existing.getTitle());
@@ -104,11 +111,11 @@ public class InternshipController {
         // Keep the existing company reference unchanged (do not edit company from internship form)
         updated.setCompany(existing.getCompany());
 
-        
+
         normalizePhotoPath(updated);
 
         try {
-            // Validate updated internship data
+
             InternshipValidation.validateAdd(updated);
 
             service.updateInternship(id, updated);
@@ -120,21 +127,6 @@ public class InternshipController {
             return "edit-Internship-profile";
         }
     }
-    @GetMapping("/set-cookie")
-    public String setCookie(HttpServletResponse response) {
-
-        Cookie cookie =
-                new Cookie("theme", "dark");
-
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
-
-        return "redirect:/";
-    }
-
     @GetMapping("/Available-Internships")
     public String viewInternships(
 
@@ -150,23 +142,26 @@ public class InternshipController {
 
             Model model) {
 
-        if (!hasText(keyword)) {
-            keyword = savedKeyword;
+        if (hasText(keyword)) {
+
+            Cookie cookie =
+                    new Cookie(
+                            "lastSearch",
+                            keyword
+                    );
+
+            cookie.setMaxAge(
+                    7 * 24 * 60 * 60
+            );
+
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
         }
+        else {
 
-        Cookie cookie =
-                new Cookie(
-                        "lastSearch",
-                        keyword == null ? "" : keyword
-                );
-
-        cookie.setMaxAge(
-                7 * 24 * 60 * 60
-        );
-
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
+            keyword = "";
+        }
 
         List<Internship> internships =
 
@@ -193,8 +188,6 @@ public class InternshipController {
         return "Available-Internships";
     }
 
-
-
     @GetMapping("/internship-details")
     public String showInternshipDetails(
             @RequestParam Long id,
@@ -217,27 +210,40 @@ public class InternshipController {
         model.addAttribute("data",
                 internship);
 
-        boolean showApplyButton =
-                session.getAttribute("user")
-                        instanceof Student;
+        // This is the correct place to add it:
+        boolean showApplyButton = session.getAttribute("user") instanceof Student;
+        model.addAttribute("showApplyButton", showApplyButton);
 
+        // Check if student already applied to this internship
+        Student student = null;
+        if (session.getAttribute("user") instanceof Student s) {
+            student = s;
+        }
+
+        if (student != null) {
+            try {
+                Application existingApp = applicationService.getStudentApplicationForInternship(student.getId(), id);
+                if (existingApp != null) {
+                    model.addAttribute("studentApplication", existingApp);
+                    model.addAttribute("hasAlreadyApplied", true);
+                    model.addAttribute("applicationStatus", existingApp.getStatus());
+                } else {
+                    model.addAttribute("hasAlreadyApplied", false);
+                }
+            } catch (Exception e) {
+                model.addAttribute("hasAlreadyApplied", false);
+            }
+        }
+
+        // Existing logic for showing edit button for the owner
         boolean showOwnerEditButton = false;
 
         Object companySession = session.getAttribute("company");
 
         if (companySession instanceof Company loggedIn) {
-
-            showOwnerEditButton =
-                    internshipOwnedByCompany(
-                            internship,
-                            loggedIn);
+            showOwnerEditButton = internshipOwnedByCompany(internship, loggedIn);
         }
-
-        model.addAttribute("showApplyButton",
-                showApplyButton);
-
-        model.addAttribute("showOwnerEditButton",
-                showOwnerEditButton);
+        model.addAttribute("showOwnerEditButton", showOwnerEditButton);
 
         // Determine logged-in user type for navigation
         boolean isStudent = session.getAttribute("user") instanceof Student;
@@ -248,29 +254,30 @@ public class InternshipController {
         return "internship-details";
     }
 
-    private static boolean internshipOwnedByCompany(
-            Internship internship,
-            Company company) {
+        private static boolean internshipOwnedByCompany(
+                Internship internship,
+                Company company) {
 
-        if (internship.getCompany() != null
-                && company.getId() != null) {
+            if (internship.getCompany() != null
+                    && company.getId() != null) {
 
-            return company.getId()
-                    .equals(
-                            internship.getCompany()
-                                    .getId());
+                return company.getId()
+                        .equals(
+                                internship.getCompany()
+                                        .getId());
+            }
+
+            if (internship.getCompanyName() != null
+                    && company.getName() != null) {
+
+                return internship.getCompanyName()
+                        .equalsIgnoreCase(
+                                company.getName());
+            }
+
+            return false;
         }
 
-        if (internship.getCompanyName() != null
-                && company.getName() != null) {
-
-            return internship.getCompanyName()
-                    .equalsIgnoreCase(
-                            company.getName());
-        }
-
-        return false;
-    }
 
 
     private void addInternshipListModel(
@@ -326,5 +333,63 @@ public class InternshipController {
             internship.setPhotoPath(p.isEmpty() ? null : p);
         }
     }
-}
 
+    // Apply to internship - direct submission with validation
+    @PostMapping("/apply")
+    public String applyToInternship(@RequestParam(name = "id") Long internshipId,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        // Get logged-in student from session
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
+
+        // Fetch internship
+        Internship internship = service.findById(internshipId);
+        if (internship == null) {
+            redirectAttributes.addFlashAttribute("error", "Internship not found");
+            return "redirect:/internships/Available-Internships";
+        }
+
+        try {
+            // Check if student already applied to this internship
+            if (applicationService.hasStudentApplied(student.getId(), internshipId)) {
+                redirectAttributes.addFlashAttribute("error", "You have already applied to this internship. You can revoke your application if you'd like to apply again.");
+                return "redirect:/internships/internship-details?id=" + internshipId;
+            }
+
+            // Validate student has a CV (this will throw exception if not)
+            applicationService.addApplication(student.getId(), student.getName(), internshipId);
+
+            // Success - redirect back to internship details with success message
+            redirectAttributes.addFlashAttribute("message", "Application submitted successfully!");
+            return "redirect:/internships/internship-details?id=" + internshipId;
+        } catch (IllegalArgumentException e) {
+            // Student has no CV or other validation error
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/internships/internship-details?id=" + internshipId;
+        }
+    }
+
+    // Revoke/Withdraw application
+    @PostMapping("/revoke-application")
+    public String revokeApplication(@RequestParam(name = "id") Long internshipId,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        // Get logged-in student from session
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
+
+        try {
+            applicationService.revokeApplication(student.getId(), internshipId);
+            redirectAttributes.addFlashAttribute("message", "Application withdrawn successfully. You can apply again if you'd like.");
+            return "redirect:/internships/internship-details?id=" + internshipId;
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/internships/internship-details?id=" + internshipId;
+        }
+    }
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Internship</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="company-dashboard-page">
+
+<nav class="company-dashboard-navbar">
+    <div class="company-dashboard-logo">🚀 Launchpad</div>
+    <ul class="company-dashboard-links">
+        <li><a th:href="@{/student-dashboard}">Home</a></li>
+        <li><a th:href="@{/internships}">Internships</a></li>
+        <li><a th:href="@{/logout}">Logout</a></li>
+    </ul>
+</nav>
+
+<main class="company-dashboard-container">
+
+    <section class="company-dashboard-hero">
+        <h1>Internship Application</h1>
+        <p>Confirm your application. Your current CV will be automatically attached.</p>
+    </section>
+
+    <section class="company-form-box" style="margin: 0 auto; padding: 30px; border-radius: 18px; max-width: 450px; background: #fff9f6;">
+        <div style="margin-bottom: 20px; padding: 15px; background: #f0f8ff; border-radius: 8px; border-left: 4px solid var(--flame-yellow);">
+            <h3 style="margin-top: 0;">Application Summary</h3>
+            <p><strong>Student:</strong> <span th:text="${student.name}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${student.email}"></span></p>
+            <p><strong>Internship:</strong> <span th:text="${internship.title}"></span></p>
+            <p><strong>Company:</strong> <span th:text="${internship.companyName}"></span></p>
+            <p style="font-size: 0.9em; color: #666; margin-bottom: 0;"><em>Your current CV from your profile will be automatically attached.</em></p>
+        </div>
+
+        <form th:action="@{/internships/apply}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="hidden" name="internshipId" th:value="${internship.id}" />
+
+            <p style="color: #666; font-size: 0.95em;">By clicking submit, you confirm that you want to apply with your current CV on file.</p>
+
+            <button type="submit" class="form-btn">Confirm & Submit Application</button>
+
+            <div id="uploadStatus" th:if="${message}" style="color: green; padding: 10px; background: #d4edda; border-radius: 4px;" th:text="${message}"></div>
+            <div id="uploadError" th:if="${error}" style="color: #721c24; padding: 10px; background: #f8d7da; border-radius: 4px;" th:text="${error}"></div>
+        </form>
+    </section>
+
+</main>
+
+</body>
+</html>

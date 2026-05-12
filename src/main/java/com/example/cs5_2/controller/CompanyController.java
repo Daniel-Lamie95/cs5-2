@@ -4,13 +4,30 @@ import com.example.cs5_2.allvalidations.ValidationException;
 import com.example.cs5_2.allvalidations.InternshipValidation;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
+import com.example.cs5_2.model.Application;
+import com.example.cs5_2.model.ApplicationStatus;
 import com.example.cs5_2.service.CompanyService;
 import com.example.cs5_2.service.InternshipService;
+import com.example.cs5_2.service.ApplicationService;
+import com.example.cs5_2.service.RankingService;
+import com.example.cs5_2.service.StudentService;
+
 import java.util.Collections;
+import java.util.List;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collections;
+import com.example.cs5_2.model.Application;
+import com.example.cs5_2.service.ApplicationService;
+import java.util.List;
+import java.util.Map;
+
+import com.example.cs5_2.model.ApplicationStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -19,15 +36,24 @@ public class CompanyController{
 
     private final CompanyService companyService;
     private final InternshipService internshipService;
+    private final ApplicationService applicationService;
+    private final RankingService rankingService;
+    private final StudentService studentService;
 
-    public CompanyController(CompanyService companyService, InternshipService internshipService) {
-               this.companyService = companyService;
-               this.internshipService = internshipService;
-}
 
-    @GetMapping("/register")
+    public CompanyController(CompanyService companyService, InternshipService internshipService,
+			ApplicationService applicationService, RankingService rankingService, StudentService studentService) {
+		super();
+		this.companyService = companyService;
+		this.internshipService = internshipService;
+		this.applicationService = applicationService;
+		this.rankingService = rankingService;
+		this.studentService = studentService;
+	}
+
+	@GetMapping("/register")
     public String registerPage(Model model) {
-    	model.addAttribute("company", new Company());
+        model.addAttribute("company", new Company());
         return "company-register";
     }
 
@@ -43,10 +69,12 @@ public class CompanyController{
 
         } catch (IllegalArgumentException | ValidationException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("company", new Company());
+            model.addAttribute("company", company);
             return "company-register";
         }
     }
+
+
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
 
@@ -58,12 +86,14 @@ public class CompanyController{
 
         var postedInternships = internshipService.getInternshipsByCompany(company.getName());
         postedInternships = postedInternships != null ? postedInternships : Collections.emptyList();
-        
+
+        // Get all applications for this company's internships
+        List<Application> applications = applicationService.getApplicationsByCompany(company.getName());
+        applications = applications != null ? applications : Collections.emptyList();
+
         // Calculate statistics
-        int totalApplicants = (int) postedInternships.stream()
-                .mapToInt(Internship::getApplicantsCount)
-                .sum();
-        
+        int totalApplicants = applications.size();
+
         long activeInternships = postedInternships.stream()
                 .filter(i -> i.getEndDate() != null && i.getEndDate().isAfter(java.time.LocalDate.now()))
                 .count();
@@ -74,7 +104,7 @@ public class CompanyController{
         
         model.addAttribute("company", company);
         return "company-dashboard";
-        
+
     }
 
     @GetMapping("/profile")
@@ -135,10 +165,7 @@ public class CompanyController{
         session.invalidate();
         return "redirect:/login";
     }
-    
-    
-    
-    
+
 
     @GetMapping("/post-internship")
     public String showPostInternshipForm(HttpSession session, Model model) {
@@ -185,7 +212,7 @@ public class CompanyController{
         }
     }
 
-    
+
     /*** Internship templates use {@code /images/} + {@link Internship#getPhotoPath()} (file name only).
      * When no image is given, use the same asset as the company logo so listing and detail views match.
      */
@@ -226,5 +253,63 @@ public class CompanyController{
             return t.substring(slash + 1);
         }
         return t;
+    }
+
+    // GET mapping to show applications
+    @GetMapping("/application")
+    public String viewApplications(HttpSession session, Model model) {
+        Object companyObj = session.getAttribute("company");
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
+        }
+
+        // Get all applications for this company's internships
+        List<Application> applications = applicationService.getApplicationsByCompany(company.getName());
+
+        // Count statuses
+        long acceptedCount = applications.stream()
+                .filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED)
+                .count();
+        long pendingCount = applications.stream()
+                .filter(a -> a.getStatus() == ApplicationStatus.PENDING)
+                .count();
+        long rejectedCount = applications.stream()
+                .filter(a -> a.getStatus() == ApplicationStatus.REJECTED)
+                .count();
+
+        model.addAttribute("applications", applications);
+        model.addAttribute("statuses", ApplicationStatus.values()); // Pass enum values for dropdown
+        model.addAttribute("acceptedCount", acceptedCount);
+        model.addAttribute("pendingCount", pendingCount);
+        model.addAttribute("rejectedCount", rejectedCount);
+        model.addAttribute("company", company);
+
+        return "applications"; // Must match applications.html
+    }
+
+    @PostMapping("/application/update")
+    public String updateApplicationStatus(@RequestParam Integer id, @RequestParam String status) {
+        applicationService.updateStatus(id, status); // method handles enum conversion
+        return "redirect:/company/application";
+    }
+
+
+
+
+    @GetMapping("/university-ranking")
+    public String universityRanking(HttpSession session, Model model) {
+
+        Object companyObj = session.getAttribute("company");
+
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
+        }
+
+        Map<String, Double> rankings = rankingService.getUniversityRanking(studentService.getAllStudents());
+
+        model.addAttribute("rankings", rankings);
+        model.addAttribute("company", company);
+
+        return "university-ranking";
     }
 }

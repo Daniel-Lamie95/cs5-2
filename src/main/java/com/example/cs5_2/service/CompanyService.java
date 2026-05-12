@@ -2,7 +2,6 @@ package com.example.cs5_2.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.repository.CompanyRepository;
 import com.example.cs5_2.allvalidations.CompanyValidation;
@@ -22,7 +21,7 @@ public class CompanyService {
 
     public Company register(Company company) {
 
-       CompanyValidation.validateRegister(company);
+        CompanyValidation.validateRegister(company);
 
         if (companyRepository.existsByEmail(company.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
@@ -37,12 +36,12 @@ public class CompanyService {
     }
 
     public Company login(String email, String password) {
+
     	CompanyValidation.validateLogin(email, password);
-
-        Company company = companyRepository.findByEmail(email);
-
+    	Company company = companyRepository.findByEmail(email.trim());
+     
         if (company == null ||
-            !passwordEncoder.matches(password, company.getPassword())) {
+                !passwordEncoder.matches(password, company.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
@@ -50,15 +49,15 @@ public class CompanyService {
     }
 
     public Company getById(Long id) {
-    	CompanyValidation.validateGetById(id);
+        CompanyValidation.validateGetById(id);
 
         return companyRepository.findById(id).orElse(null);
     }
 
     public Company updateProfile(Long id, Company updatedCompany) {
-    	
-    	CompanyValidation.validateGetById(id);
-       CompanyValidation.validateUpdate(updatedCompany);
+
+        CompanyValidation.validateGetById(id);
+        CompanyValidation.validateUpdate(updatedCompany);
 
         Company company = getById(id);
 
@@ -76,7 +75,7 @@ public class CompanyService {
 
         return companyRepository.save(company);
     }
-    
+
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
     }

@@ -3,10 +3,7 @@ import com.example.cs5_2.DTO.StudentRegisterDTO;
 import com.example.cs5_2.model.ApplicationStatus;
 
 import org.springframework.ui.Model;
-import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Student;
-import com.example.cs5_2.service.CompanyService;
-import com.example.cs5_2.service.InternshipService;
 import com.example.cs5_2.service.StudentService;
 import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.model.Application;
@@ -14,23 +11,14 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.stream.Collectors;
 @Controller
 public class StudentController {
     private final StudentService studentService;
-    private final CompanyService companyService;
     private final ApplicationService applicationService;
 
-    //private final InternshipService internshipService;
-
-
-    public StudentController(StudentService studentService, CompanyService companyService, ApplicationService applicationService, InternshipService internshipService) {
+    public StudentController(StudentService studentService, ApplicationService applicationService) {
         this.studentService = studentService;
-        this.companyService = companyService;
         this.applicationService = applicationService;
-      //  this.internshipService = internshipService;
     }
 
     @GetMapping("/register")
@@ -117,7 +105,7 @@ public class StudentController {
         return "redirect:/login";
     }
 
-   @PostMapping("/update")
+    @PostMapping("/update")
     public String updateStudent(@ModelAttribute Student updated,
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
@@ -136,10 +124,10 @@ public class StudentController {
             return "redirect:/student-profile";
         }
     }
-   
-   
-   
-   
+
+
+
+
  /* @GetMapping("/latest-internships")
 public String latestInternships(HttpSession session, Model model) {
 
@@ -161,9 +149,9 @@ public String latestInternships(HttpSession session, Model model) {
     return "latest-internships";
 }
    */
-   
-   
-   
-   
-   
+
+
+
+
+
 }

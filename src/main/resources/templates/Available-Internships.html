@@ -38,21 +38,6 @@
 
     </section>
 
-    <section class="company-dashboard-stats">
-
-        <div class="dashboard-stat-card">
-            <h3 th:text="${totalInternships}">12</h3>
-            <p>Posted Internships</p>
-        </div>
-
-        <div class="dashboard-stat-card">
-            <h3 th:text="${totalApplicants}">48</h3>
-            <p>Applicants</p>
-        </div>
-
-
-    </section>
-
     <section class="search-section">
 
         <div class="search-box">
@@ -71,6 +56,10 @@
         </div>
 
     </section>
+
+    <div th:if="${param.applied}" style="background-color: #d4edda; color: #155724; padding: 15px; margin: 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+        <strong>✓ Application submitted successfully!</strong> Your CV has been automatically attached to your application. You can check your application status in your profile.
+    </div>
 
     <section class="company-dashboard-internships">
 

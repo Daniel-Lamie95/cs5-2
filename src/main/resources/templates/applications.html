@@ -28,7 +28,7 @@
         </div>
     </section>
 
-    <!-- Two-column layout using existing CSS -->
+    <!-- Two-column layout -->
     <section class="company-dashboard-top" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
 
         <!-- Left Column: Applications Table -->
@@ -40,7 +40,7 @@
                     <th style="padding: 10px; text-align: left;">Student</th>
                     <th style="padding: 10px; text-align: left;">Email</th>
                     <th style="padding: 10px; text-align: left;">Major</th>
-                    <th style="padding: 10px; text-align: left;">Year</th>
+                    <th style="padding: 10px; text-align: left;">University</th>
                     <th style="padding: 10px; text-align: left;">Internship</th>
                     <th style="padding: 10px; text-align: left;">Status</th>
                     <th style="padding: 10px; text-align: left;">CV</th>
@@ -51,12 +51,13 @@
                     <td th:text="${app.student.name}" style="padding: 8px;">Student Name</td>
                     <td th:text="${app.student.email}" style="padding: 8px;">student@example.com</td>
                     <td th:text="${app.student.major}" style="padding: 8px;">Major</td>
-                    <td th:text="${app.student.academicYear}" style="padding: 8px;">Year</td>
+                    <td th:text="${app.student.university}" style="padding: 8px;">University</td>
                     <td th:text="${app.internship.title}" style="padding: 8px;">Internship</td>
                     <td style="padding: 8px;">
-                        <form th:action="@{/application/update}" method="post" style="display: flex; gap: 5px;">
+                        <form th:action="@{/company/application/update}" method="post" style="display: flex; gap: 5px;">
                             <input type="hidden" name="id" th:value="${app.applicationId}" />
-                            <select name="status" style="padding: 4px;">
+                            <label for="status-${app.applicationId}" class="sr-only">Application Status</label>
+                            <select id="status-${app.applicationId}" name="status" style="padding: 4px;">
                                 <option th:each="s : ${statuses}"
                                         th:value="${s}"
                                         th:text="${s}"
@@ -67,7 +68,10 @@
                         </form>
                     </td>
                     <td style="padding: 8px;">
-                        <a th:href="@{'/files/' + ${app.student.cvPath}}" target="_blank" style="color: var(--flame-yellow); text-decoration: underline;">View CV</a>
+                        <span th:if="${app.buildCV != null}" style="color: var(--flame-yellow);">
+                            <strong th:text="${app.buildCV.name}">CV Available</strong>
+                        </span>
+                        <span th:if="${app.buildCV == null}">No CV</span>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(applications)}">
@@ -82,7 +86,8 @@
             <h2>Filter & Info</h2>
             <div class="search-box">
                 <form>
-                    <input type="text" placeholder="Search by student or internship..." />
+                    <label for="search-applicants" class="sr-only">Search by student or internship</label>
+                    <input type="text" id="search-applicants" placeholder="Search by student or internship..." />
                     <button type="submit">Search</button>
                 </form>
             </div>

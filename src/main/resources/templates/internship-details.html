@@ -201,19 +201,20 @@
 
             <div class="company-profile-buttons">
 
-                <form th:if="${showApplyButton}"
-                      th:action=
-                              "@{/internships/apply(id=${data.id})}"
+                <form th:if="${showApplyButton && !hasAlreadyApplied}"
+                      th:action="@{/internships/apply}"
+                      method="post"
+                      style="display: inline;">
+                    <input type="hidden" name="id" th:value="${data.id}" />
+                    <button type="submit" class="profile-btn">Apply Internship</button>
+                </form>
 
-                      method="post">
-
-                    <button type="submit"
-                            class="profile-btn">
-
-                        Apply Internship
-
-                    </button>
-
+                <form th:if="${showApplyButton && hasAlreadyApplied}"
+                      th:action="@{/internships/revoke-application}"
+                      method="post"
+                      style="display: inline;">
+                    <input type="hidden" name="id" th:value="${data.id}" />
+                    <button type="submit" class="profile-btn" style="background-color: #ff6b6b;">Revoke Application</button>
                 </form>
 
                 <a th:if="${showOwnerEditButton}"
@@ -221,6 +222,18 @@
                    class="profile-btn">
                     Edit Internship
                 </a>
+
+                <div th:if="${message}" style="margin-top: 15px; color: green; padding: 10px; background: #d4edda; border-radius: 4px;">
+                    <strong>✓</strong> <span th:text="${message}"></span>
+                </div>
+
+                <div th:if="${error}" style="margin-top: 15px; color: #721c24; padding: 10px; background: #f8d7da; border-radius: 4px;">
+                    <strong>✗</strong> <span th:text="${error}"></span>
+                </div>
+
+                <div th:if="${applicationStatus}" style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 4px; border-left: 4px solid #2196F3;">
+                    <strong>Application Status:</strong> <span th:text="${applicationStatus}" style="font-weight: bold; color: #2196F3;"></span>
+                </div>
 
             </div>
 
