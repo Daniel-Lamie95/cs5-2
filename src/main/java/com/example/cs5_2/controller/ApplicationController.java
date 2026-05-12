@@ -6,6 +6,9 @@ import com.example.cs5_2.service.InternshipService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 public class ApplicationController {
@@ -25,24 +28,23 @@ public class ApplicationController {
         model.addAttribute("applications", applicationService.getAllApplications());
         model.addAttribute("internships", internshipService.getAllInternships());
         model.addAttribute("statuses", ApplicationStatus.values());
-        return "application";
+        return "applications";
     }
 
-    // APPLY
+    // APPLY WITH PDF CV
     @PostMapping("/application")
     public String addApplication(@RequestParam int studentId,
                                  @RequestParam String studentName,
                                  @RequestParam Long internshipId) {
 
         applicationService.addApplication(studentId, studentName, internshipId);
+
         return "redirect:/application";
     }
 
     // UPDATE STATUS
     @PostMapping("/application/update")
-    public String updateStatus(@RequestParam int id,
-                               @RequestParam ApplicationStatus status) {
-
+    public String updateStatus(@RequestParam Integer id, @RequestParam String status) {
         applicationService.updateStatus(id, status);
         return "redirect:/application";
     }

@@ -201,20 +201,15 @@
 
             <div class="company-profile-buttons">
 
-                <form th:if="${showApplyButton}"
-                      th:action=
-                              "@{/internships/apply(id=${data.id})}"
+                <a th:if="${showApplyButton}"
+                      th:href="@{/internships/apply(id=${data.id})}"
 
-                      method="post">
 
-                    <button type="submit"
                             class="profile-btn">
 
                         Apply Internship
 
-                    </button>
-
-                </form>
+                </a>
 
                 <a th:if="${showOwnerEditButton}"
                    th:href="@{/internships/edit(id=${data.id})}"

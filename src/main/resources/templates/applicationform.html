@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Internship</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="company-dashboard-page">
+
+<nav class="company-dashboard-navbar">
+    <div class="company-dashboard-logo">🚀 Launchpad</div>
+    <ul class="company-dashboard-links">
+        <li><a th:href="@{/student-dashboard}">Home</a></li>
+        <li><a th:href="@{/internships}">Internships</a></li>
+        <li><a th:href="@{/logout}">Logout</a></li>
+    </ul>
+</nav>
+
+<main class="company-dashboard-container">
+
+    <section class="company-dashboard-hero">
+        <h1>Apply for Internship</h1>
+        <p>Fill out the form below and upload your CV (PDF only).</p>
+    </section>
+
+    <section class="company-form-box" style="margin: 0 auto; padding: 30px; border-radius: 18px; max-width: 450px; background: #fff9f6;">
+        <form th:action="@{/internships/apply}" method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="hidden" name="studentId" th:value="${student.id}" />
+            <input type="hidden" name="internshipId" th:value="${internship.id}" />
+
+            <label for="studentName">Your Name</label>
+            <input type="text" id="studentName" name="studentName" th:value="${student.name}" required/>
+
+            <label for="cvFile">Upload Your CV (PDF only)</label>
+            <input type="file" id="cvFile" name="cvFile" accept="application/pdf" required/>
+
+            <button type="submit" class="form-btn">Submit Application</button>
+
+            <div id="uploadStatus" th:if="${message}" th:text="${message}"></div>
+            <div id="uploadError" th:if="${error}" th:text="${error}" style="color:red;"></div>
+        </form>
+    </section>
+
+</main>
+
+</body>
+</html>
