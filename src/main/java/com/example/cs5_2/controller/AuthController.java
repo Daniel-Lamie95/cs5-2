@@ -47,7 +47,7 @@ public class AuthController {
             Student student = studentService.loginStudent(email, password);
             session.removeAttribute("company");
             session.setAttribute("student", student);
-            return "redirect:/student-dashboard";
+            return "redirect:/student/dashboard";
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
