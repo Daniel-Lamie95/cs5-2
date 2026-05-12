@@ -1,65 +1,102 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Applications</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Applications - Launchpath</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
+<body class="company-dashboard-page">
 
-<h2>📄 Create Application</h2>
+<!-- Navbar -->
+<nav class="company-dashboard-navbar">
+    <div class="company-dashboard-logo">🚀 Launchpath</div>
+    <ul class="company-dashboard-links">
+        <li><a th:href="@{/index}">Home</a></li>
+        <li><a th:href="@{/company/profile}">Profile</a></li>
+        <li><a th:href="@{/logout}">Logout</a></li>
+    </ul>
+</nav>
 
-<form  th:action="@{/application}" method="post">
+<main class="company-dashboard-container">
 
+    <!-- Hero Section -->
+    <section class="company-dashboard-hero">
+        <div>
+            <h1>All Applications</h1>
+            <p>View and manage applications for your internships.</p>
+        </div>
+    </section>
 
-    <label>ID:</label><br>
-    <input type="number" name="applicationId" required><br><br>
-    
-    <label>Student Name:</label><br>
-    <input type="text" name="studentName" required><br><br>
+    <!-- Two-column layout using existing CSS -->
+    <section class="company-dashboard-top" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
 
-    <label>Internship Title:</label><br>
-    <input type="text" name="internshipTitle" required><br><br>
+        <!-- Left Column: Applications Table -->
+        <div class="company-dashboard-info-card" style="overflow-x: auto;">
+            <h2>Applications</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                <tr style="background: linear-gradient(135deg, var(--space-dark), var(--window-blue)); color: white;">
+                    <th style="padding: 10px; text-align: left;">Student</th>
+                    <th style="padding: 10px; text-align: left;">Email</th>
+                    <th style="padding: 10px; text-align: left;">Major</th>
+                    <th style="padding: 10px; text-align: left;">Year</th>
+                    <th style="padding: 10px; text-align: left;">Internship</th>
+                    <th style="padding: 10px; text-align: left;">Status</th>
+                    <th style="padding: 10px; text-align: left;">CV</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="app : ${applications}" style="background: #fff9f6; border-bottom: 1px solid #f4dfd4;">
+                    <td th:text="${app.student.name}" style="padding: 8px;">Student Name</td>
+                    <td th:text="${app.student.email}" style="padding: 8px;">student@example.com</td>
+                    <td th:text="${app.student.major}" style="padding: 8px;">Major</td>
+                    <td th:text="${app.student.academicYear}" style="padding: 8px;">Year</td>
+                    <td th:text="${app.internship.title}" style="padding: 8px;">Internship</td>
+                    <td style="padding: 8px;">
+                        <form th:action="@{/application/update}" method="post" style="display: flex; gap: 5px;">
+                            <input type="hidden" name="id" th:value="${app.applicationId}" />
+                            <select name="status" style="padding: 4px;">
+                                <option th:each="s : ${statuses}"
+                                        th:value="${s}"
+                                        th:text="${s}"
+                                        th:selected="${s == app.status}">
+                                </option>
+                            </select>
+                            <button type="submit" style="padding: 4px 6px; cursor: pointer;">Update</button>
+                        </form>
+                    </td>
+                    <td style="padding: 8px;">
+                        <a th:href="@{'/files/' + ${app.student.cvPath}}" target="_blank" style="color: var(--flame-yellow); text-decoration: underline;">View CV</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(applications)}">
+                    <td colspan="7" style="text-align: center; padding: 15px;">No applications found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <button type="submit">Submit</button>
-</form>
+        <!-- Right Column: Sidebar / Filters -->
+        <div class="company-dashboard-actions" style="padding: 20px; background: var(--rocket-gray); border-radius: 12px;">
+            <h2>Filter & Info</h2>
+            <div class="search-box">
+                <form>
+                    <input type="text" placeholder="Search by student or internship..." />
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div style="margin-top: 20px; color: var(--card-dark);">
+                <p>Total Applications: <strong th:text="${#lists.size(applications)}">0</strong></p>
+                <p>Accepted: <strong th:text="${acceptedCount}">0</strong></p>
+                <p>Pending: <strong th:text="${pendingCount}">0</strong></p>
+                <p>Rejected: <strong th:text="${rejectedCount}">0</strong></p>
+            </div>
+        </div>
 
-<hr>
+    </section>
 
-<h2>📋 Applications List</h2>
-
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Student</th>
-        <th>Internship</th>
-        <th>Action</th>
-    </tr>
-
-    <tr th:each="app : ${applications}">
-        <td th:text="${app.applicationId}"></td>
-        <td th:text="${app.applicationDate}"></td>
-        <td th:text="${app.status}"></td>
-        <td th:text="${app.student.name}"></td>
-        <td th:text="${app.internship.title}"></td>
-
-        <td>
-            <form  th:action="@{/application/update}" method="post">
-                <input type="hidden" name="id" th:value="${app.applicationId}">
-
-                <select name="status">
-                    <option value="Pending" th:selected="${app.status == 'Pending'}">Pending</option>
-                    <option value="Accepted" th:selected="${app.status == 'Accepted'}">Accepted</option>
-                    <option value="Rejected" th:selected="${app.status == 'Rejected'}">Rejected</option>
-               
-                </select>
-
-                <button type="submit">Update</button>
-            </form>
-        </td>
-    </tr>
-
-</table>
+</main>
 
 </body>
 </html>
