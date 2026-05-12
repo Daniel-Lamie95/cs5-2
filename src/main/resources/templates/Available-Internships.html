@@ -38,38 +38,18 @@
 
     </section>
 
-    <section class="company-dashboard-stats">
-
-        <div class="dashboard-stat-card">
-            <h3 th:text="${totalInternships}">12</h3>
-            <p>Posted Internships</p>
-        </div>
-
-        <div class="dashboard-stat-card">
-            <h3 th:text="${totalApplicants}">48</h3>
-            <p>Applicants</p>
-        </div>
-
-
-    </section>
-
     <section class="search-section">
 
         <div class="search-box">
 
             <form th:action="@{/internships/Available-Internships}" method="get">
 
-                <label for="keyword" class="sr-only">Search internships</label>
-
                 <input type="text"
-                       id="keyword"
                        name="keyword"
                        th:value="${keyword}"
                        placeholder="Search internships...">
 
                 <button type="submit">Search</button>
-
-                <a th:href="@{/internships/Available-Internships}" style="margin-left: 10px;">Clear search</a>
 
             </form>
 

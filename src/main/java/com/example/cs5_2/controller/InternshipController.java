@@ -127,12 +127,19 @@ public class InternshipController {
             return "edit-Internship-profile";
         }
     }
-
     @GetMapping("/Available-Internships")
     public String viewInternships(
 
             @RequestParam(required = false)
             String keyword,
+
+            @CookieValue(
+                    value = "lastSearch",
+                    defaultValue = "")
+            String savedKeyword,
+
+            HttpServletResponse response,
+
             Model model) {
 
         if (hasText(keyword)) {
@@ -180,7 +187,6 @@ public class InternshipController {
 
         return "Available-Internships";
     }
-
 
     @GetMapping("/internship-details")
     public String showInternshipDetails(
