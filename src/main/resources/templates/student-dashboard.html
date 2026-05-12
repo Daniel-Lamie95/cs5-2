@@ -70,6 +70,12 @@
                     <p>Check profile</p>
                 </a>
 
+                <a th:href="@{/internships/available-internships}" class="dashboard-action-card">
+                    <h3>Check available internships</h3>
+                    <p>Browse internship opportunities</p>
+                </a>
+
+
 
                 <a th:href="@{/build}" class="dashboard-action-card">
                     <h3>CV Builder</h3>
@@ -97,35 +103,15 @@
             <h2>Applied Internships</h2>
 
             <div class="company-dashboard-internships-grid">
-                <div class="dashboard-internship-card"
-                th:each="internship : ${internships}">
-                
+                <a class="dashboard-internship-card"
+                   th:each="internship : ${internships}"
+                   th:href="@{/internships/internship-details(id=${internship.id})}">
+
                     <h3 th:text="${internship.title}">Title</h3>
                     <p th:text="${internship.companyName}">Company</p>
                     <span th:text="${internship.duration}">Duration</span>
-                </div>
+                </a>
 
-                <div class="dashboard-internship-card" 
-                 th:each="internship : ${internships}">
-                
-                    <h3 th:text="${internship.title}">Backend Internship</h3>
-                    <p th:text="${internship.field}">Software Engineering</p>
-                    <span th:text="${internship.duration}">
-                     July 2026 - September 2026
-                    </span>
-                    
-                </div>
-
-                <div class="dashboard-internship-card"
-                 th:each="internship : ${internships}">
-                
-                    <h3 th:text="${internship.title}">UI/UX Internship</h3>
-                    <p th:text="${internship.field}">Design</p>
-                    
-                    <span th:text="${internship.duration}">
-            August 2026 - October 2026
-        </span>
-                </div>
             </div>
         </section>
 
