@@ -1,8 +1,7 @@
 package com.example.cs5_2.service;
 
 
-import com.example.cs5_2.model.Application;
-import com.example.cs5_2.model.Internship;
+import com.example.cs5_2.DTO.StudentRegisterDTO;
 import com.example.cs5_2.model.Student;
 import com.example.cs5_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -14,33 +13,20 @@ public class StudentService {
     private final StudentRepository studentRepo;
 
     public StudentService(StudentRepository studentRepo) {
-        this.studentRepo = studentRepo;
-    }
-    //private final BuildCVRepository buildCVRepo;
 
-    public Student registerStudent(Student student) {
-        if (student == null) {
+        this.studentRepo = studentRepo;
+        //private final BuildCVRepository buildCVRepo;
+    }
+
+
+    public Student registerStudent(StudentRegisterDTO data) {
+        if (data == null)
             throw new IllegalArgumentException("Student cannot be null");
-        } else if (student.getEmail() == null || student.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        } else if (student.getPassword() == null || student.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        } else if (student.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Password length must be at least 8 characters");
-        } else if (student.getName() == null || student.getName().isEmpty()) {
-            throw new IllegalArgumentException("Name is required");
-        } else if (student.getName().length() < 3) {
-            throw new IllegalArgumentException("Name must be at least 3 chars");
-        } else if (student.getMajor() == null || student.getMajor().isEmpty()) {
-            throw new IllegalArgumentException("Major is required");
-        } else if (student.getUniversity() == null || student.getUniversity().isEmpty()) {
-            throw new IllegalArgumentException("University is required");
-        } else {
-            // Normalize email before saving to database
-            student.setEmail(student.getEmail().trim().toLowerCase());
-            studentRepo.save(student);
-            return student;
-        }
+
+        Student student = new Student();
+        student.loadFormData(data);
+        studentRepo.save(student);
+        return student;
     }
    
 

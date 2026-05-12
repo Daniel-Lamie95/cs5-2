@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Register - Launchpad</title>
+    <title>Company Register - Launchpath</title>
     <link  rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="auth-page">
 
     <nav class="navbar">
-        <div class="logo">🚀 Launchpad</div>
+        <div class="logo">🚀 Launchpath</div>
 
         <ul class="nav-links">
             <li><a th:href="@{/}">Home</a></li>
             <li><a th:href="@{/about}">About Us</a></li>
-            <li><a th:href="@{/contact}">Contact</a></li>
+           
         </ul>
     </nav>
 
@@ -44,6 +44,8 @@
             <input type="password" name="password" placeholder="Password" required>
             <input type="text" name="field" placeholder="Field / Industry" required>
             <input type="text" name="location" placeholder="Location" required>
+            <input type="tel" name="phone" placeholder="phone" required>
+            <br/>
             <textarea name="description" placeholder="Company Description" rows="4" required></textarea>
             <input type="url" name="website" placeholder="Company Website">
 

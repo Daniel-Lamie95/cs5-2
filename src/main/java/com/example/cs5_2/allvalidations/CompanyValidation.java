@@ -21,6 +21,7 @@ public class CompanyValidation {
             "Invalid phone number"
         );
 
+
         BaseValidator.notEmpty(c.getField(), "Field required");
         BaseValidator.minLength(c.getField(), 2, "Field too short");
 

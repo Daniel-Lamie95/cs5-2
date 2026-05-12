@@ -1,4 +1,5 @@
 package com.example.cs5_2.controller;
+import com.example.cs5_2.DTO.StudentRegisterDTO;
 import com.example.cs5_2.model.ApplicationStatus;
 
 import org.springframework.ui.Model;
@@ -37,52 +38,21 @@ public class StudentController {
         return "student-register";
     }
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute Student student, Model model) {
+    public String register(@ModelAttribute StudentRegisterDTO studentDto, Model model) {
         try {
-            studentService.registerStudent(student);
+            studentService.registerStudent(studentDto);
             model.addAttribute("message", "Registration successful! Please login.");
             return "login"; // Redirect to login page
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "student-register"; // Stay on register page
+            return "student-register";
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed: " + e.getMessage());
             return "student-register";
         }
     }
-
-    @PostMapping("/login")
-    public String login(@RequestParam String email,
-                        @RequestParam String password,
-                        @RequestParam(defaultValue = "student") String userType,
-                        HttpSession session,
-                        Model model) {
-        try {
-            if ("company".equalsIgnoreCase(userType)) {
-                Company company = companyService.login(email, password);
-                session.removeAttribute("user");
-                session.setAttribute("company", company);
-                return "redirect:/company/dashboard";
-            }
-
-            Student student = studentService.loginStudent(email, password);
-            session.removeAttribute("company");
-            session.setAttribute("user", student);
-            return "redirect:/student-dashboard";
-
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("selectedUserType", userType);
-            return "login";
-        }
-    }
-
 
     @GetMapping("/student-profile")
     public String studentProfile(HttpSession session, Model model) {

@@ -16,7 +16,7 @@
     <ul class="company-dashboard-links">
         <li><a th:href="@{/index}">Home</a></li>
         <li><a th:href="@{/company/profile}">Profile</a></li>
-        <li><a th:href="@{/logout}">Logout</a></li>
+        <li><a th:href="@{/company/logout}">Logout</a></li>
     </ul>
 </nav>
 
@@ -65,7 +65,7 @@
             </div>
 
             <div class="dashboard-info-row">
-                <span class="dashboard-label">Phone</span>
+                <span class="dashboard-label">Location</span>
                 <span class="dashboard-value" th:text="${company.phone}"></span>
             </div>
 
