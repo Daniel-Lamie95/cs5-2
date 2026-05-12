@@ -6,6 +6,9 @@ import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.service.CompanyService;
 import com.example.cs5_2.service.InternshipService;
+import com.example.cs5_2.service.RankingService;
+import com.example.cs5_2.service.StudentService;
+
 import java.util.Collections;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -17,6 +20,8 @@ import java.util.Collections;
 import com.example.cs5_2.model.Application;
 import com.example.cs5_2.service.ApplicationService;
 import java.util.List;
+import java.util.Map;
+
 import com.example.cs5_2.model.ApplicationStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -28,14 +33,21 @@ public class CompanyController{
     private final CompanyService companyService;
     private final InternshipService internshipService;
     private final ApplicationService applicationService;
+    private final RankingService rankingService;
+    private final StudentService studentService;
+    
+    
+    public CompanyController(CompanyService companyService, InternshipService internshipService,
+			ApplicationService applicationService, RankingService rankingService, StudentService studentService) {
+		super();
+		this.companyService = companyService;
+		this.internshipService = internshipService;
+		this.applicationService = applicationService;
+		this.rankingService = rankingService;
+		this.studentService = studentService;
+	}
 
-    public CompanyController(CompanyService companyService, InternshipService internshipService, ApplicationService applicationService) {
-               this.companyService = companyService;
-               this.internshipService = internshipService;
-              this.applicationService = applicationService;
-}
-
-    @GetMapping("/register")
+	@GetMapping("/register")
     public String registerPage(Model model) {
         model.addAttribute("company", new Company());
         return "company-register";
@@ -275,4 +287,23 @@ public class CompanyController{
         return "redirect:/company/application";
     }
 
+    
+    
+    
+    @GetMapping("/university-ranking")
+    public String universityRanking(HttpSession session, Model model) {
+
+        Object companyObj = session.getAttribute("company");
+
+        if (!(companyObj instanceof Company company)) {
+            return "redirect:/login";
+        }
+
+        Map<String, Double> rankings = rankingService.getUniversityRanking(studentService.getAllStudents());
+
+        model.addAttribute("rankings", rankings);
+        model.addAttribute("company", company);
+
+        return "university-ranking";
+    }
 }
