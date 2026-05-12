@@ -39,67 +39,27 @@
                 <strong th:text="${error}"></strong>
              </div>
 
-            <input type="text"
-       name="name"
-       placeholder="Company Name"
-       required
-       >
+           <input type="text" th:field="*{name}" placeholder="Company Name" required>
 
-<input type="email"
-       name="email"
-       placeholder="Email"
-       required
-       >
+<input type="email" th:field="*{email}" placeholder="Email" required>
 
-<input type="password"
-       name="password"
-       placeholder="Password"
-       required
-      >
+<input type="password" name="password" placeholder="Password" required>
 
-<input type="text"
-       name="field"
-       placeholder="Field / Industry"
-       required
-      >
+<input type="text" th:field="*{field}" placeholder="Field / Industry" required>
 
-<input type="text"
-       name="location"
-       placeholder="Location"
-       required
-       >
+<input type="text" th:field="*{location}" placeholder="Location" required>
 
-<input type="tel"
-       name="phone"
-       placeholder="Phone"
-       required
-      >
+<input type="tel" th:field="*{phone}" placeholder="Phone" required>
 
-<br/>
+<textarea th:field="*{description}" placeholder="Company Description" rows="4" required></textarea>
 
-<textarea name="description"
-          placeholder="Company Description"
-          rows="4"
-          required
-         ></textarea>
+<input type="url" th:field="*{website}" placeholder="Company Website" required>
 
-<input type="url"
-       name="website"
-       placeholder="Company Website"
-       required
-      >
+<label class="file-label"> Upload Logo (Optional)</label>
 
-<label class="file-label">
-    Upload Logo (Optional)
-</label>
+<input type="file"  id="logoInput" accept="image/*">
 
-<input type="file"
-       id="logoInput"
-       name="logo">
-
-<input type="hidden"
-       name="logoPath"
-       id="logoPath">
+<input type="hidden" th:field="*{logo}" id="logoPath">
 
 <button type="submit" class="form-btn">
     Complete Registration

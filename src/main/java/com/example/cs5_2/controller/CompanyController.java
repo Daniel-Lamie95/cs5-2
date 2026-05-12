@@ -42,24 +42,23 @@ public class CompanyController{
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute Company company,RedirectAttributes redirectAttributes) {
-
+    public String register(@ModelAttribute Company company, Model model) {
         try {
             companyService.register(company);
 
-            redirectAttributes.addFlashAttribute("registeredEmail", company.getEmail());
-            redirectAttributes.addFlashAttribute("success", "Registration completed successfully. Please login.");
+            model.addAttribute("message", "Company registration successful! Please login.");
+            model.addAttribute("selectedUserType", "company");
 
-            return "redirect:/login";
+            return "login";
 
         } catch (IllegalArgumentException | ValidationException e) {
-        	 redirectAttributes.addFlashAttribute("error", e.getMessage());
-
-           
-            return "redirect:/company/register";
-
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("company", company);
+            return "company-register";
         }
     }
+    
+    
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
 

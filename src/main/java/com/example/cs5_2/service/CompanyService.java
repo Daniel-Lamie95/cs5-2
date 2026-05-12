@@ -2,7 +2,6 @@ package com.example.cs5_2.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.repository.CompanyRepository;
 import com.example.cs5_2.allvalidations.CompanyValidation;
