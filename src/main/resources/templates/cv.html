@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Launchpad - CV Builder</title>
+    <title>Launchpath - CV Builder</title>
     <style>
         body { background-color: #f0f4f8; margin: 0; font-family: 'Segoe UI', sans-serif; }
 
@@ -50,7 +50,7 @@
 <body>
 
 <nav class="navbar">
-    <a th:href="@{/}" class="logo">🚀 Launchpad</a>
+    <a th:href="@{/}" class="logo">🚀 Launchpath</a>
     <ul class="nav-links">
       <li><a th:href="@{/student-home}">Home</a></li>
         <li><a th:href="@{/student-dashboard}">Dashboard</a></li>
@@ -64,7 +64,12 @@
         <p>Fill in your academic and professional history below.</p>
     </header>
 
-    <form th:action="@{/download}" th:object="${userCV}" method="post">
+<div th:if="${errorMessage}" 
+     style="background-color: #fee; color: #900; padding: 15px; border: 1px solid #fcc; margin-bottom: 20px;">
+    <strong>Error: </strong>
+    <span th:text="${errorMessage}">Error message goes here</span>
+</div>
+    <form th:action="@{/save}" th:object="${userCV}" method="post">
         
         <!-- 1. PERSONAL INFO -->
         <div class="cv-form-section">
@@ -152,7 +157,8 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-download">Download My PDF</button>
+        <button type="submit" class="btn-download">View my CV</button>
+      
     </form>
 </div>
 

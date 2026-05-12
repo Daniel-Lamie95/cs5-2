@@ -1,5 +1,6 @@
 package com.example.cs5_2.controller;
 
+import com.example.cs5_2.allvalidations.ValidationException;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.service.CompanyService;
@@ -9,9 +10,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Collections;
 
 
 @Controller
@@ -42,7 +40,7 @@ public class CompanyController{
 
             return "login";
 
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ValidationException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("company", new Company());
             return "company-register";

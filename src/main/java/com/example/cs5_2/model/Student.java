@@ -1,5 +1,6 @@
 package com.example.cs5_2.model;
 
+import com.example.cs5_2.DTO.StudentRegisterDTO;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -129,6 +130,23 @@ public class Student extends User implements Serializable {
 
     public void setBuildCV(BuildCV buildCV) {
         this.buildCV = buildCV;
+    }
+
+
+
+    public void loadFormData(StudentRegisterDTO data) {
+        this.setName(data.getName());
+        this.setEmail(data.getEmail());
+        this.setPassword(data.getPassword());
+        this.setMajor(data.getMajor());
+        this.setUniversity(data.getUniversity());
+        this.setPhoneNum(data.getPhoneNum());
+        this.setDateOfBirth(data.getDateOfBirth());
+        this.setProfilePhotoPath(data.getProfilePhotoPath());
+        this.setLocation(data.getLocation());
+
+
+
     }
 
     @Override

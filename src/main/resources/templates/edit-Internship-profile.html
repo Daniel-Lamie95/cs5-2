@@ -35,7 +35,7 @@
         <div class="company-profile-left">
 
             <div class="company-profile-image">
-                <img th:src="${#strings.isEmpty(data.photoPath)} ? '/images/logo.png' : '/images/' + data.photoPath" alt="Internship">
+                <img th:src="${(data.photoPath != null and data.photoPath != '')} ? '/images/' + ${data.photoPath} : '/images/logo.png'" alt="Internship">
             </div>
 
             <h2 th:text="${data.title}"></h2>
@@ -120,6 +120,27 @@
     </section>
 
 </main>
+
+<script>
+    // Handle photo file selection
+    document.getElementById('photoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Extract filename and create path
+            const filename = file.name;
+            const photoPath = '/images/' + filename;
+
+            // Set the hidden field value
+            document.getElementById('photoPath').value = photoPath;
+
+            // Show feedback to user
+            document.getElementById('selectedPhoto').textContent = 'Selected: ' + photoPath;
+        } else {
+            document.getElementById('photoPath').value = '';
+            document.getElementById('selectedPhoto').textContent = '';
+        }
+    });
+</script>
 
 </body>
 </html>
