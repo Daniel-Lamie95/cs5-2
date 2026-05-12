@@ -114,8 +114,6 @@ public class InternshipService {
                 );
     }
 
-
-
     public List<Internship>
     searchInternshipsByTitle(String title){
 
