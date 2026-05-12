@@ -26,8 +26,16 @@ public class StudentController {
         return "student-register";
     }
 
+    @GetMapping("/home")
+    public String homepage() {
+        return "index";
+    }
 
-  
+    @GetMapping("/about")
+    public String aboutPage() {
+        return "about";
+    }
+
 
     @PostMapping("/register")
     public String register(@ModelAttribute StudentRegisterDTO studentDto, Model model) {
@@ -124,8 +132,6 @@ public class StudentController {
             return "redirect:/student-profile";
         }
     }
-
-
 
 
  /* @GetMapping("/latest-internships")

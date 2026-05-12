@@ -305,7 +305,7 @@ public class CompanyController{
             return "redirect:/login";
         }
 
-        Map<String, Double> rankings = rankingService.getUniversityRanking(studentService.getAllStudents());
+        Map<String, Double> rankings = (Map<String, Double>) rankingService.getUniversityRanking(studentService.getAllStudents());
 
         model.addAttribute("rankings", rankings);
         model.addAttribute("company", company);
