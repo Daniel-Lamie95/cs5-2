@@ -1,6 +1,7 @@
 package com.example.cs5_2.controller;
 
 import com.example.cs5_2.allvalidations.ValidationException;
+import com.example.cs5_2.allvalidations.InternshipValidation;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
 import com.example.cs5_2.service.CompanyService;
@@ -168,12 +169,15 @@ public class CompanyController{
             internship.setCompany(company);
             alignInternshipPhotoWithCompany(internship, company);
 
+            // Validate internship data
+            InternshipValidation.validateAdd(internship);
+
             // Save internship
             internshipService.addInternship(internship);
 
             return "redirect:/company/dashboard";
 
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ValidationException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("internship", internship);
             model.addAttribute("company", company);

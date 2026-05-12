@@ -1,4 +1,6 @@
 package com.example.cs5_2.controller;
+import com.example.cs5_2.allvalidations.InternshipValidation;
+import com.example.cs5_2.allvalidations.ValidationException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.cs5_2.model.Company;
@@ -60,6 +62,7 @@ public class InternshipController {
                              @RequestParam(required = false, name = "description") String description,
                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                              @RequestParam(required = false) String photoPath,
+                             @RequestParam(required = false) Integer maxApplicants,
                              @RequestParam(required = false) String title,
                              HttpSession session,
                              Model model) {
@@ -82,14 +85,13 @@ public class InternshipController {
             return "redirect:/internships";
         }
 
-        // Build an updated Internship object that contains required fields
+
         Internship updated = new Internship();
-        // ensure required fields are present for service.updateInternship
+
         updated.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : existing.getTitle());
         updated.setCompanyName(existing.getCompanyName());
-        updated.setMaxApplicants(existing.getMaxApplicants());
+        updated.setMaxApplicants(maxApplicants != null ? maxApplicants : existing.getMaxApplicants());
 
-        // apply editable fields from the form
         updated.setDuration(duration != null ? duration : existing.getDuration());
         updated.setDescription(description != null ? description.trim() : existing.getDescription());
         updated.setStartDate(startDate != null ? startDate : existing.getStartDate());
@@ -102,13 +104,16 @@ public class InternshipController {
         // Keep the existing company reference unchanged (do not edit company from internship form)
         updated.setCompany(existing.getCompany());
 
-        // Normalize photo path
+        
         normalizePhotoPath(updated);
 
         try {
+            // Validate updated internship data
+            InternshipValidation.validateAdd(updated);
+
             service.updateInternship(id, updated);
             return "redirect:/internships/internship-details?id=" + id;
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | ValidationException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("data", existing);
             model.addAttribute("internship", existing);
@@ -188,16 +193,7 @@ public class InternshipController {
         return "Available-Internships";
     }
 
-    @GetMapping("/read-cookie")
-    @ResponseBody
-    public String readCookie(
-            @CookieValue(
-                    value = "theme",
-                    defaultValue = "light")
-            String theme) {
 
-        return "Theme is: " + theme;
-    }
 
     @GetMapping("/internship-details")
     public String showInternshipDetails(
