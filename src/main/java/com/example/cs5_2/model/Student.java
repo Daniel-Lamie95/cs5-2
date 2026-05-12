@@ -84,8 +84,14 @@ public class Student extends User implements Serializable {
     public void setUniversity(String university) {
         this.university = university;
     }
+    
 
-    public String getPhoneNum() {
+    public double getPerformanceScore() {
+		return performanceScore;
+	}
+
+	
+	public String getPhoneNum() {
         return phoneNum;
     }
 
