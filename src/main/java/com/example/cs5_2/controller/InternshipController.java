@@ -1,6 +1,7 @@
 package com.example.cs5_2.controller;
 import com.example.cs5_2.allvalidations.InternshipValidation;
 import com.example.cs5_2.allvalidations.ValidationException;
+import com.example.cs5_2.model.Application;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.cs5_2.model.Company;
@@ -9,16 +10,13 @@ import com.example.cs5_2.model.Student;
 import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.service.InternshipService;
 
-import com.example.cs5_2.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,14 +25,11 @@ import java.util.List;
 public class InternshipController {
 
     private final InternshipService service;
-    private final StudentService studentService;
     private final ApplicationService applicationService;
 
     public InternshipController(InternshipService service,
-                                StudentService studentService,
                                 ApplicationService applicationService) {
         this.service = service;
-        this.studentService = studentService;
         this.applicationService = applicationService;
     }
 
@@ -138,14 +133,6 @@ public class InternshipController {
 
             @RequestParam(required = false)
             String keyword,
-
-            @CookieValue(
-                    value = "lastSearch",
-                    defaultValue = "")
-            String savedKeyword,
-
-            HttpServletResponse response,
-
             Model model) {
 
         if (hasText(keyword)) {
@@ -220,6 +207,27 @@ public class InternshipController {
         // This is the correct place to add it:
         boolean showApplyButton = session.getAttribute("user") instanceof Student;
         model.addAttribute("showApplyButton", showApplyButton);
+
+        // Check if student already applied to this internship
+        Student student = null;
+        if (session.getAttribute("user") instanceof Student s) {
+            student = s;
+        }
+
+        if (student != null) {
+            try {
+                Application existingApp = applicationService.getStudentApplicationForInternship(student.getId(), id);
+                if (existingApp != null) {
+                    model.addAttribute("studentApplication", existingApp);
+                    model.addAttribute("hasAlreadyApplied", true);
+                    model.addAttribute("applicationStatus", existingApp.getStatus());
+                } else {
+                    model.addAttribute("hasAlreadyApplied", false);
+                }
+            } catch (Exception e) {
+                model.addAttribute("hasAlreadyApplied", false);
+            }
+        }
 
         // Existing logic for showing edit button for the owner
         boolean showOwnerEditButton = false;
@@ -320,60 +328,62 @@ public class InternshipController {
         }
     }
 
-    // Show application form (auto CV)
-    @GetMapping("/apply")
-    public String showApplicationForm(@RequestParam("id") Long internshipId,
-                                      HttpSession session,
-                                      Model model) {
+    // Apply to internship - direct submission with validation
+    @PostMapping("/apply")
+    public String applyToInternship(@RequestParam(name = "id") Long internshipId,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
         // Get logged-in student from session
         Object user = session.getAttribute("user");
         if (!(user instanceof Student student)) {
-            return "redirect:/login"; // redirect if not logged in
+            return "redirect:/login";
         }
 
         // Fetch internship
         Internship internship = service.findById(internshipId);
         if (internship == null) {
-            model.addAttribute("error", "Internship not found");
-            return "errorpage";
-        }
-
-        model.addAttribute("internship", internship);
-        model.addAttribute("student", student);
-
-        return "applicationform"; // Thymeleaf form page with a submit button only
-    }
-
-    // Submit application using auto CV
-    @PostMapping("/apply")
-    public String submitApplication(@RequestParam("internshipId") Long internshipId,
-                                    HttpSession session,
-                                    Model model) {
-        // Get logged-in student from session
-        Object user = session.getAttribute("user");
-        if (!(user instanceof Student student)) {
-            return "redirect:/login"; // redirect if not logged in
-        }
-
-        // Fetch internship to use in case of error
-        Internship internship = service.findById(internshipId);
-        if (internship == null) {
-            model.addAttribute("error", "Internship not found");
-            return "errorpage";
+            redirectAttributes.addFlashAttribute("error", "Internship not found");
+            return "redirect:/internships/Available-Internships";
         }
 
         try {
-            // Call the service method that automatically fetches the student's CV
+            // Check if student already applied to this internship
+            if (applicationService.hasStudentApplied(student.getId(), internshipId)) {
+                redirectAttributes.addFlashAttribute("error", "You have already applied to this internship. You can revoke your application if you'd like to apply again.");
+                return "redirect:/internships/internship-details?id=" + internshipId;
+            }
+
+            // Validate student has a CV (this will throw exception if not)
             applicationService.addApplication(student.getId(), student.getName(), internshipId);
 
-            model.addAttribute("message", "Application submitted successfully!");
-            return "successpage"; // or "application-success"
+            // Success - redirect back to internship details with success message
+            redirectAttributes.addFlashAttribute("message", "Application submitted successfully!");
+            return "redirect:/internships/internship-details?id=" + internshipId;
         } catch (IllegalArgumentException e) {
-            // Student has no CV or other error
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("internship", internship);
-            model.addAttribute("student", student);
-            return "applicationform"; // show form again with error
+            // Student has no CV or other validation error
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/internships/internship-details?id=" + internshipId;
         }
     }
+
+    // Revoke/Withdraw application
+    @PostMapping("/revoke-application")
+    public String revokeApplication(@RequestParam(name = "id") Long internshipId,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        // Get logged-in student from session
+        Object user = session.getAttribute("user");
+        if (!(user instanceof Student student)) {
+            return "redirect:/login";
+        }
+
+        try {
+            applicationService.revokeApplication(student.getId(), internshipId);
+            redirectAttributes.addFlashAttribute("message", "Application withdrawn successfully. You can apply again if you'd like.");
+            return "redirect:/internships/internship-details?id=" + internshipId;
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/internships/internship-details?id=" + internshipId;
+        }
     }
+}

@@ -59,18 +59,27 @@
 
             <form th:action="@{/internships/Available-Internships}" method="get">
 
+                <label for="keyword" class="sr-only">Search internships</label>
+
                 <input type="text"
+                       id="keyword"
                        name="keyword"
                        th:value="${keyword}"
                        placeholder="Search internships...">
 
                 <button type="submit">Search</button>
 
+                <a th:href="@{/internships/Available-Internships}" style="margin-left: 10px;">Clear search</a>
+
             </form>
 
         </div>
 
     </section>
+
+    <div th:if="${param.applied}" style="background-color: #d4edda; color: #155724; padding: 15px; margin: 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+        <strong>✓ Application submitted successfully!</strong> Your CV has been automatically attached to your application. You can check your application status in your profile.
+    </div>
 
     <section class="company-dashboard-internships">
 

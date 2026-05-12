@@ -5,17 +5,21 @@ import com.example.cs5_2.DTO.StudentRegisterDTO;
 import com.example.cs5_2.model.Student;
 import com.example.cs5_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import java.util.List;
 
 @Service
 public class StudentService {
     private final StudentRepository studentRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    public StudentService(StudentRepository studentRepo) {
+    public StudentService(StudentRepository studentRepo, PasswordEncoder passwordEncoder) {
 
         this.studentRepo = studentRepo;
         //private final BuildCVRepository buildCVRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -25,6 +29,13 @@ public class StudentService {
 
         Student student = new Student();
         student.loadFormData(data);
+        // normalize email to ensure lookups are consistent
+        if (student.getEmail() != null) {
+            student.setEmail(student.getEmail().trim().toLowerCase());
+        }
+
+        // store hashed password
+        student.setPassword(passwordEncoder.encode(data.getPassword()));
         studentRepo.save(student);
         return student;
     }
@@ -108,8 +119,16 @@ public class StudentService {
         if (student == null) {
             throw new IllegalArgumentException("Student with email " + email + " not found");
         }
-        if (!student.getPassword().equals(password)) {
-            throw new IllegalArgumentException("Invalid password");
+        // compare hashed password. For backward compatibility, if stored password
+        // is plain text (legacy), accept it and re-hash+save the password.
+        if (!passwordEncoder.matches(password, student.getPassword())) {
+            if (student.getPassword().equals(password)) {
+                // legacy plain-text password found: re-hash and save
+                student.setPassword(passwordEncoder.encode(password));
+                studentRepo.save(student);
+            } else {
+                throw new IllegalArgumentException("Invalid password");
+            }
         }
         return student;
     }

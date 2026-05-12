@@ -92,6 +92,17 @@ public class ApplicationService {
 
         app.setStatus(status);
         applicationRepository.save(app);
+
+        // If status is ACCEPTED, add student to internship's student_internship table
+        if (status == ApplicationStatus.ACCEPTED) {
+            Student student = app.getStudent();
+            Internship internship = app.getInternship();
+
+            if (student != null && internship != null) {
+                student.addAppliedInternship(internship);
+                studentRepository.save(student);
+            }
+        }
     }
 
     // MATCH SCORE
@@ -108,10 +119,56 @@ public class ApplicationService {
         return score;
     }
 
-    // Fetch all applications for a specific company
     public List<Application> getApplicationsByCompany(String companyName) {
         return applicationRepository.findByInternshipCompanyName(companyName);
     }
+
+    // Check if student already applied to this internship
+    public boolean hasStudentApplied(long studentId, long internshipId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        Internship internship = internshipService.findById(internshipId);
+        if (internship == null) {
+            return false;
+        }
+        return applicationRepository.existsByStudentAndInternship(student, internship);
+    }
+
+    // Get application for a student-internship pair (if exists)
+    public Application getStudentApplicationForInternship(long studentId, long internshipId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        List<Application> studentApps = applicationRepository.findByStudent(student);
+
+        for (Application app : studentApps) {
+            if (app.getInternship() != null && app.getInternship().getId().equals(internshipId)) {
+                return app;
+            }
+        }
+        return null;
+    }
+
+    // Revoke/withdraw an application
+    public void revokeApplication(long studentId, long internshipId) {
+        Application app = getStudentApplicationForInternship(studentId, internshipId);
+        if (app == null) {
+            throw new IllegalArgumentException("Application not found");
+        }
+
+        Student student = app.getStudent();
+        Internship internship = app.getInternship();
+
+        // Remove from student_internship table if status was ACCEPTED
+        if (app.getStatus() == ApplicationStatus.ACCEPTED && student != null && internship != null) {
+            student.removeAppliedInternship(internship);
+            studentRepository.save(student);
+        }
+
+        // Delete the application
+        applicationRepository.delete(app);
+    }
+
+    // ...existing code...
 
     // Update application status from a string (from dropdown)
     public void updateStatus(Integer applicationId, String status) {
@@ -130,5 +187,16 @@ public class ApplicationService {
         // Update enum field and save
         application.setStatus(newStatus);
         applicationRepository.save(application);
+
+        // If status is ACCEPTED, add student to internship's student_internship table
+        if (newStatus == ApplicationStatus.ACCEPTED) {
+            Student student = application.getStudent();
+            Internship internship = application.getInternship();
+
+            if (student != null && internship != null) {
+                student.addAppliedInternship(internship);
+                studentRepository.save(student);
+            }
+        }
     }
 }

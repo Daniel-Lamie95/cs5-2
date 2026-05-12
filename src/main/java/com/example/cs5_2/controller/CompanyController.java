@@ -4,12 +4,16 @@ import com.example.cs5_2.allvalidations.ValidationException;
 import com.example.cs5_2.allvalidations.InternshipValidation;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.model.Internship;
+import com.example.cs5_2.model.Application;
+import com.example.cs5_2.model.ApplicationStatus;
 import com.example.cs5_2.service.CompanyService;
 import com.example.cs5_2.service.InternshipService;
+import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.service.RankingService;
 import com.example.cs5_2.service.StudentService;
 
 import java.util.Collections;
+import java.util.List;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +39,8 @@ public class CompanyController{
     private final ApplicationService applicationService;
     private final RankingService rankingService;
     private final StudentService studentService;
-    
-    
+
+
     public CompanyController(CompanyService companyService, InternshipService internshipService,
 			ApplicationService applicationService, RankingService rankingService, StudentService studentService) {
 		super();
@@ -69,8 +73,8 @@ public class CompanyController{
             return "company-register";
         }
     }
-    
-    
+
+
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
 
@@ -83,11 +87,13 @@ public class CompanyController{
         var postedInternships = internshipService.getInternshipsByCompany(company.getName());
         postedInternships = postedInternships != null ? postedInternships : Collections.emptyList();
 
+        // Get all applications for this company's internships
+        List<Application> applications = applicationService.getApplicationsByCompany(company.getName());
+        applications = applications != null ? applications : Collections.emptyList();
+
         // Calculate statistics
-        int totalApplicants = (int) postedInternships.stream()
-                .mapToInt(Internship::getApplicantsCount)
-                .sum();
-        
+        int totalApplicants = applications.size();
+
         long activeInternships = postedInternships.stream()
                 .filter(i -> i.getEndDate() != null && i.getEndDate().isAfter(java.time.LocalDate.now()))
                 .count();
@@ -287,9 +293,9 @@ public class CompanyController{
         return "redirect:/company/application";
     }
 
-    
-    
-    
+
+
+
     @GetMapping("/university-ranking")
     public String universityRanking(HttpSession session, Model model) {
 
