@@ -29,7 +29,7 @@
         <div class="form-box company-form-box">
              <h2>Company Register</h2>
 
-             <form th:action="@{/company/register}"  th:object= "${company}" method="post" autocomplete="off" >
+             <form th:action="@{/company/register}"  th:object= "${company}" method="post"  >
 
              <div th:if="${message}" style="color: green; margin-bottom: 12px; text-align: center;">
                 <strong th:text="${message}"></strong>
@@ -43,13 +43,13 @@
        name="name"
        placeholder="Company Name"
        required
-       autocomplete="off">
+       >
 
 <input type="email"
        name="email"
        placeholder="Email"
        required
-       autocomplete="off">
+       >
 
 <input type="password"
        name="password"
@@ -61,19 +61,19 @@
        name="field"
        placeholder="Field / Industry"
        required
-       autocomplete="off">
+      >
 
 <input type="text"
        name="location"
        placeholder="Location"
        required
-       autocomplete="off">
+       >
 
 <input type="tel"
        name="phone"
        placeholder="Phone"
        required
-       autocomplete="off">
+      >
 
 <br/>
 
@@ -81,13 +81,13 @@
           placeholder="Company Description"
           rows="4"
           required
-          autocomplete="off"></textarea>
+         ></textarea>
 
 <input type="url"
        name="website"
        placeholder="Company Website"
        required
-       autocomplete="off">
+      >
 
 <label class="file-label">
     Upload Logo (Optional)
