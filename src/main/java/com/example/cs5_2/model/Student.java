@@ -13,6 +13,7 @@ public class Student extends User implements Serializable {
     private static final long serialVersionUID = 1L;
     private String major;
     private String university;
+    private double performanceScore = 0.0;
     private String phoneNum;
     private String location;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

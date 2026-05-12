@@ -12,6 +12,8 @@ public class Company extends User {
     private String website;
     private String phone;
     private String logo;
+    private double rating = 0.0;
+    private int ratingCount = 0;
 
     @Column(length = 1000)
     private String description;
@@ -88,5 +90,12 @@ public class Company extends User {
 
     public void setInternships(List<Internship> internships) {
         this.internships = internships;
+    }
+    public void addRating(double newRating) {
+        this.rating =
+            ((this.rating * this.ratingCount) + newRating)
+            / (this.ratingCount + 1);
+
+        this.ratingCount++;
     }
 }
