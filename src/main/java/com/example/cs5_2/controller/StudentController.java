@@ -38,7 +38,16 @@ public class StudentController {
     }
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpSession session) {
+
+        if (session.getAttribute("company") != null) {
+            return "redirect:/company/dashboard";
+        }
+
+        if (session.getAttribute("student") != null) {
+            return "redirect:/student-dashboard";
+        }
+
         return "login";
     }
 
@@ -66,18 +75,19 @@ public class StudentController {
         try {
             if ("company".equalsIgnoreCase(userType)) {
                 Company company = companyService.login(email, password);
-                session.removeAttribute("user");
+                session.removeAttribute("student");
                 session.setAttribute("company", company);
                 return "redirect:/company/dashboard";
             }
 
             Student student = studentService.loginStudent(email, password);
             session.removeAttribute("company");
-            session.setAttribute("user", student);
+            session.setAttribute("student", student);
             return "redirect:/student-dashboard";
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("enteredEmail",email);
             model.addAttribute("selectedUserType", userType);
             return "login";
         }

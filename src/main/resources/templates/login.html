@@ -13,7 +13,7 @@
 
         <ul class="nav-links">
             <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/about.html}">About Us</a></li>
+            <li><a th:href="@{/about}">About Us</a></li>
            
         </ul>
     </nav>
@@ -24,9 +24,9 @@
             <p>
                 Launch your journey toward internships, growth, and real opportunities.
             </p>
-            <a href="/register" th:href="@{/register}" class="main-btn" style="display:inline-block; margin-right:8px;">Register as Student</a>
+            <a  th:href="@{/register}" class="main-btn" style="display:inline-block; margin-right:8px;">Register as Student</a>
             <a href="/company/register" th:href="@{/company/register}" class="main-btn" style="display:inline-block;">Register as Company</a>
-        </a>
+        
         </div>
 
         <div class="form-box">
@@ -42,7 +42,7 @@
 
             <form action="/login" th:action="@{/login}" method="post">
                
-                <input type="text" name="email" placeholder="Enter Email" required>
+                <input type="email" name="email" placeholder="Enter Email" required th:value="${enterredEmail}">
                 <input type="password" name="password" placeholder="Enter Password" required>
                 
                    <div style="display:flex; gap:16px; margin-bottom:12px;">

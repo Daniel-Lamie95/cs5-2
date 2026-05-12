@@ -27,7 +27,8 @@ public class CompanyController{
 }
 
     @GetMapping("/register")
-    public String registerPage() {
+    public String registerPage(Model model) {
+    	model.addAttribute("company", new Company());
         return "company-register";
     }
 
@@ -43,6 +44,7 @@ public class CompanyController{
 
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("company", new Company());
             return "company-register";
         }
     }

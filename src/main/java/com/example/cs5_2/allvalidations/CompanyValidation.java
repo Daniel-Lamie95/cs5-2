@@ -9,12 +9,14 @@ public class CompanyValidation {
         BaseValidator.notEmpty(c.getName(), "Company name is required");
         BaseValidator.minLength(c.getName(), 2, "Name too short");
         BaseValidator.containsLetter(c.getName(), "Company name must contain letters");
-
+        
+        BaseValidator.notEmpty(c.getEmail(), "Email is required");
         BaseValidator.isEmail(c.getEmail());
-
+        
+        BaseValidator.notEmpty(c.getPassword(), "Password is required");
         BaseValidator.passwordStrong(c.getPassword());
 
-        BaseValidator.notEmpty(c.getPhone(), "Phone required");
+        BaseValidator.notEmpty(c.getPhone(), "Phone number is required");
         BaseValidator.matches(
             c.getPhone(),
             "^(010|011|012|015)[0-9]{8}$",
@@ -28,13 +30,14 @@ public class CompanyValidation {
         BaseValidator.notEmpty(c.getLocation(), "Location required");
         BaseValidator.minLength(c.getLocation(), 2, "Location too short");
 
-        if (c.getWebsite() != null && !c.getWebsite().trim().isEmpty()) {
+        BaseValidator.notEmpty(c.getWebsite(), "Website is required");
+     
             BaseValidator.matches(
                 c.getWebsite(),
                 "^(https?://)?([\\w-]+\\.)+[\\w-]{2,}(/.*)?$",
                 "Invalid website"
             );
-        }
+        
 
         BaseValidator.notEmpty(c.getDescription(), "Description required");
         BaseValidator.minLength(c.getDescription(), 20, "Description too short");
@@ -77,13 +80,14 @@ public class CompanyValidation {
         BaseValidator.notEmpty(c.getLocation(), "Location required");
         BaseValidator.minLength(c.getLocation(), 2, "Location too short");
 
-        if (c.getWebsite() != null && !c.getWebsite().trim().isEmpty()) {
+        BaseValidator.notEmpty(c.getWebsite(), "Website is required");
+        
             BaseValidator.matches(
                 c.getWebsite(),
                 "^(https?://)?([\\w-]+\\.)+[\\w-]{2,}(/.*)?$",
                 "Invalid website"
             );
-        }
+        
 
         BaseValidator.notEmpty(c.getDescription(), "Description required");
         BaseValidator.minLength(c.getDescription(), 20, "Description too short");

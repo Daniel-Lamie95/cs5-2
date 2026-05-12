@@ -38,14 +38,16 @@
 
             <div class="company-profile-right">
                 <h2>Edit Information</h2>
+                
+                <p th:if="${error}" 
+   th:text="${error}" 
+   class="error-message"></p>
 
-                <form th:action="@{/company/update}"
-                  th:object="${company}"
-                  method="post">
+                <form th:action="@{/company/update}"   th:object="${company}"   method="post"  >
 
                 <div class="profile-row">
                     <label>Company Name</label>
-                    <input type="text" th:field="*{name}">
+                    <input type="text" th:field="*{name}" required >
                 </div>
 
                 <div class="profile-row">
@@ -55,27 +57,27 @@
 
                 <div class="profile-row">
                     <label>Phone</label>
-                    <input type="text" th:field="*{phone}">
+                    <input type="tel" th:field="*{phone}" required>
                 </div>
 
                 <div class="profile-row">
                     <label>Location</label>
-                    <input type="text" th:field="*{location}">
+                    <input type="text" th:field="*{location}" required>
                 </div>
 
                 <div class="profile-row">
                     <label>Industry</label>
-                    <input type="text" th:field="*{field}">
+                    <input type="text" th:field="*{field}" required>
                 </div>
 
                 <div class="profile-row">
                     <label>Website</label>
-                    <input type="url" th:field="*{website}">
+                    <input type="url" th:field="*{website}" required >
                 </div>
 
                 <div class="profile-row description-row">
                     <label>Description</label>
-                    <textarea th:field="*{description}"></textarea>
+                    <textarea th:field="*{description}" required ></textarea>
                 </div>
 
                 <div class="company-profile-buttons">
