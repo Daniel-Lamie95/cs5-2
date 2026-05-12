@@ -85,14 +85,13 @@ public class InternshipController {
             return "redirect:/internships";
         }
 
-        // Build an updated Internship object that contains required fields
+
         Internship updated = new Internship();
-        // ensure required fields are present for service.updateInternship
+
         updated.setTitle(title != null && !title.trim().isEmpty() ? title.trim() : existing.getTitle());
         updated.setCompanyName(existing.getCompanyName());
         updated.setMaxApplicants(maxApplicants != null ? maxApplicants : existing.getMaxApplicants());
 
-        // apply editable fields from the form
         updated.setDuration(duration != null ? duration : existing.getDuration());
         updated.setDescription(description != null ? description.trim() : existing.getDescription());
         updated.setStartDate(startDate != null ? startDate : existing.getStartDate());
@@ -105,7 +104,7 @@ public class InternshipController {
         // Keep the existing company reference unchanged (do not edit company from internship form)
         updated.setCompany(existing.getCompany());
 
-        // Normalize photo path
+        
         normalizePhotoPath(updated);
 
         try {
@@ -194,16 +193,7 @@ public class InternshipController {
         return "Available-Internships";
     }
 
-    @GetMapping("/read-cookie")
-    @ResponseBody
-    public String readCookie(
-            @CookieValue(
-                    value = "theme",
-                    defaultValue = "light")
-            String theme) {
 
-        return "Theme is: " + theme;
-    }
 
     @GetMapping("/internship-details")
     public String showInternshipDetails(
