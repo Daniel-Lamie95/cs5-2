@@ -29,7 +29,7 @@
         <div class="form-box company-form-box">
              <h2>Company Register</h2>
 
-             <form th:action="@{/company/register}"  th:object= "${company}" method="post"  >
+             <form th:action="@{/company/register}"  th:object= "${company}" method="post" autocomplete="off" >
 
              <div th:if="${message}" style="color: green; margin-bottom: 12px; text-align: center;">
                 <strong th:text="${message}"></strong>
@@ -39,26 +39,71 @@
                 <strong th:text="${error}"></strong>
              </div>
 
-            <input type="text" th:field="*{name}" placeholder="Company Name" required>
-    <input type="email" th:field="*{email}" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
+            <input type="text"
+       name="name"
+       placeholder="Company Name"
+       required
+       autocomplete="off">
 
-    <input type="text" th:field="*{field}" placeholder="Field / Industry" required>
-    <input type="text" th:field="*{location}" placeholder="Location" required>
-    <input type="tel" th:field="*{phone}" placeholder="phone" required>
+<input type="email"
+       name="email"
+       placeholder="Email"
+       required
+       autocomplete="off">
 
-    <br/>
+<input type="password"
+       name="password"
+       placeholder="Password"
+       required
+       autocomplete="new-password">
 
-    <textarea th:field="*{description}" placeholder="Company Description" rows="4" required></textarea>
-    <input type="url" th:field="*{website}" placeholder="Company Website" required>
-    
-           <label class="file-label">Upload Logo (Optional)</label>
-    <input type="file" id="logoInput" accept="image/*">
-    <input type="hidden" th:field="*{logo}" id="logoPath">
+<input type="text"
+       name="field"
+       placeholder="Field / Industry"
+       required
+       autocomplete="off">
 
-    <button type="submit" class="form-btn">
-        Complete Registration
-    </button>
+<input type="text"
+       name="location"
+       placeholder="Location"
+       required
+       autocomplete="off">
+
+<input type="tel"
+       name="phone"
+       placeholder="Phone"
+       required
+       autocomplete="off">
+
+<br/>
+
+<textarea name="description"
+          placeholder="Company Description"
+          rows="4"
+          required
+          autocomplete="off"></textarea>
+
+<input type="url"
+       name="website"
+       placeholder="Company Website"
+       required
+       autocomplete="off">
+
+<label class="file-label">
+    Upload Logo (Optional)
+</label>
+
+<input type="file"
+       id="logoInput"
+       name="logo">
+
+<input type="hidden"
+       name="logoPath"
+       id="logoPath">
+
+<button type="submit" class="form-btn">
+    Complete Registration
+</button>
         </div>
     </section>
 

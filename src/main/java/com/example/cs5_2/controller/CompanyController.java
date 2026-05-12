@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -32,19 +33,20 @@ public class CompanyController{
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute Company company, Model model) {
+    public String register(@ModelAttribute Company company,RedirectAttributes redirectAttributes) {
+    	
         try {
             companyService.register(company);
 
-            model.addAttribute("message", "Company registration successful! Please login.");
-            model.addAttribute("selectedUserType", "company");
+            redirectAttributes.addFlashAttribute("registeredEmail", company.getEmail());
+            redirectAttributes.addFlashAttribute("success", "Registration completed successfully. Please login.");
 
-            return "login";
+            return "redirect:/login";
 
         } catch (IllegalArgumentException | ValidationException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("company", new Company());
-            return "company-register";
+        	 redirectAttributes.addFlashAttribute("error", e.getMessage());
+           
+            return "redirect:/company-register";
         }
     }
     @GetMapping("/dashboard")

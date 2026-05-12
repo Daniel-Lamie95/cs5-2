@@ -42,8 +42,10 @@
 
             <form action="/login" th:action="@{/login}" method="post">
                
-                <input type="email" name="email" placeholder="Enter Email" required th:value="${enterredEmail}">
-                <input type="password" name="password" placeholder="Enter Password" required>
+                <input type="email" name="email" placeholder="Enter Email"  th:value="${registeredEmail}" 
+                autocomplete="off">
+                <input type="password" name="password" placeholder="Enter Password" required autocomplete="new-password" 
+                value="">
                 
                    <div style="display:flex; gap:16px; margin-bottom:12px;">
                     <label>

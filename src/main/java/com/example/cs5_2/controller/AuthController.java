@@ -23,15 +23,7 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String loginPage(HttpSession session) {
-
-        if (session.getAttribute("company") != null) {
-            return "redirect:/company/dashboard";
-        }
-
-        if (session.getAttribute("student") != null) {
-            return "redirect:/student-dashboard";
-        }
+    public String loginPage() {
 
         return "login";
     }
