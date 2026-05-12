@@ -46,7 +46,7 @@ public class CompanyController{
         } catch (IllegalArgumentException | ValidationException e) {
         	 redirectAttributes.addFlashAttribute("error", e.getMessage());
            
-            return "redirect:/company-register";
+            return "redirect:/company/register";
         }
     }
     @GetMapping("/dashboard")

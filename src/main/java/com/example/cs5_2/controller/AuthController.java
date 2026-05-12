@@ -35,6 +35,8 @@ public class AuthController {
                         HttpSession session,
                         Model model) {
         try {
+            email = email.trim();
+
             if ("company".equalsIgnoreCase(userType)) {
                 Company company = companyService.login(email, password);
                 session.removeAttribute("student");
@@ -49,11 +51,10 @@ public class AuthController {
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("enteredEmail",email);
+            model.addAttribute("enteredEmail", email);
             model.addAttribute("selectedUserType", userType);
             return "login";
         }
     }
-
 
 }
