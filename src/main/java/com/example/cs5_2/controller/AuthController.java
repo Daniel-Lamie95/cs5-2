@@ -1,3 +1,4 @@
+
 package com.example.cs5_2.controller;
 
 import com.example.cs5_2.model.Company;
@@ -24,7 +25,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String loginPage() {
-
         return "login";
     }
 
@@ -35,26 +35,24 @@ public class AuthController {
                         HttpSession session,
                         Model model) {
         try {
-            email = email.trim();
-
             if ("company".equalsIgnoreCase(userType)) {
                 Company company = companyService.login(email, password);
-                session.removeAttribute("student");
+                session.removeAttribute("user");
                 session.setAttribute("company", company);
                 return "redirect:/company/dashboard";
             }
 
             Student student = studentService.loginStudent(email, password);
             session.removeAttribute("company");
-            session.setAttribute("student", student);
-            return "redirect:/student/dashboard";
+            session.setAttribute("user", student);
+            return "redirect:/student-dashboard";
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("enteredEmail", email);
             model.addAttribute("selectedUserType", userType);
             return "login";
         }
     }
+
 
 }
