@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>About - LaunchPad</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7ff;
+            color: #0a0f2c;
+        }
+
+        /* Navbar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: #0a0f2c;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        ul li a {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        ul li a:hover {
+            color: #00bcd4;
+        }
+
+        .btn {
+            background: #00bcd4;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+        }
+
+        /* About Section */
+        .about {
+            padding: 80px 40px;
+            text-align: center;
+        }
+
+        .about-container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .about h2 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .about p {
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: #555;
+        }
+
+        /* Cards */
+        .about-cards {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            width: 250px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h3 {
+            color: #00bcd4;
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: #0a0f2c;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            width: 22%;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            color: #00bcd4;
+        }
+
+        .social a {
+            background: #00bcd4;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+            text-decoration: none;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+<header>
+    <a href="index.html" class="logo">🚀 LaunchPad</a>
+
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <a href="login.html" class="btn">Login</a>
+</header>
+
+<!-- About Section -->
+<section class="about">
+
+    <div class="about-container">
+
+        <h2>About LaunchPad 🚀</h2>
+
+        <p>
+            LaunchPad is a platform designed to help students discover internships,
+            build their skills, and start their professional journey in a simple and smart way.
+        </p>
+
+        <div class="about-cards">
+
+            <div class="card">
+                <h3>🎯 Mission</h3>
+                <p>Connecting students with real opportunities.</p>
+            </div>
+
+            <div class="card">
+                <h3>💡 Vision</h3>
+                <p>Bridging the gap between students and companies.</p>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Goal</h3>
+                <p>Preparing students for the job market.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Footer -->
+<footer>
+
+    <div class="footer-container">
+
+        <div class="footer-section">
+            <h2>🚀 LaunchPad</h2>
+            <p>Your First Step Into the Professional World</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Links</h3>
+            <ul>
+                <li><a href="#">Internships</a></li>
+                <li><a href="#">Companies</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Services</h3>
+            <ul>
+                <li><a href="#">Students</a></li>
+                <li><a href="#">Companies</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Social</h3>
+            <div class="social">
+                <a href="#">F</a>
+                <a href="#">T</a>
+                <a href="#">L</a>
+            </div>
+        </div>
+
+    </div>
+
+    <p class="copyright">
+        © 2026 LaunchPad | All Rights Reserved
+    </p>
+
+</footer>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 package com.example.cs5_2.service;
-
+import com.example.cs5_2.allvalidations.ApplicationValidation;
 import com.example.cs5_2.model.*;
 import com.example.cs5_2.repository.ApplicationRepository;
 import com.example.cs5_2.repository.BuildCVRepository;
@@ -31,6 +31,11 @@ public class ApplicationService {
     public void addApplication(long studentId,
                                String studentName,
                                Long internshipId) {
+    	ApplicationValidation.validate(
+    	        (int) studentId,
+    	        studentName,
+    	        internshipId
+    	);
 
         Internship internship = internshipService.findById(internshipId);
 
@@ -47,6 +52,8 @@ public class ApplicationService {
 
         // AUTO GET CV FROM DB
         BuildCV cv = buildCVRepository.findByStudent(student);
+        ApplicationValidation.validateCV(cv);
+        
 
         if (cv == null) {
             throw new IllegalArgumentException("Student has no CV");
@@ -61,8 +68,13 @@ public class ApplicationService {
         app.setBuildCV(cv);
 
         app.setMatchScore(calculateMatchScore(student, internship));
+        
+        ApplicationValidation.validateMatchScore(
+                app.getMatchScore()
+        );
 
         applicationRepository.save(app);
+        
     }
 
     // GET ALL
@@ -72,6 +84,8 @@ public class ApplicationService {
 
     // UPDATE STATUS
     public void updateStatus(int id, ApplicationStatus status) {
+    	
+    	ApplicationValidation.validateStatus(status);
 
         Application app = applicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Application not found"));
