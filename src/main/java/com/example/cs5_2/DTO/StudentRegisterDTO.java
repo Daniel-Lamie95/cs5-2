@@ -2,6 +2,7 @@ package com.example.cs5_2.DTO;
 
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,6 +19,7 @@ public class StudentRegisterDTO {
 
     @NotBlank
     @Size(min = 6, max = 20)
+    @Pattern(regexp = ".*[A-Za-z].*", message = "Password must contain characters")
     private String password;
 
 
