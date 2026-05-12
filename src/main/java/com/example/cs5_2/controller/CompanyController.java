@@ -150,9 +150,6 @@ public class CompanyController{
     }
 
 
-
-
-
     @GetMapping("/post-internship")
     public String showPostInternshipForm(HttpSession session, Model model) {
         Object companyObj = session.getAttribute("company");
