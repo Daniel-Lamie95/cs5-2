@@ -50,10 +50,6 @@
             <p>Applicants</p>
         </div>
 
-        <div class="dashboard-stat-card">
-            <h3 th:text="${activeInternships}">6</h3>
-            <p>Active Internships</p>
-        </div>
 
     </section>
 
@@ -61,7 +57,7 @@
 
         <div class="search-box">
 
-            <form th:action="@{/internships}" method="get">
+            <form th:action="@{/Available-Internships}" method="get">
 
                 <input type="text"
                        name="keyword"
