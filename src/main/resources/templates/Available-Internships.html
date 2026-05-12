@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internship Dashboard - Launchpad</title>
+    <title>Internship Dashboard - Launchpath</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -12,7 +12,7 @@
 
 <nav class="company-dashboard-navbar">
 
-    <div class="company-dashboard-logo">🚀 Launchpad</div>
+    <div class="company-dashboard-logo">🚀 Launchpath</div>
 
     <ul class="company-dashboard-links">
         <li><a th:href="@{/student-dashboard}">Home</a></li>
@@ -50,10 +50,6 @@
             <p>Applicants</p>
         </div>
 
-        <div class="dashboard-stat-card">
-            <h3 th:text="${activeInternships}">6</h3>
-            <p>Active Internships</p>
-        </div>
 
     </section>
 
@@ -61,7 +57,7 @@
 
         <div class="search-box">
 
-            <form th:action="@{/internships}" method="get">
+            <form th:action="@{/Available-Internships}" method="get">
 
                 <input type="text"
                        name="keyword"

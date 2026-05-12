@@ -14,7 +14,12 @@ public class CompanyValidation {
 
         BaseValidator.passwordStrong(c.getPassword());
 
-       
+        BaseValidator.notEmpty(c.getPhone(), "Phone required");
+        BaseValidator.matches(
+            c.getPhone(),
+            "^(010|011|012|015)[0-9]{8}$",
+            "Invalid phone number"
+        );
 
 
         BaseValidator.notEmpty(c.getField(), "Field required");
@@ -59,7 +64,13 @@ public class CompanyValidation {
         BaseValidator.minLength(c.getName(), 2, "Name too short");
         BaseValidator.containsLetter(c.getName(), "Company name must contain letters");
 
-      
+        BaseValidator.notEmpty(c.getPhone(), "Phone required");
+        BaseValidator.matches(
+            c.getPhone(),
+            "^(010|011|012|015)[0-9]{8}$",
+            "Invalid phone number"
+        );
+
         BaseValidator.notEmpty(c.getField(), "Field required");
         BaseValidator.minLength(c.getField(), 2, "Field too short");
 

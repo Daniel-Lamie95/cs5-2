@@ -112,7 +112,7 @@ public class InternshipController {
         }
     }
 
-    @GetMapping("/available-internships")
+    @GetMapping("/Available-Internships")
     public String viewInternships(
             @RequestParam(required = false) String keyword,
             Model model) {
