@@ -1,9 +1,11 @@
 package com.example.cs5_2.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.repository.CompanyRepository;
-import com.example.cs5_2.validation.Validation;
+import com.example.cs5_2.allvalidations.CompanyValidation;
 import java.util.List;
 
 
@@ -11,35 +13,36 @@ import java.util.List;
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public CompanyService(CompanyRepository companyRepository) {
+    public CompanyService(CompanyRepository companyRepository, PasswordEncoder passwordEncoder) {
         this.companyRepository = companyRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Company register(Company company) {
 
-       Validation.validateRegister(company);
+       CompanyValidation.validateRegister(company);
 
         if (companyRepository.existsByEmail(company.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
 
+        if (companyRepository.existsByName(company.getName())) {
+            throw new IllegalArgumentException("Company name already exists");
+        }
+
+        company.setPassword(passwordEncoder.encode(company.getPassword()));
         return companyRepository.save(company);
     }
 
     public Company login(String email, String password) {
-
-        if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        }
+    	CompanyValidation.validateLogin(email, password);
 
         Company company = companyRepository.findByEmail(email);
 
-        if (company == null || !company.getPassword().equals(password)) {
+        if (company == null ||
+            !passwordEncoder.matches(password, company.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
@@ -47,17 +50,15 @@ public class CompanyService {
     }
 
     public Company getById(Long id) {
-
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException("Invalid company id");
-        }
+    	CompanyValidation.validateGetById(id);
 
         return companyRepository.findById(id).orElse(null);
     }
 
     public Company updateProfile(Long id, Company updatedCompany) {
-
-       Validation.validateUpdate(updatedCompany);
+    	
+    	CompanyValidation.validateGetById(id);
+       CompanyValidation.validateUpdate(updatedCompany);
 
         Company company = getById(id);
 
@@ -75,6 +76,7 @@ public class CompanyService {
 
         return companyRepository.save(company);
     }
+    
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
     }
