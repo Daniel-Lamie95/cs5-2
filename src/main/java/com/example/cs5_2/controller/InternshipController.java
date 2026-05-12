@@ -101,6 +101,9 @@ public class InternshipController {
         // Keep the existing company reference unchanged (do not edit company from internship form)
         updated.setCompany(existing.getCompany());
 
+        // Normalize photo path
+        normalizePhotoPath(updated);
+
         try {
             service.updateInternship(id, updated);
             return "redirect:/internships/internship-details?id=" + id;
@@ -173,6 +176,12 @@ public class InternshipController {
         model.addAttribute("showOwnerEditButton",
                 showOwnerEditButton);
 
+        // Determine logged-in user type for navigation
+        boolean isStudent = session.getAttribute("user") instanceof Student;
+        boolean isCompany = session.getAttribute("company") instanceof Company;
+        model.addAttribute("isStudent", isStudent);
+        model.addAttribute("isCompany", isCompany);
+
         return "internship-details";
     }
 
@@ -244,6 +253,20 @@ public class InternshipController {
         return value != null
                 &&
                 !value.trim().isEmpty();
+    }
+
+    private static void normalizePhotoPath(Internship internship) {
+        String p = internship.getPhotoPath();
+        if (p != null) {
+            p = p.trim();
+            String lower = p.toLowerCase();
+            if (lower.startsWith("/images/")) {
+                p = p.substring("/images/".length());
+            } else if (lower.startsWith("images/")) {
+                p = p.substring("images/".length());
+            }
+            internship.setPhotoPath(p.isEmpty() ? null : p);
+        }
     }
 }
 

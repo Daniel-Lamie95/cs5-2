@@ -37,9 +37,7 @@
         <div class="company-profile-left">
 
             <div class="company-profile-image">
-                <img th:src="${#strings.isEmpty(internship.photoPath)}
-                             ? (company.logo != null ? company.logo : '/images/main_logo.jpeg')
-                             : '/images/' + internship.photoPath"
+                <img th:src="${(internship.photoPath != null and internship.photoPath != '')} ? '/images/' + ${internship.photoPath} : (${company.logo} != null ? ${company.logo} : '/images/main_logo.jpeg')"
                      alt="Internship image preview">
             </div>
 

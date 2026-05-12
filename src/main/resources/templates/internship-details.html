@@ -30,19 +30,19 @@
     <ul class="company-profile-links">
 
         <li>
-            <a th:href="@{/student-dashboard}">
+            <a th:href="${isStudent ? '/student-dashboard' : (isCompany ? '/company/dashboard' : '/student-dashboard')}">
                 Home
             </a>
         </li>
 
         <li>
-            <a th:href="@{/internships}">
+            <a th:href="${isStudent ? '/internships/available-internships' : '/company/dashboard'}">
                 Dashboard
             </a>
         </li>
 
         <li>
-            <a th:href="@{/logout}">
+            <a th:href="${isCompany ? '/company/logout' : '/logout'}">
                 Logout
             </a>
         </li>
@@ -86,7 +86,7 @@
 
             <div class="company-profile-image">
 
-                <img th:src="${#strings.isEmpty(data.photoPath)} ? '/images/logo.png' : '/images/' + data.photoPath"
+                <img th:src="${(data.photoPath != null and data.photoPath != '')} ? '/images/' + ${data.photoPath} : '/images/logo.png'"
                      alt="logo">
 
             </div>
