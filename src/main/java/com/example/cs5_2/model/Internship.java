@@ -22,6 +22,8 @@ public class Internship implements Serializable {
     private String photoPath;
     private int applicantsCount;
     private int maxApplicants;
+    private String location;
+    private String field;
 
 
     public Internship() {}
@@ -135,6 +137,22 @@ public class Internship implements Serializable {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     @Override

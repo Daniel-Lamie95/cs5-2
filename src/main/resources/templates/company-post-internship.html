@@ -37,10 +37,13 @@
         <div class="company-profile-left">
 
             <div class="company-profile-image">
-                <img th:src="@{/images/main_logo.jpeg}" alt="Company Logo">
+                <img th:src="${#strings.isEmpty(internship.photoPath)}
+                             ? (company.logo != null ? company.logo : '/images/main_logo.jpeg')
+                             : '/images/' + internship.photoPath"
+                     alt="Internship image preview">
             </div>
 
-            <h2>Company</h2>
+            <h2 th:text="${company.name}">Company</h2>
 
             <span>Internship Posting</span>
 
@@ -50,25 +53,27 @@
 
             <h2>New Internship</h2>
 
-            <form method="post" >
+            <div th:if="${error}" class="profile-row" style="color:#b00020;margin-bottom:12px;" th:text="${error}"></div>
+
+            <form th:action="@{/company/post-internship}" th:object="${internship}" method="post">
 
                 <div class="profile-row">
 
                     <label class="profile-label">Internship Title</label>
 
                     <input type="text"
-                           name="title"
+                           th:field="*{title}"
                            required>
 
                 </div>
 
                 <div class="profile-row">
 
-                    <label class="profile-label">Photo File Name</label>
+                    <label class="profile-label">Photo file name (optional)</label>
 
                     <input type="text"
-                           name="photoPath"
-                           placeholder="example: ad1.png">
+                           th:field="*{photoPath}"
+                           placeholder="e.g. ad1.png — leave blank to use your company logo">
 
                 </div>
 
@@ -76,7 +81,7 @@
 
                     <label class="profile-label">Duration</label>
 
-                    <input type="number" min="1" step="1" name="duration" required> in Months
+                    <input type="number" min="1" step="1" th:field="*{duration}" required> in Months
 
                 </div>
 
@@ -84,7 +89,7 @@
 
                     <label class="profile-label">Description</label>
 
-                    <textarea name="description"
+                    <textarea th:field="*{description}"
                               rows="5"
                               required></textarea>
 
@@ -95,7 +100,7 @@
                     <label class="profile-label">Start Date</label>
 
                     <input type="date"
-                           name="startDate"
+                           th:field="*{startDate}"
                            required>
 
                 </div>
@@ -105,8 +110,10 @@
                     <label class="profile-label">Location</label>
 
                     <input type="text"
-                           name="location"
+                           th:field="*{location}"
                            required>
+
+
 
                 </div>
 
@@ -115,7 +122,7 @@
                     <label class="profile-label">Field / Industry</label>
 
                     <input type="text"
-                           name="field"
+                           th:field="*{field}"
                            required>
 
                 </div>

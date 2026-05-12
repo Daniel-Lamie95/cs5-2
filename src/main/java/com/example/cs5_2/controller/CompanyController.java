@@ -102,6 +102,7 @@ public class CompanyController {
             // Set company name and company reference
             internship.setCompanyName(company.getName());
             internship.setCompany(company);
+            alignInternshipPhotoWithCompany(internship, company);
 
             // Save internship
             internshipService.addInternship(internship);
@@ -173,5 +174,48 @@ public class CompanyController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    /**
+     * Internship templates use {@code /images/} + {@link Internship#getPhotoPath()} (file name only).
+     * When no image is given, use the same asset as the company logo so listing and detail views match.
+     */
+    private static void alignInternshipPhotoWithCompany(Internship internship, Company company) {
+        String p = internship.getPhotoPath();
+        if (p != null) {
+            p = p.trim();
+            String lower = p.toLowerCase();
+            if (lower.startsWith("/images/")) {
+                p = p.substring("/images/".length());
+            } else if (lower.startsWith("images/")) {
+                p = p.substring("images/".length());
+            }
+            internship.setPhotoPath(p.isEmpty() ? null : p);
+        }
+        if (internship.getPhotoPath() == null || internship.getPhotoPath().isEmpty()) {
+            String fileName = imagesFilenameFromLogoPath(company.getLogo());
+            if (fileName != null && !fileName.isEmpty()) {
+                internship.setPhotoPath(fileName);
+            }
+        }
+    }
+
+    private static String imagesFilenameFromLogoPath(String logo) {
+        if (logo == null || logo.isBlank()) {
+            return null;
+        }
+        String t = logo.trim();
+        String lower = t.toLowerCase();
+        if (lower.startsWith("/images/")) {
+            return t.substring("/images/".length());
+        }
+        if (lower.startsWith("images/")) {
+            return t.substring("images/".length());
+        }
+        int slash = t.lastIndexOf('/');
+        if (slash >= 0 && slash < t.length() - 1) {
+            return t.substring(slash + 1);
+        }
+        return t;
     }
 }

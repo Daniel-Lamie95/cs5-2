@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import com.example.cs5_2.model.Company;
 import com.example.cs5_2.repository.CompanyRepository;
 import com.example.cs5_2.validation.Validation;
+import java.util.List;
 
 
 @Service
@@ -73,5 +74,8 @@ public class CompanyService {
         company.setDescription(updatedCompany.getDescription());
 
         return companyRepository.save(company);
+    }
+    public List<Company> getAllCompanies() {
+        return companyRepository.findAll();
     }
 }
