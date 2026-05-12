@@ -199,4 +199,10 @@ public class ApplicationService {
             }
         }
     }
+    public List<Application> getApplicationsByStudent(Student student) {
+        if (student == null) {
+            return List.of();
+        }
+        return applicationRepository.findByStudent(student);
+    }
 }

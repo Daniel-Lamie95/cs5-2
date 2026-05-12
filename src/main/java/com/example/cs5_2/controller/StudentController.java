@@ -2,6 +2,9 @@ package com.example.cs5_2.controller;
 import com.example.cs5_2.DTO.StudentRegisterDTO;
 import com.example.cs5_2.model.ApplicationStatus;
 
+import com.example.cs5_2.model.Internship;
+import com.example.cs5_2.repository.ApplicationRepository;
+import com.example.cs5_2.service.InternshipService;
 import org.springframework.ui.Model;
 import com.example.cs5_2.model.Student;
 import com.example.cs5_2.service.StudentService;
@@ -11,14 +14,21 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Controller
 public class StudentController {
     private final StudentService studentService;
     private final ApplicationService applicationService;
+    private final InternshipService internshipService;
 
-    public StudentController(StudentService studentService, ApplicationService applicationService) {
+    public StudentController(StudentService studentService, ApplicationService applicationService, InternshipService internshipService) {
         this.studentService = studentService;
         this.applicationService = applicationService;
+        this.internshipService = internshipService;
     }
 
     @GetMapping("/register")
@@ -66,17 +76,19 @@ public class StudentController {
 
     @GetMapping("/student-dashboard")
     public String studentDashboard(HttpSession session, Model model) {
+
         Object user = session.getAttribute("user");
         if (!(user instanceof Student student)) {
             return "redirect:/login";
         }
 
-        // add student to model
+
         model.addAttribute("student", student);
 
         // compute application counts and list from ApplicationService
         java.util.List<Application> allApps = applicationService.getAllApplications();
         java.util.List<Application> studentApps = new java.util.ArrayList<>();
+
         for (Application app : allApps) {
             if (app.getStudent() != null && app.getStudent().getName() != null
                     && app.getStudent().getName().equals(student.getName())) {
@@ -91,6 +103,9 @@ public class StudentController {
         model.addAttribute("appliedCount", appliedCount);
         model.addAttribute("acceptedCount", acceptedCount);
         model.addAttribute("studentApplications", studentApps);
+
+
+        model.addAttribute("applications", studentApps);   // ← Added this line
 
         return "student-dashboard";
     }
@@ -134,7 +149,11 @@ public class StudentController {
     }
 
 
- /* @GetMapping("/latest-internships")
+
+
+
+
+ @GetMapping("/latest-internships")
 public String latestInternships(HttpSession session, Model model) {
 
     Object user = session.getAttribute("user");
@@ -154,10 +173,10 @@ public String latestInternships(HttpSession session, Model model) {
 
     return "latest-internships";
 }
-   */
-
-
-
 
 
 }
+
+
+
+

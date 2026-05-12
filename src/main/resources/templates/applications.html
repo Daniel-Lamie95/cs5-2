@@ -68,10 +68,14 @@
                         </form>
                     </td>
                     <td style="padding: 8px;">
-                        <span th:if="${app.buildCV != null}" style="color: var(--flame-yellow);">
-                            <strong th:text="${app.buildCV.name}">CV Available</strong>
-                        </span>
-                        <span th:if="${app.buildCV == null}">No CV</span>
+    <span th:if="${app.buildCV != null}">
+        <a th:href="@{/company/cv/{id}/pdf(id=${app.buildCV.id})}"
+           style="color: var(--flame-yellow); text-decoration: underline;"
+           target="_blank">
+            📄 View PDF
+        </a>
+    </span>
+                        <span th:if="${app.buildCV == null}" style="color: gray;">No CV</span>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(applications)}">

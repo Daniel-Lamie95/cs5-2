@@ -34,6 +34,11 @@ public class BuildCV {
     @ElementCollection
     @CollectionTable(name = "cv_experience", joinColumns = @JoinColumn(name = "cv_id"))
     private List<ExperienceEntry> experiences = new ArrayList<>();
+    @Column(name = "pdf_bytes", columnDefinition = "LONGBLOB")
+    private byte[] pdfBytes;
+
+    public byte[] getPdfBytes() { return pdfBytes; }
+    public void setPdfBytes(byte[] pdfBytes) { this.pdfBytes = pdfBytes; }
 
     public BuildCV() {}
 

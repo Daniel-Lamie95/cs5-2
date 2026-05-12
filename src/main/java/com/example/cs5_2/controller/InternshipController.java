@@ -1,12 +1,10 @@
 package com.example.cs5_2.controller;
 import com.example.cs5_2.allvalidations.InternshipValidation;
 import com.example.cs5_2.allvalidations.ValidationException;
-import com.example.cs5_2.model.Application;
+import com.example.cs5_2.model.*;
+import com.example.cs5_2.repository.BuildCVRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import com.example.cs5_2.model.Company;
-import com.example.cs5_2.model.Internship;
-import com.example.cs5_2.model.Student;
 import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.service.InternshipService;
 
@@ -26,11 +24,13 @@ public class InternshipController {
 
     private final InternshipService service;
     private final ApplicationService applicationService;
+    private final BuildCVRepository buildCVRepository;
 
     public InternshipController(InternshipService service,
-                                ApplicationService applicationService) {
+                                ApplicationService applicationService, BuildCVRepository buildCVRepository) {
         this.service = service;
         this.applicationService = applicationService;
+        this.buildCVRepository = buildCVRepository;
     }
 
 
@@ -339,13 +339,12 @@ public class InternshipController {
     public String applyToInternship(@RequestParam(name = "id") Long internshipId,
                                     HttpSession session,
                                     RedirectAttributes redirectAttributes) {
-        // Get logged-in student from session
+
         Object user = session.getAttribute("user");
         if (!(user instanceof Student student)) {
             return "redirect:/login";
         }
 
-        // Fetch internship
         Internship internship = service.findById(internshipId);
         if (internship == null) {
             redirectAttributes.addFlashAttribute("error", "Internship not found");
@@ -353,20 +352,28 @@ public class InternshipController {
         }
 
         try {
-            // Check if student already applied to this internship
+            // Check if already applied
             if (applicationService.hasStudentApplied(student.getId(), internshipId)) {
-                redirectAttributes.addFlashAttribute("error", "You have already applied to this internship. You can revoke your application if you'd like to apply again.");
+                redirectAttributes.addFlashAttribute("error", "You have already applied to this internship.");
                 return "redirect:/internships/internship-details?id=" + internshipId;
             }
 
-            // Validate student has a CV (this will throw exception if not)
+            // Main CV Check
+            BuildCV cv = buildCVRepository.findByStudent(student);   // Need to inject repository
+
+            if (cv == null) {
+                redirectAttributes.addFlashAttribute("error",
+                        "You don't have a CV yet. Please build your CV before applying.");
+                return "redirect:/internships/internship-details?id=" + internshipId;
+            }
+
+            // Proceed with application
             applicationService.addApplication(student.getId(), student.getName(), internshipId);
 
-            // Success - redirect back to internship details with success message
             redirectAttributes.addFlashAttribute("message", "Application submitted successfully!");
             return "redirect:/internships/internship-details?id=" + internshipId;
+
         } catch (IllegalArgumentException e) {
-            // Student has no CV or other validation error
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/internships/internship-details?id=" + internshipId;
         }

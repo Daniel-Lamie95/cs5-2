@@ -1,5 +1,7 @@
 package com.example.cs5_2.controller;
 
+
+
 import com.example.cs5_2.model.BuildCV;
 import com.example.cs5_2.model.Student;
 import com.example.cs5_2.repository.BuildCVRepository;
@@ -10,6 +12,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,51 +60,48 @@ public class CVController {
     }
 
     @PostMapping("/save")
-    public String saveCV(@ModelAttribute("userCV") BuildCV formData, 
-                         HttpSession session, 
-                         org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
-        
+    public String saveCV(@ModelAttribute("userCV") BuildCV formData,
+                         HttpSession session,
+                         RedirectAttributes redirectAttributes) {
+
         Student student = (Student) session.getAttribute("user");
         if (student == null) return "redirect:/login";
 
-        // validation
+        // Validation...
         try {
             com.example.cs5_2.allvalidations.CVValidation.validate(formData);
         } catch (IllegalArgumentException e) {
-            // send specific error message back to the UI
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            //keep the data the user already typed so they don't have to restart
             redirectAttributes.addFlashAttribute("userCV", formData);
             return "redirect:/build";
         }
 
-        
         BuildCV existingCV = cvRepository.findByStudent(student);
 
         if (existingCV != null) {
-            // Update existing managed entity
+            // Update existing
             existingCV.setName(formData.getName());
             existingCV.setJobTitle(formData.getJobTitle());
             existingCV.setEmail(formData.getEmail());
             existingCV.setLocation(formData.getLocation());
             existingCV.setSkills(formData.getSkills());
             existingCV.setCertifications(formData.getCertifications());
-            
-            // Re-sync collections (clearing and adding prevents database ID conflicts)
             existingCV.getEducationList().clear();
             existingCV.getEducationList().addAll(formData.getEducationList());
             existingCV.getExperiences().clear();
             existingCV.getExperiences().addAll(formData.getExperiences());
 
+            cvService.generateAndSavePdf(existingCV);   // ← Generate & save PDF
             cvRepository.save(existingCV);
         } else {
-            // Create new record
             formData.setStudent(student);
+            cvService.generateAndSavePdf(formData);     // ← Generate & save PDF
             cvRepository.save(formData);
         }
 
         return "redirect:/view-cv";
     }
+
 
     @GetMapping("/view-cv")
     public String viewCV(HttpSession session, Model model) {
@@ -127,5 +127,21 @@ public class CVController {
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDisposition(ContentDisposition.attachment().filename("CV.pdf").build());
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/company/cv/{id}/pdf")
+    public ResponseEntity<byte[]> viewCVasPdf(@PathVariable Long id) {
+
+        BuildCV cv = cvService.findById(id);
+
+        if (cv == null || cv.getPdfBytes() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.inline().filename("CV.pdf").build());
+
+        return new ResponseEntity<>(cv.getPdfBytes(), headers, HttpStatus.OK);
     }
 }

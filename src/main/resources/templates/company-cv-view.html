@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student CV</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.5; }
+        h1, h2 { margin-bottom: 5px; }
+        p, li { margin-top: 0; }
+        ul { padding-left: 20px; }
+    </style>
+</head>
+<body>
+<h1 th:text="${cv.name} + ' | ' + ${cv.jobTitle}"></h1>
+<p>Email: <span th:text="${cv.email}"></span></p>
+<p>Location: <span th:text="${cv.location}"></span></p>
+
+<h2>Skills</h2>
+<p th:text="${cv.skills}"></p>
+
+<h2>Certifications</h2>
+<p th:text="${cv.certifications}"></p>
+
+<h2>Education</h2>
+<ul>
+    <li th:each="edu : ${cv.educationList}">
+        <span th:text="edu.degree + ', ' + edu.institution + ' (' + edu.graduationYear + ')'"></span>
+    </li>
+</ul>
+
+<h2>Experience</h2>
+<ul>
+    <li th:each="exp : ${cv.experiences}">
+        <strong th:text="exp.title"></strong> at <span th:text="exp.organization"></span>
+        <p th:text="exp.description"></p>
+    </li>
+</ul>
+</body>
+</html>

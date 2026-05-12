@@ -8,104 +8,113 @@
 </head>
 <body class="company-dashboard-page">
 
-    <nav class="company-dashboard-navbar">
-        <div class="company-dashboard-logo">🚀 Launchpath</div>
+<nav class="company-dashboard-navbar">
+    <div class="company-dashboard-logo">🚀 Launchpath</div>
 
-        <ul class="company-dashboard-links">
-            <li><a th:href="@{/home}">Home</a></li>
-            <li><a  th:href="@{/student-profile}">Profile</a></li>
-             <li><a  th:href="@{/build}">CV Builder</a></li>
-            <li><a  th:href="@{/logout}">Logout</a></li>
-        </ul>
-    </nav>
+    <ul class="company-dashboard-links">
+        <li><a th:href="@{/home}">Home</a></li>
+        <li><a th:href="@{/student-profile}">Profile</a></li>
+        <li><a th:href="@{/build}">CV Builder</a></li>
+        <li><a th:href="@{/logout}">Logout</a></li>
+    </ul>
+</nav>
 
-    <main class="company-dashboard-container"> 
+<main class="company-dashboard-container">
 
-        <section class="company-dashboard-hero">
-            <div>
-                <h1>Student Dashboard</h1>
-                <p>Manage your profile, internships in one place.</p>
+    <section class="company-dashboard-hero">
+        <div>
+            <h1>Student Dashboard</h1>
+            <p>Manage your profile, internships in one place.</p>
+        </div>
+    </section>
+
+    <section class="company-dashboard-top">
+        <div class="company-dashboard-profile-card">
+            <div class="company-dashboard-avatar">
+                <img th:src="${student.profilePhotoPath} != null ? ${student.profilePhotoPath} : '/images/logo.png'"
+                     alt="Student profile photo">
             </div>
-        </section>
-
-        <section class="company-dashboard-top">
-            <div class="company-dashboard-profile-card">
-                <div class="company-dashboard-avatar">
-                    <img th:src="${student.profilePhotoPath} != null ? ${student.profilePhotoPath} : '/images/logo.png'" alt="Student profile photo">
-
-                </div>
-                <h3 th:text="${student.name}">Student Name</h3>
+            <h3 th:text="${student.name}">Student Name</h3>
             <span th:text="${student.major}">Major</span>
+        </div>
+
+        <div class="company-dashboard-info-card">
+            <h2>Your Information</h2>
+
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Name</span>
+                <span class="dashboard-value" th:text="${student.name}">name</span>
             </div>
 
-            <div class="company-dashboard-info-card">
-                <h2>Your Information</h2>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Name</span>
-                    <span class="dashboard-value" th:text="${student.name}">name</span>
-                </div>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Major</span>
-                    <span class="dashboard-value" th:text="${student.major}">major</span>
-                </div>
-
-                <div class="dashboard-info-row">
-                    <span class="dashboard-label">Email</span>
-                    <span class="dashboard-value" th:text="${student.email}">email</span>
-                </div>
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Major</span>
+                <span class="dashboard-value" th:text="${student.major}">major</span>
             </div>
 
-        </section>
-
-        <section class="company-dashboard-actions">
-
-            <h2>Quick Actions</h2>
-
-            <div class="company-dashboard-actions-grid">
-            
-
-                <a th:href="@{/student-profile}" class="dashboard-action-card">
-                    <h3>Back to Profile</h3>
-                    <p>Check profile</p>
-                </a>
-
-                <a th:href="@{/internships/Available-Internships}" class="dashboard-action-card">
-                    <h3>Check available internships</h3>
-                    <p>Browse internship opportunities</p>
-                </a>
-
-
-
-                <a th:href="@{/build}" class="dashboard-action-card">
-                    <h3>CV Builder</h3>
-                    <p>Build your CV</p>
-                    
-                </a>
-               
-
+            <div class="dashboard-info-row">
+                <span class="dashboard-label">Email</span>
+                <span class="dashboard-value" th:text="${student.email}">email</span>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="company-dashboard-internships">
-            <h2>Applied Internships</h2>
+    <section class="company-dashboard-actions">
+        <h2>Quick Actions</h2>
+        <div class="company-dashboard-actions-grid">
+            <a th:href="@{/student-profile}" class="dashboard-action-card">
+                <h3>Back to Profile</h3>
+                <p>Check profile</p>
+            </a>
 
-            <div class="company-dashboard-internships-grid">
-                <a class="dashboard-internship-card"
-                   th:each="internship : ${internships}"
-                   th:href="@{/internships/internship-details(id=${internship.id})}">
+            <a th:href="@{/internships/Available-Internships}" class="dashboard-action-card">
+                <h3>Check available internships</h3>
+                <p>Browse internship opportunities</p>
+            </a>
 
-                    <h3 th:text="${internship.title}">Title</h3>
-                    <p th:text="${internship.companyName}">Company</p>
-                    <span th:text="${internship.duration}">Duration</span>
+            <a th:href="@{/build}" class="dashboard-action-card">
+                <h3>CV Builder</h3>
+                <p>Build your CV</p>
+            </a>
+        </div>
+    </section>
+
+
+    <section class="company-dashboard-internships">
+        <h2>My Applications</h2>
+
+        <!-- No applications message -->
+        <div th:if="${#lists.isEmpty(applications)}" style="text-align: center; padding: 40px 20px; color: #666;">
+            <p>You haven't applied to any internships yet.</p>
+
+        </div>
+
+        <!-- Applications Grid -->
+        <div class="company-dashboard-internships-grid" th:if="${not #lists.isEmpty(applications)}">
+
+            <div class="dashboard-internship-card"
+                 th:each="app : ${applications}">
+
+                <h3 th:text="${app.internship?.title}">Internship Title</h3>
+                <p th:text="${app.internship?.companyName}">Company</p>
+                <span th:text="${app.internship?.duration}">Duration</span>
+
+                <!-- Status -->
+                <p style="margin-top: 12px; font-weight: bold; font-size: 15px;"
+                   th:class="${app.status == 'ACCEPTED' ? 'text-success' :
+                                  app.status == 'REJECTED' ? 'text-danger' : 'text-warning'}">
+                    <strong th:text="${app.status}"></strong>
+                </p>
+
+                <a th:href="@{/internships/internship-details(id=${app.internship.id})}"
+                   style="display: inline-block; margin-top: 15px; background: var( --window-blue);
+                              color: #222; padding: 8px 18px; text-decoration: none; border-radius: 6px;">
+                    View Details
                 </a>
-
             </div>
-        </section>
+        </div>
+    </section>
 
-
-    </main>
+</main>
 
 </body>
 </html>

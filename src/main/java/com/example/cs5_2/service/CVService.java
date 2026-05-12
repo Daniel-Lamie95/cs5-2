@@ -1,6 +1,7 @@
 package com.example.cs5_2.service;
 
 import com.example.cs5_2.model.BuildCV;
+import com.example.cs5_2.repository.BuildCVRepository;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.pdf.draw.LineSeparator;
@@ -11,7 +12,25 @@ import java.io.ByteArrayOutputStream;
 @Service
 public class CVService {
 
+    private final BuildCVRepository buildCVRepository;
+
+    public CVService(BuildCVRepository buildCVRepository) {
+        this.buildCVRepository = buildCVRepository;
+    }
+
+    public byte[] generateAndSavePdf(BuildCV cv) {
+        byte[] pdfBytes = generatePdf(cv);     // your existing method
+        cv.setPdfBytes(pdfBytes);
+        return pdfBytes;
+    }
+
+
+    public BuildCV findById(Long id) {
+        return buildCVRepository.findById(id).orElse(null); // returns null if not found
+    }
+
     public byte[] generatePdf(BuildCV cv) {
+
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
