@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Launchpad - Login</title>
+    <title>Launchpath - Login</title>
     <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
 </head>
 <body class="auth-page">
 
     <nav class="navbar">
-        <div class="logo">🚀 Launchpad</div>
+        <div class="logo">🚀 Launchpath</div>
 
         <ul class="nav-links">
             <li><a th:href="@{/}">Home</a></li>
@@ -20,7 +20,7 @@
 
     <section class="hero">
         <div class="hero-text">
-            <h1>Internship <span class="highlight">Launchpad</span></h1>
+            <h1>Internship <span class="highlight">Launchpath</span></h1>
             <p>
                 Launch your journey toward internships, growth, and real opportunities.
             </p>
@@ -51,6 +51,7 @@
                                th:checked="${selectedUserType == null || selectedUserType == 'student'}" checked>
                         Student
                     </label>
+                    <br>
                     <label>
                         <input type="radio" name="userType" value="company"
                                th:checked="${selectedUserType == 'company'}">
