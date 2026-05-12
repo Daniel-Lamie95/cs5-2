@@ -11,7 +11,8 @@ import com.example.cs5_2.service.InternshipService;
 import com.example.cs5_2.service.ApplicationService;
 import com.example.cs5_2.service.RankingService;
 import com.example.cs5_2.service.StudentService;
-
+import java.util.List;
+import com.example.cs5_2.model.SimpleRanking;
 import java.util.Collections;
 import java.util.List;
 import jakarta.servlet.http.HttpSession;
@@ -305,7 +306,8 @@ public class CompanyController{
             return "redirect:/login";
         }
 
-        Map<String, Double> rankings = (Map<String, Double>) rankingService.getUniversityRanking(studentService.getAllStudents());
+        List<SimpleRanking> rankings =
+                rankingService.getUniversityRanking(studentService.getAllStudents());
 
         model.addAttribute("rankings", rankings);
         model.addAttribute("company", company);
