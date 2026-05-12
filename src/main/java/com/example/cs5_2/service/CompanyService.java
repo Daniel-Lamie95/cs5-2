@@ -38,8 +38,7 @@ public class CompanyService {
 
     public Company login(String email, String password) {
     	CompanyValidation.validateLogin(email, password);
-
-        Company company = companyRepository.findByEmail(email);
+    	Company company = companyRepository.findByEmail(email);
 
         if (company == null ||
             !passwordEncoder.matches(password, company.getPassword())) {
