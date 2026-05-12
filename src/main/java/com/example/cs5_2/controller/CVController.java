@@ -57,14 +57,29 @@ public class CVController {
     }
 
     @PostMapping("/save")
-    public String saveCV(@ModelAttribute("userCV") BuildCV formData, HttpSession session) {
+    public String saveCV(@ModelAttribute("userCV") BuildCV formData, 
+                         HttpSession session, 
+                         org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        
         Student student = (Student) session.getAttribute("user");
         if (student == null) return "redirect:/login";
 
+        // validation
+        try {
+            com.example.cs5_2.allvalidations.CVValidation.validate(formData);
+        } catch (IllegalArgumentException e) {
+            // send specific error message back to the UI
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            //keep the data the user already typed so they don't have to restart
+            redirectAttributes.addFlashAttribute("userCV", formData);
+            return "redirect:/build";
+        }
+
+        
         BuildCV existingCV = cvRepository.findByStudent(student);
 
         if (existingCV != null) {
-            // Map form data to existing managed entity
+            // Update existing managed entity
             existingCV.setName(formData.getName());
             existingCV.setJobTitle(formData.getJobTitle());
             existingCV.setEmail(formData.getEmail());
@@ -72,7 +87,7 @@ public class CVController {
             existingCV.setSkills(formData.getSkills());
             existingCV.setCertifications(formData.getCertifications());
             
-            // Re-sync collections
+            // Re-sync collections (clearing and adding prevents database ID conflicts)
             existingCV.getEducationList().clear();
             existingCV.getEducationList().addAll(formData.getEducationList());
             existingCV.getExperiences().clear();
@@ -80,9 +95,11 @@ public class CVController {
 
             cvRepository.save(existingCV);
         } else {
+            // Create new record
             formData.setStudent(student);
             cvRepository.save(formData);
         }
+
         return "redirect:/view-cv";
     }
 
