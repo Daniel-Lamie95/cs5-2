@@ -2,6 +2,7 @@ package com.example.cs5_2.allvalidations;
 import com.example.cs5_2.model.Company;
 
 public class CompanyValidation {
+	
 	public static void validateRegister(Company c) {
 
         BaseValidator.notNull(c, "Company is required");
@@ -30,6 +31,7 @@ public class CompanyValidation {
                 "Invalid website"
             );
         }
+        
         BaseValidator.notEmpty(c.getPhone(), "Phone number is required");
         BaseValidator.matches(
             c.getPhone(),
