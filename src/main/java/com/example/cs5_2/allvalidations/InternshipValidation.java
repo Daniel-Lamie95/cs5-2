@@ -8,7 +8,6 @@ public class InternshipValidation {
         BaseValidator.notNull(i, "Internship required");
         validateTitle(i.getTitle());
         validateDuration(i.getDuration());
-        validateMaxApplicants(i.getMaxApplicants());
         validateDescription(i.getDescription());
         validateDates(i.getStartDate(), i.getEndDate());
     }
@@ -28,17 +27,7 @@ public class InternshipValidation {
         }
     }
 
-    public static void validateMaxApplicants(Integer maxApplicants) {
-        if (maxApplicants == null) {
-            throw new ValidationException("Maximum applicants count is required");
-        }
-        if (maxApplicants <= 0) {
-            throw new ValidationException("Maximum applicants must be a positive number");
-        }
-        if (maxApplicants > 10000) {
-            throw new ValidationException("Maximum applicants cannot exceed 10,000");
-        }
-    }
+
 
     public static void validateDescription(String description) {
         if (description != null && !description.trim().isEmpty()) {
