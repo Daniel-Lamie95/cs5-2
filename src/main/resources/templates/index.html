@@ -6,37 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LaunchPath</title>
 
-    
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/main-design.css}">
 </head>
 
-<body>
+<body class="auth-page">
 
 <!-- Navbar -->
-<header>
-    <div class="logo">🚀 LaunchPath</div>
+<header class="navbar">
 
-    <ul>
+    <div class="company-dashboard-logo">
+        🚀 LaunchPath
+    </div>
+
+    <ul class="nav-links">
         <li><a th:href="@{/home}">Home</a></li>
         <li><a th:href="@{/about}">About</a></li>
-        
+       
     </ul>
 
-    <a th:href="@{/login}" class="btn">Login</a>
+    <a th:href="@{/login}" class="main-btn">
+        Login
+    </a>
+
 </header>
 
 <!-- Hero Section -->
 <section class="hero">
 
     <div class="hero-text">
-        <h1>Launch Your Future 🚀</h1>
+
+        <h1>
+            Launch Your
+            <span class="highlight">Future 🚀</span>
+        </h1>
 
         <p>
             LaunchPad helps students discover internships and connect with companies
             to start their professional journey successfully.
         </p>
 
-        <a th:href="@{/login}" class="main-btn">Get Started</a>
+        <a th:href="@{/login}" class="main-btn">
+            Get Started
+        </a>
 
     </div>
 
@@ -49,19 +60,25 @@
 <!-- Slider -->
 <section class="slider">
 
-    <h2>Explore Opportunities</h2>
+    <h2 style="text-align:center; color:white; margin-bottom:20px;">
+        Explore Opportunities
+    </h2>
 
     <div class="slider-container">
+
         <div class="slide">
             <img th:src="@{/images/student.png}" alt="slide">
         </div>
+
     </div>
 
 </section>
 
 <!-- Footer -->
-<footer>
-    © 2026 LaunchPath | All Rights Reserved
+<footer style="text-align:center; padding:20px; color:white;">
+
+    © 2026 LaunchPad | All Rights Reserved
+
 </footer>
 
 </body>

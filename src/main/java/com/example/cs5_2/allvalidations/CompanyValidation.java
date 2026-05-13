@@ -2,6 +2,7 @@ package com.example.cs5_2.allvalidations;
 import com.example.cs5_2.model.Company;
 
 public class CompanyValidation {
+	
 	public static void validateRegister(Company c) {
 
         BaseValidator.notNull(c, "Company is required");
@@ -30,7 +31,14 @@ public class CompanyValidation {
                 "Invalid website"
             );
         }
-
+        
+        BaseValidator.notEmpty(c.getPhone(), "Phone number is required");
+        BaseValidator.matches(
+            c.getPhone(),
+            "^(010|011|012|015)[0-9]{8}$",
+            "Invalid phone number"
+        );
+        
         BaseValidator.notEmpty(c.getDescription(), "Description required");
         BaseValidator.minLength(c.getDescription(), 20, "Description too short");
         BaseValidator.maxLength(c.getDescription(), 1000, "Description too long");
@@ -73,6 +81,13 @@ public class CompanyValidation {
                 "Invalid website"
             );
         }
+        
+        BaseValidator.notEmpty(c.getPhone(), "Phone number is required");
+        BaseValidator.matches(
+            c.getPhone(),
+            "^(010|011|012|015)[0-9]{8}$",
+            "Invalid phone number"
+        );
 
         BaseValidator.notEmpty(c.getDescription(), "Description required");
         BaseValidator.minLength(c.getDescription(), 20, "Description too short");
