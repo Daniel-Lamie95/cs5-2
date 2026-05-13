@@ -18,9 +18,8 @@
 
         private int matchScore;
 
-        private LocalDateTime interviewDate;
-        private String interviewMode;
-        private String interviewLocation;
+
+
 
         // RELATIONS
 
@@ -36,14 +35,13 @@
         @JoinColumn(name = "cv_id")
         private BuildCV buildCV;
 
-        public Application(int applicationId, LocalDateTime applicationDate, ApplicationStatus status, int matchScore, LocalDateTime interviewDate, String interviewMode, String interviewLocation, Student student, Internship internship, BuildCV buildCV) {
+        public Application(int applicationId, LocalDateTime applicationDate, ApplicationStatus status, int matchScore,  Student student, Internship internship, BuildCV buildCV) {
             this.applicationId = applicationId;
             this.applicationDate = applicationDate;
             this.status = status;
             this.matchScore = matchScore;
-            this.interviewDate = interviewDate;
-            this.interviewMode = interviewMode;
-            this.interviewLocation = interviewLocation;
+
+
             this.student = student;
             this.internship = internship;
             this.buildCV = buildCV;
@@ -65,14 +63,6 @@
         public int getMatchScore() { return matchScore; }
         public void setMatchScore(int matchScore) { this.matchScore = matchScore; }
 
-        public LocalDateTime getInterviewDate() { return interviewDate; }
-        public void setInterviewDate(LocalDateTime interviewDate) { this.interviewDate = interviewDate; }
-
-        public String getInterviewMode() { return interviewMode; }
-        public void setInterviewMode(String interviewMode) { this.interviewMode = interviewMode; }
-
-        public String getInterviewLocation() { return interviewLocation; }
-        public void setInterviewLocation(String interviewLocation) { this.interviewLocation = interviewLocation; }
 
         public Student getStudent() { return student; }
         public void setStudent(Student student) { this.student = student; }

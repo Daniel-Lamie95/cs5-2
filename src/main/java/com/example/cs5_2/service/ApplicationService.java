@@ -83,27 +83,7 @@ public class ApplicationService {
     }
 
     // UPDATE STATUS
-    public void updateStatus(int id, ApplicationStatus status) {
-    	
-    	ApplicationValidation.validateStatus(status);
-
-        Application app = applicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
-
-        app.setStatus(status);
-        applicationRepository.save(app);
-
-        // If status is ACCEPTED, add student to internship's student_internship table
-        if (status == ApplicationStatus.ACCEPTED) {
-            Student student = app.getStudent();
-            Internship internship = app.getInternship();
-
-            if (student != null && internship != null) {
-                student.addAppliedInternship(internship);
-                studentRepository.save(student);
-            }
-        }
-    }
+    
 
     // MATCH SCORE
     private int calculateMatchScore(Student student, Internship internship) {
