@@ -93,8 +93,7 @@
                             </select>
 
                             <button type="submit"
-                                    style="padding: 8px 16px; background-color: #2563eb; color: white;
-                       border: none; border-radius: 6px; cursor: pointer;">
+                                    class="profile-btn">
                                 Update
                             </button>
                         </form>
@@ -120,14 +119,21 @@
         <!-- Right Column: Sidebar / Filters -->
         <div class="company-dashboard-actions" style="padding: 20px; background: var(--rocket-gray); border-radius: 12px;">
             <h2>Filter & Info</h2>
+
+            <!-- Search Box - Using your existing .search-box CSS -->
             <div class="search-box">
-                <form>
-                    <label for="search-applicants" class="sr-only">Search by student or internship</label>
-                    <input type="text" id="search-applicants" placeholder="Search by student or internship..." />
+                <form th:action="@{/company/application}" method="get">
+                    <input type="text"
+                           id="search-applicants"
+                           name="keyword"
+                           th:value="${param.keyword}"
+                           placeholder="Search by Internship Name..." />
                     <button type="submit">Search</button>
                 </form>
             </div>
-            <div style="margin-top: 20px; color: var(--card-dark);">
+
+            <!-- Statistics -->
+            <div style="margin-top: 25px; color: var(--card-dark);">
                 <p>Total Applications: <strong th:text="${#lists.size(applications)}">0</strong></p>
                 <p>Accepted: <strong th:text="${acceptedCount}">0</strong></p>
                 <p>Pending: <strong th:text="${pendingCount}">0</strong></p>

@@ -253,16 +253,30 @@ public class CompanyController{
 
     // GET mapping to show applications
     @GetMapping("/application")
-    public String viewApplications(HttpSession session, Model model) {
+    public String viewApplications(HttpSession session,
+                                   Model model,
+                                   @RequestParam(required = false) String keyword) {   // ← Add this
+
         Object companyObj = session.getAttribute("company");
         if (!(companyObj instanceof Company company)) {
             return "redirect:/login";
         }
 
         List<Application> applications = applicationService.getApplicationsByCompany(company.getName());
+
+        // Filter by internship title if keyword is provided
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String search = keyword.toLowerCase().trim();
+            applications = applications.stream()
+                    .filter(app -> app.getInternship() != null &&
+                            app.getInternship().getTitle() != null &&
+                            app.getInternship().getTitle().toLowerCase().contains(search))
+                    .toList();
+        }
+
         applications = applications != null ? applications : Collections.emptyList();
 
-        // Count statuses
+        // Count statuses (based on filtered list)
         long acceptedCount = applications.stream()
                 .filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED)
                 .count();
@@ -274,13 +288,13 @@ public class CompanyController{
                 .count();
 
         model.addAttribute("applications", applications);
-        model.addAttribute("statuses", ApplicationStatus.values());
+        model.addAttribute("keyword", keyword);           // for keeping search text
         model.addAttribute("acceptedCount", acceptedCount);
         model.addAttribute("pendingCount", pendingCount);
         model.addAttribute("rejectedCount", rejectedCount);
         model.addAttribute("company", company);
 
-        return "applications";   // Make sure this matches your HTML file name
+        return "applications";
     }
 
     // ==================== UPDATED STATUS METHOD ====================
