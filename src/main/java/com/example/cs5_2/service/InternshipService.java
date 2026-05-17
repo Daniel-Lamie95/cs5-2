@@ -32,6 +32,14 @@ public class InternshipService {
             throw new IllegalArgumentException("Duration must be greater than zero");
         }
 
+        if (internship.getStartDate() != null &&
+                internship.getStartDate().isBefore(LocalDate.now())) {
+
+            throw new IllegalArgumentException(
+                    "Start date cannot be in the past"
+            );
+        }
+
         internship.setApplicantsCount(0);
         if (internship.getMaxApplicants() <= 0) {
             internship.setMaxApplicants(5);
@@ -59,7 +67,7 @@ public class InternshipService {
             throw new IllegalArgumentException("Internship is required");
         }
 
-        // Required fields (similar to how student edits are validated)
+
         if (isBlank(updated.getTitle())) {
             throw new IllegalArgumentException("Title is required");
         }
