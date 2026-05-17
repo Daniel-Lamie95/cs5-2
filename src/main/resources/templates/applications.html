@@ -24,6 +24,13 @@
     <section class="company-dashboard-hero">
         <div>
             <h1>All Applications</h1>
+            <div th:if="${success}" style="background:transparent; color:#22c55e; padding:12px; border-radius:8px; margin:15px 0;">
+                <strong>✅</strong> <span th:text="${success}"></span>
+            </div>
+
+            <div th:if="${error}" style="background:transparent; color:#ef4444; padding:12px; border-radius:8px; margin:15px 0;">
+                <strong>⚠️</strong> <span th:text="${error}"></span>
+            </div>
             <p>View and manage applications for your internships.</p>
         </div>
     </section>
@@ -43,6 +50,7 @@
                     <th style="padding: 10px; text-align: left;">University</th>
                     <th style="padding: 10px; text-align: left;">Internship</th>
                     <th style="padding: 10px; text-align: left;">Status</th>
+
                     <th style="padding: 10px; text-align: left;">CV</th>
                 </tr>
                 </thead>
@@ -54,17 +62,41 @@
                     <td th:text="${app.student.university}" style="padding: 8px;">University</td>
                     <td th:text="${app.internship.title}" style="padding: 8px;">Internship</td>
                     <td style="padding: 8px;">
-                        <form th:action="@{/company/application/update}" method="post" style="display: flex; gap: 5px;">
+
+                        <!-- FINAL STATUS - Colored Badge -->
+                        <div th:if="${app.status.name() == 'ACCEPTED' || app.status.name() == 'REJECTED'}">
+        <span th:if="${app.status.name() == 'ACCEPTED'}"
+              style="background-color:transparent; color: #22c55e; padding: 8px 16px;
+                     border-radius: 8px; font-weight: bold; display: inline-block;">
+             ACCEPTED
+        </span>
+
+                            <span th:if="${app.status.name() == 'REJECTED'}"
+                                  style="background-color: transparent; color: #ef4444; padding: 8px 16px;
+                     border-radius: 8px; font-weight: bold; display: inline-block;">
+             REJECTED
+        </span>
+                        </div>
+
+                        <!-- PENDING - Dropdown + Button -->
+                        <form th:if="${app.status.name() == 'PENDING'}"
+                              th:action="@{/company/application/update}"
+                              method="post"
+                              style="display: flex; gap: 8px; align-items: center;">
+
                             <input type="hidden" name="id" th:value="${app.applicationId}" />
-                            <label for="status-${app.applicationId}" class="sr-only">Application Status</label>
-                            <select id="status-${app.applicationId}" name="status" style="padding: 4px;">
-                                <option th:each="s : ${statuses}"
-                                        th:value="${s}"
-                                        th:text="${s}"
-                                        th:selected="${s == app.status}">
-                                </option>
+
+                            <select name="status" style="padding: 8px 10px; border-radius: 6px; border: 1px solid #ccc; min-width: 140px;">
+                                <option value="PENDING" selected>PENDING</option>
+                                <option value="ACCEPTED">ACCEPTED</option>
+                                <option value="REJECTED">REJECTED</option>
                             </select>
-                            <button type="submit" style="padding: 4px 6px; cursor: pointer;">Update</button>
+
+                            <button type="submit"
+                                    style="padding: 8px 16px; background-color: #2563eb; color: white;
+                       border: none; border-radius: 6px; cursor: pointer;">
+                                Update
+                            </button>
                         </form>
                     </td>
                     <td style="padding: 8px;">

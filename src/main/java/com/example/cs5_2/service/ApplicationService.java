@@ -53,7 +53,7 @@ public class ApplicationService {
         // AUTO GET CV FROM DB
         BuildCV cv = buildCVRepository.findByStudent(student);
         ApplicationValidation.validateCV(cv);
-        
+
 
         if (cv == null) {
             throw new IllegalArgumentException("Student has no CV");
@@ -68,13 +68,13 @@ public class ApplicationService {
         app.setBuildCV(cv);
 
         app.setMatchScore(calculateMatchScore(student, internship));
-        
+
         ApplicationValidation.validateMatchScore(
                 app.getMatchScore()
         );
 
         applicationRepository.save(app);
-        
+
     }
 
     // GET ALL
@@ -83,7 +83,7 @@ public class ApplicationService {
     }
 
     // UPDATE STATUS
-    
+
 
     // MATCH SCORE
     private int calculateMatchScore(Student student, Internship internship) {
@@ -150,25 +150,37 @@ public class ApplicationService {
 
     // ...existing code...
 
-    // Update application status from a string (from dropdown)
     public void updateStatus(Integer applicationId, String status) {
-        // Get application by ID
+
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with ID: " + applicationId));
 
-        // Convert string from form to enum
         ApplicationStatus newStatus;
         try {
             newStatus = ApplicationStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Invalid status value: " + status);
+            throw new RuntimeException("Invalid status: " + status);
         }
 
-        // Update enum field and save
+        // ================ MAIN BUSINESS RULE ================
+        if (application.isFinalStatus()) {
+            throw new IllegalStateException(
+                    "This application is already " + application.getStatus() +
+                            ". You cannot change its status anymore."
+            );
+        }
+
+        // Prevent going back to PENDING from any other status
+        if (newStatus == ApplicationStatus.PENDING &&
+                application.getStatus() != ApplicationStatus.PENDING) {
+            throw new IllegalStateException("Cannot change status back to PENDING");
+        }
+
+        // Update status
         application.setStatus(newStatus);
         applicationRepository.save(application);
 
-        // If status is ACCEPTED, add student to internship's student_internship table
+        // Optional: Add student to internship list only when ACCEPTED
         if (newStatus == ApplicationStatus.ACCEPTED) {
             Student student = application.getStudent();
             Internship internship = application.getInternship();
@@ -179,6 +191,10 @@ public class ApplicationService {
             }
         }
     }
+
+
+
+
     public List<Application> getApplicationsByStudent(Student student) {
         if (student == null) {
             return List.of();

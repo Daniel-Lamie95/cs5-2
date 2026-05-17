@@ -259,8 +259,8 @@ public class CompanyController{
             return "redirect:/login";
         }
 
-        // Get all applications for this company's internships
         List<Application> applications = applicationService.getApplicationsByCompany(company.getName());
+        applications = applications != null ? applications : Collections.emptyList();
 
         // Count statuses
         long acceptedCount = applications.stream()
@@ -274,18 +274,31 @@ public class CompanyController{
                 .count();
 
         model.addAttribute("applications", applications);
-        model.addAttribute("statuses", ApplicationStatus.values()); // Pass enum values for dropdown
+        model.addAttribute("statuses", ApplicationStatus.values());
         model.addAttribute("acceptedCount", acceptedCount);
         model.addAttribute("pendingCount", pendingCount);
         model.addAttribute("rejectedCount", rejectedCount);
         model.addAttribute("company", company);
 
-        return "applications"; // Must match applications.html
+        return "applications";   // Make sure this matches your HTML file name
     }
 
+    // ==================== UPDATED STATUS METHOD ====================
     @PostMapping("/application/update")
-    public String updateApplicationStatus(@RequestParam Integer id, @RequestParam String status) {
-        applicationService.updateStatus(id, status); // method handles enum conversion
+    public String updateApplicationStatus(@RequestParam Integer id,
+                                          @RequestParam String status,
+                                          RedirectAttributes redirectAttributes) {
+
+        try {
+            applicationService.updateStatus(id, status);
+
+            redirectAttributes.addFlashAttribute("success",
+                    "Application status updated successfully!");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
         return "redirect:/company/application";
     }
 

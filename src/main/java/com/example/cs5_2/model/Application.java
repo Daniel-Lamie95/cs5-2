@@ -49,6 +49,16 @@
 
         public Application() {}
 
+        // Inside Application.java
+        public boolean isFinalStatus() {
+            return this.status == ApplicationStatus.ACCEPTED ||
+                    this.status == ApplicationStatus.REJECTED;
+        }
+
+        public boolean canChangeStatus() {
+            return this.status == ApplicationStatus.PENDING;
+        }
+
         // GETTERS & SETTERS
 
         public int getApplicationId() { return applicationId; }
